@@ -595,7 +595,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
         </div>
         <div class="card-status-banner" style="background:var(--success-light);border-radius:8px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
           <span style="font-size:14px;">✋</span>
-          <span style="font-size:13px;font-weight:600;color:var(--success);">Pris en charge par Sophie L. — arrive dans ~15 min</span>
+          <span style="font-size:13px;font-weight:600;color:var(--success);">Pris en charge par Sophie L. — en route</span>
         </div>
         <div class="alert-card-meta">
           <span>📍 320 m</span><span>🚶 4 min</span><span>⏱ il y a 18 min</span>
@@ -703,7 +703,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
         </div>
         <div class="card-status-banner" style="background:var(--success-light);border-radius:8px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
           <span style="font-size:14px;">✋</span>
-          <span style="font-size:13px;font-weight:600;color:var(--success);">Pris en charge par Lucie D. — arrive dans ~20 min</span>
+          <span style="font-size:13px;font-weight:600;color:var(--success);">Pris en charge par Lucie D. — en route</span>
         </div>
         <div class="alert-card-meta">
           <span>📍 900 m</span><span>🚶 11 min</span><span>⏱ il y a 45 min</span>
@@ -1722,7 +1722,7 @@ const alertsData = {
     location:'Rue de la Paix, Paris 2e', distance:'320 m • 🚶 4 min à pied',
     category:'Vêtements', items:'Taille L', time:'Il y a 18 min',
     signaler:'Julien M.', signalerRating:'4.8', signalerAvatar:'J', signalerColor:'av-orange',
-    urgency:'high', initialState:'other', takenByOther:'Sophie L.', takenByOtherEta:'arrive dans ~15 min',
+    urgency:'high', initialState:'other', takenByOther:'Sophie L.', takenByOtherEta:'en route',
     participants:[
       { name:'Sophie L.', avatar:'S', color:'av-blue', status:'En route — ~15 min' },
     ],
@@ -1739,7 +1739,7 @@ const alertsData = {
     ],
     groupMessages:[
       { name:'Camille D.', avatar:'C', color:'av-purple', text:"La famille est toujours place du Châtelet, côté fontaine. Les enfants ont l'air épuisés 😢", time:'14:05' },
-      { name:'Thomas R.', avatar:'T', color:'av-green', text:"Je peux apporter des sandwichs et de l'eau, j'arrive dans ~20 min.", time:'14:08' },
+      { name:'Thomas R.', avatar:'T', color:'av-green', text:"Je peux apporter des sandwichs et de l'eau, j'en route.", time:'14:08' },
     ],
   },
   'alert-3': {
@@ -1804,7 +1804,7 @@ const alertsData = {
     location:'Square des Batignolles, Paris 17e', distance:'900 m • 🚶 11 min à pied',
     category:'Hygiène', items:'Serviettes hygiéniques + savon', time:'Il y a 45 min',
     signaler:'Nina K.', signalerRating:'4.9', signalerAvatar:'N', signalerColor:'av-green',
-    urgency:'medium', initialState:'other', takenByOther:'Lucie D.', takenByOtherEta:'arrive dans ~20 min',
+    urgency:'medium', initialState:'other', takenByOther:'Lucie D.', takenByOtherEta:'en route',
     participants:[
       { name:'Lucie D.', avatar:'L', color:'av-purple', status:'En route — ~20 min' },
     ],
@@ -2003,7 +2003,7 @@ function renderHelpBar() {
         <div class="taken-avatar" style="background:${currentUser.color};">${currentUser.avatar}</div>
         <div class="taken-info">
           <strong>✅ ${currentUser.name} s'en occupe</strong>
-          <span>Arrivée estimée : dans 20 à 30 minutes</span>
+          <span>En route</span>
         </div>
         <button class="btn btn-sm btn-secondary" style="white-space:nowrap;font-size:12px;" onclick="cancelTaken()">Annuler</button>
       </div>
