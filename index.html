@@ -1324,65 +1324,21 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   </div>
 </div>
 
-<!-- SHEET — Prise en charge -->
+<!-- SHEET — Je peux aider -->
 <div id="sheet-overlay-help" class="sheet-overlay" onclick="closeSheet('sheet-help')">
   <div id="sheet-help" class="bottom-sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
-
-    <!-- Titre -->
-    <div style="margin-bottom:16px;" id="sheet-help-header">
-      <div style="font-size:19px;font-weight:800;margin-bottom:4px;">🙋 Prendre en charge ce besoin</div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:40px;margin-bottom:10px;">🙋</div>
+      <div style="font-size:20px;font-weight:800;margin-bottom:6px;">Je peux aider !</div>
       <div style="font-size:14px;color:var(--text-muted);" id="sheet-help-subtitle">👕 Manteau + pantalon homme — Rue de la Paix</div>
     </div>
-
-    <!-- Explication système -->
-    <div style="background:var(--primary-light);border-radius:10px;padding:12px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
-      <span style="font-size:18px;">ℹ️</span>
-      <p style="font-size:13px;color:var(--primary);line-height:1.5;">En prenant en charge ce signalement, vous vous engagez à apporter l'aide. <strong>Les autres utilisateurs verront que c'est déjà géré</strong> et n'interviendront pas en double.</p>
+    <div class="input-group" style="margin-bottom:20px;">
+      <label>Message (optionnel)</label>
+      <textarea id="help-message" placeholder="ex : J'arrive dans 20 min, j'ai ce qu'il faut…" style="height:80px;"></textarea>
     </div>
-
-    <!-- Comment -->
-    <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Comment allez-vous aider ?</div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-      <div class="help-type-btn" data-type="give" onclick="selectHelpType(this)">
-        <span style="font-size:22px;">🎁</span>
-        <div style="flex:1;"><div style="font-weight:700;font-size:14px;">J'ai l'objet, je l'apporte</div><div style="font-size:12px;color:var(--text-muted);">Je me déplace avec ce dont il a besoin</div></div>
-      </div>
-      <div class="help-type-btn" data-type="onsite" onclick="selectHelpType(this)">
-        <span style="font-size:22px;">📍</span>
-        <div style="flex:1;"><div style="font-weight:700;font-size:14px;">Je suis déjà sur place</div><div style="font-size:12px;color:var(--text-muted);">Je peux agir maintenant</div></div>
-      </div>
-      <div class="help-type-btn" data-type="buy" onclick="selectHelpType(this)">
-        <span style="font-size:22px;">🛒</span>
-        <div style="flex:1;"><div style="font-weight:700;font-size:14px;">Je vais acheter / préparer ce qu'il faut</div><div style="font-size:12px;color:var(--text-muted);">Je m'en procure et l'apporte</div></div>
-      </div>
-      <div class="help-type-btn" data-type="assoc" onclick="selectHelpType(this)">
-        <span style="font-size:22px;">🤝</span>
-        <div style="flex:1;"><div style="font-weight:700;font-size:14px;">Je contacte une association</div><div style="font-size:12px;color:var(--text-muted);">Je transmets à une structure partenaire</div></div>
-      </div>
-    </div>
-
-    <!-- Temps estimé -->
-    <div class="input-group" style="margin-bottom:12px;">
-      <label>Heure d'arrivée estimée</label>
-      <select id="help-eta">
-        <option>— Je ne sais pas encore</option>
-        <option>Dans moins de 15 minutes</option>
-        <option selected>Dans 20 à 30 minutes</option>
-        <option>Dans 1 heure</option>
-        <option>Ce soir</option>
-        <option>Demain matin</option>
-      </select>
-    </div>
-
-    <!-- Message -->
-    <div class="input-group" style="margin-bottom:16px;">
-      <label>Message pour le signalant (optionnel)</label>
-      <textarea id="help-message" placeholder="ex: J'ai un manteau L et un pantalon 40, j'arrive dans 20 min depuis le métro Opéra…" style="height:72px;"></textarea>
-    </div>
-
-    <button class="btn btn-primary" id="help-submit-btn" onclick="submitHelp()" disabled style="font-size:16px;">
-      ✅ Confirmer ma participation
+    <button class="btn btn-primary" onclick="submitHelp()" style="font-size:17px;">
+      ✅ Je confirme mon aide
     </button>
     <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-help')">Annuler</button>
   </div>
@@ -1933,7 +1889,7 @@ function renderParticipants() {
   section.innerHTML = `
     <div class="card" style="margin-bottom:12px;">
       <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">
-        👥 ${list.length} personne${list.length > 1 ? 's' : ''} veut${list.length > 1 ? '' : ''}  aider
+        👥 ${list.length} personne${list.length > 1 ? 's veulent' : ' veut'} aider
       </div>
       <div style="display:flex;flex-direction:column;gap:12px;">${rows}</div>
     </div>`;
@@ -1984,7 +1940,7 @@ function renderHelpBar() {
 
   if (!alertTakenBy) {
     /* Libre — bouton principal */
-    bar.innerHTML = `<button class="btn btn-primary" style="font-size:17px;border-radius:14px;" onclick="openSheet('sheet-help')">🙋 Participer</button>`;
+    bar.innerHTML = `<button class="btn btn-primary" style="font-size:17px;border-radius:14px;" onclick="openSheet('sheet-help')">🙋 Je peux aider</button>`;
 
   } else if (alertTakenBy === 'me') {
     /* Pris par moi */
@@ -2038,11 +1994,6 @@ function renderHelpBar() {
   }
 }
 
-function selectHelpType(el) {
-  document.querySelectorAll('.help-type-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('help-submit-btn').disabled = false;
-}
 
 function submitHelp() {
   closeSheet('sheet-help');
