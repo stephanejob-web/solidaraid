@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>SolidarAid — Maquette</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;750;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --primary: #E85D04;
@@ -17,16 +20,19 @@
   --warning-light: #FFFDE7;
   --danger: #C62828;
   --danger-light: #FFEBEE;
-  --bg: #F5F5F5;
+  --bg: #FAFAFB;
   --white: #FFFFFF;
-  --text: #212121;
-  --text-muted: #757575;
-  --border: #E0E0E0;
-  --radius: 12px;
+  --text: #0F172A;
+  --text-muted: #64748B;
+  --border: #EAECEF;
+  --radius: 14px;
   --nav-h: 64px;
+  --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 2px 6px rgba(15,23,42,.04);
+  --shadow-md: 0 2px 4px rgba(15,23,42,.05), 0 8px 20px rgba(15,23,42,.06);
+  --shadow-lg: 0 4px 8px rgba(15,23,42,.06), 0 16px 32px rgba(15,23,42,.08);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background: #1a1a2e; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; }
+body { background: #1a1a2e; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; font-feature-settings: 'cv11', 'ss01', 'cnum'; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; color: var(--text); }
 
 #phone {
   width: 390px; height: 844px;
@@ -43,7 +49,9 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
 .screen-body::-webkit-scrollbar { display: none; }
 
 .topbar { background: var(--white); padding: 52px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-.topbar h1 { font-size: 18px; font-weight: 700; color: var(--text); flex: 1; }
+.topbar h1 { font-size: 18px; font-weight: 750; color: var(--text); flex: 1; letter-spacing: -0.01em; }
+#screen-home .alert-card > div:first-child > div > div[style*="font-size:16px"],
+.alert-card > div[style*="font-size:16px"] { letter-spacing: -0.01em; font-weight: 700 !important; }
 .back-btn { width: 36px; height: 36px; border: none; background: var(--bg); border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
 .icon-btn { width: 36px; height: 36px; border: none; background: transparent; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
 
@@ -63,7 +71,8 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
 
 .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: opacity .2s; }
 .btn:active { opacity: .8; }
-.btn-primary { background: var(--primary); color: white; }
+.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 2px 8px rgba(232,93,4,.25), inset 0 1px 0 rgba(255,255,255,.15); }
+.btn-primary:active { box-shadow: 0 1px 4px rgba(232,93,4,.2); transform: translateY(1px); }
 .btn-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
 .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
 .btn-danger { background: var(--danger); color: white; }
@@ -76,9 +85,10 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
 .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--primary); }
 .input-group textarea { resize: none; height: 90px; }
 
-.card { background: var(--white); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.card { background: var(--white); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; box-shadow: var(--shadow-sm); border: 1px solid rgba(15,23,42,.04); }
 
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .01em; }
+.badge-high { box-shadow: 0 2px 8px rgba(198,40,40,.15); }
 .badge-high { background: var(--danger-light); color: var(--danger); }
 .badge-medium { background: var(--warning-light); color: var(--warning); }
 .badge-low { background: var(--success-light); color: var(--success); }
@@ -94,8 +104,9 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
 .divider { height: 1px; background: var(--border); margin: 16px 0; }
 .section-title { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 12px; }
 
-.chip { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--text); transition: all .15s; white-space: nowrap; }
-.chip.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text); transition: all .2s cubic-bezier(.4,0,.2,1); white-space: nowrap; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
+.chip:active { transform: scale(.96); }
+.chip.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-color: transparent; color: white; box-shadow: 0 2px 8px rgba(232,93,4,.25); }
 
 .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 4px 0; }
 .cat-card { background: var(--white); border: 2px solid var(--border); border-radius: var(--radius); padding: 16px 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: all .2s; text-align: center; }
@@ -128,11 +139,12 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
 .step-dot.active { width: 24px; border-radius: 4px; background: var(--primary); }
 .step-dot.done { background: var(--primary); }
 
-.alert-card { background: var(--white); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.06); cursor: pointer; transition: transform .15s; }
-.alert-card:active { transform: scale(.98); }
+.alert-card { background: var(--white); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px; box-shadow: var(--shadow-sm); border: 1px solid rgba(15,23,42,.04); cursor: pointer; transition: transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s ease; }
+.alert-card:hover { box-shadow: var(--shadow-md); }
+.alert-card:active { transform: scale(.985); box-shadow: var(--shadow-sm); }
 .alert-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
-.alert-card-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
-.alert-card-meta span { font-size: 12px; color: var(--text-muted); }
+.alert-card-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.alert-card-meta span { font-size: 12px; color: var(--text-muted); font-weight: 500; }
 .alert-cat-icon { font-size: 28px; width: 48px; height: 48px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
 .profile-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 60px 20px 30px; text-align: center; color: white; }
@@ -224,8 +236,18 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
 
 /* ── FILTRE CARTES ── */
 .alert-card.filtered-out { display: none; }
+.alert-card[data-urgency="high"] { border-left: 4px solid var(--danger); }
+.alert-card[data-urgency="medium"] { border-left: 4px solid var(--warning); }
+.participants-strip { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.participants-strip .avatar-mini { width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; color: white; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); margin-left: -6px; }
+.participants-strip .avatar-mini:first-child { margin-left: 0; }
+.participants-strip .more-count { font-size: 12px; color: var(--primary); font-weight: 700; margin-left: 2px; }
+#feed-empty-state { display: none; text-align: center; padding: 40px 20px; color: var(--text-muted); }
+#feed-empty-state.visible { display: block; }
+#feed-empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+#feed-empty-state .msg { font-size: 15px; margin-bottom: 16px; }
 .chip-count { background: var(--border); color: var(--text-muted); padding: 1px 7px; border-radius: 10px; font-size: 11px; margin-left: 3px; font-weight: 700; transition: background .15s, color .15s; }
-.chip.active .chip-count { background: var(--primary); color: white; }
+.chip.active .chip-count { background: rgba(255,255,255,.25); color: white; }
 
 /* ── IMPACT BANNER ── */
 .impact-banner { margin: 10px 16px 0; background: linear-gradient(135deg, #2E7D32, #1B5E20); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; gap: 12px; color: white; }
@@ -312,7 +334,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
 #phone.dark .chip               { background: var(--white); border-color: var(--border); color: var(--text); }
 #phone.dark .chip.active        { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
 #phone.dark .chip-count         { background: var(--border); color: var(--text-muted); }
-#phone.dark .chip.active .chip-count { background: var(--primary); color: white; }
+#phone.dark .chip.active .chip-count { background: rgba(255,255,255,.25); color: white; }
 
 /* ── Badges ── */
 #phone.dark .badge-high    { background: var(--danger-light);  color: var(--danger); }
@@ -548,7 +570,12 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   <div class="screen-body" style="padding:8px 16px 80px;">
 
     <!-- Cartes signalements -->
-    <div style="margin-top:12px;">
+    <div id="feed-empty-state">
+      <div class="emoji">🙏</div>
+      <div class="msg">Aucun besoin dans cette catégorie à proximité.</div>
+      <button class="btn btn-secondary" onclick="document.querySelector('.chip[data-filter=\'all\']').click()">Voir tous les besoins</button>
+    </div>
+    <div id="feed-list" style="margin-top:12px;">
 
       <!-- FOOD 1 — Urgent / Ouvert -->
       <div class="alert-card" data-alert-id="alert-2" data-category="food" onclick="openAlert('alert-2')">
@@ -1424,10 +1451,66 @@ function toggleChip(el) {
   document.querySelectorAll('.chips-scroll .chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   const filter = el.dataset.filter || 'all';
+  let visible = 0;
   document.querySelectorAll('#screen-home .alert-card').forEach(card => {
     const match = filter === 'all' || card.dataset.category === filter;
     card.classList.toggle('filtered-out', !match);
+    if (match) visible++;
   });
+  const empty = document.getElementById('feed-empty-state');
+  if (empty) empty.classList.toggle('visible', visible === 0);
+}
+
+function enhanceFeedCards() {
+  const list = document.getElementById('feed-list');
+  if (!list) return;
+  const cards = Array.from(list.querySelectorAll('.alert-card'));
+  cards.forEach(card => {
+    const id = card.dataset.alertId;
+    const data = id ? alertsData[id] : null;
+    // urgency attribute (from data or fallback to badge class)
+    let urgency = data && data.urgency;
+    if (!urgency) {
+      if (card.querySelector('.badge-high')) urgency = 'high';
+      else if (card.querySelector('.badge-medium')) urgency = 'medium';
+      else urgency = 'low';
+    }
+    card.dataset.urgency = urgency;
+    // status for sorting
+    let status = data && data.initialState;
+    if (!status) {
+      if (card.querySelector('.badge-done')) status = 'done';
+      else if (card.querySelector('.card-status-banner')) status = 'other';
+      else status = 'open';
+    }
+    card.dataset.status = status;
+    // inject participants avatars into meta row
+    if (data && Array.isArray(data.participants) && data.participants.length) {
+      const meta = card.querySelector('.alert-card-meta');
+      if (meta && !meta.querySelector('.participants-strip')) {
+        const old = meta.querySelector('span[style*="--primary"]');
+        if (old && /réponse/i.test(old.textContent)) old.remove();
+        const strip = document.createElement('div');
+        strip.className = 'participants-strip';
+        const shown = data.participants.slice(0, 3);
+        const extra = data.participants.length - shown.length;
+        strip.innerHTML = shown.map(p =>
+          `<div class="avatar-mini ${p.color}" title="${p.name}">${p.avatar}</div>`
+        ).join('') + (extra > 0 ? `<span class="more-count">+${extra}</span>` : '');
+        meta.appendChild(strip);
+      }
+    }
+  });
+  // sort: status (open < other < me < done) then urgency (high < medium < low)
+  const sOrder = { open: 0, other: 1, me: 2, done: 3 };
+  const uOrder = { high: 0, medium: 1, low: 2 };
+  cards.sort((a, b) => {
+    const sa = sOrder[a.dataset.status] ?? 4;
+    const sb = sOrder[b.dataset.status] ?? 4;
+    if (sa !== sb) return sa - sb;
+    return (uOrder[a.dataset.urgency] ?? 3) - (uOrder[b.dataset.urgency] ?? 3);
+  });
+  cards.forEach(c => list.appendChild(c));
 }
 
 function updateChipCounts() {
@@ -1875,11 +1958,12 @@ function renderParticipants() {
   const list = (a && a.participants) ? [...a.participants] : [];
   if (!list.length) { section.innerHTML = ''; return; }
   const rows = list.map(p => `
-    <div style="display:flex;align-items:center;gap:10px;">
+    <div style="display:flex;align-items:flex-start;gap:10px;">
       <div class="avatar ${p.color}" style="width:36px;height:36px;font-size:14px;flex-shrink:0;">${p.avatar}</div>
-      <div style="flex:1;">
+      <div style="flex:1;min-width:0;">
         <div style="font-size:14px;font-weight:600;">${p.name}</div>
-        <div style="font-size:12px;color:var(--text-muted);">${p.status}</div>
+        <div style="font-size:12px;color:var(--text-muted);">${escapeHtml(p.status || '')}</div>
+        ${p.message ? `<div style="font-size:13px;color:var(--text);font-style:italic;margin-top:4px;background:var(--bg);border-radius:8px;padding:6px 10px;">« ${escapeHtml(p.message)} »</div>` : ''}
       </div>
     </div>`).join('');
   section.innerHTML = `
@@ -1987,6 +2071,10 @@ function resetHelpBar() {
   document.querySelectorAll('.help-type-btn').forEach(b => b.classList.remove('selected'));
 }
 
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 function renderHelpBar() {
   const bar = document.getElementById('help-bar');
   if (!bar) return;
@@ -1998,17 +2086,21 @@ function renderHelpBar() {
 
   } else if (alertTakenBy === 'me') {
     /* Pris par moi */
+    const aMe = currentAlertId ? alertsData[currentAlertId] : null;
+    const myMsg = aMe && aMe.myHelpMessage ? aMe.myHelpMessage : '';
+    const subtitle = myMsg ? myMsg : 'Disponible pour aider';
     bar.innerHTML = `
-      <div class="taken-bar" style="background:var(--success-light);border-color:var(--success);">
+      <div class="taken-bar" style="background:var(--success-light);border-color:var(--success);align-items:flex-start;">
         <div class="taken-avatar" style="background:${currentUser.color};">${currentUser.avatar}</div>
-        <div class="taken-info">
+        <div class="taken-info" style="min-width:0;">
           <strong>✅ ${currentUser.name} s'en occupe</strong>
-          <span>En route</span>
+          <span style="display:block;white-space:normal;${myMsg ? 'font-style:italic;color:var(--text);' : ''}">${myMsg ? '« ' + escapeHtml(myMsg) + ' »' : subtitle}</span>
         </div>
-        <button class="btn btn-sm btn-secondary" style="white-space:nowrap;font-size:12px;" onclick="cancelTaken()">Annuler</button>
+        <button class="btn btn-sm btn-secondary" style="white-space:nowrap;font-size:12px;flex-shrink:0;" onclick="cancelTaken()">Annuler</button>
       </div>
       <div style="display:flex;gap:8px;margin-top:10px;">
-        <button class="btn btn-success" style="flex:1;font-size:14px;" onclick="openSheet('sheet-deliver')">📦 J'ai remis l'aide</button>
+        <button class="btn btn-secondary" style="flex:1;font-size:13px;" onclick="openSheet('sheet-help')">✏️ Modifier mon message</button>
+        <button class="btn btn-success" style="flex:1;font-size:14px;" onclick="openSheet('sheet-deliver')">📦 Remis</button>
         <button class="btn btn-secondary" style="font-size:14px;" onclick="goTo('screen-chat');setNav('nav-msg')">💬</button>
       </div>`;
 
@@ -2050,22 +2142,28 @@ function renderHelpBar() {
 
 
 function submitHelp() {
+  const msgEl = document.getElementById('help-message');
+  const message = msgEl ? msgEl.value.trim() : '';
   closeSheet('sheet-help');
   alertTakenBy = 'me';
-  renderHelpBar();
-  // Persiste dans les données et met à jour le feed
   if (currentAlertId && alertsData[currentAlertId]) {
     const a = alertsData[currentAlertId];
     a.initialState = 'me';
+    a.myHelpMessage = message;
     delete a.takenByOther;
-    // Ajoute l'utilisateur courant aux participants s'il n'y est pas déjà
     if (!a.participants) a.participants = [];
-    const alreadyIn = a.participants.some(p => p.name === currentUser.name);
-    if (!alreadyIn) {
-      a.participants.unshift({ name: currentUser.name, avatar: currentUser.avatar, color: 'av-orange', status: 'En route — ~20 min' });
+    const status = 'Disponible pour aider';
+    const existing = a.participants.find(p => p.name === currentUser.name);
+    if (existing) {
+      existing.status = status;
+      existing.message = message;
+    } else {
+      a.participants.unshift({ name: currentUser.name, avatar: currentUser.avatar, color: 'av-orange', status, message });
     }
     renderParticipants();
   }
+  renderHelpBar();
+  if (msgEl) msgEl.value = '';
   updateFeedCard(currentAlertId, 'me');
   // Refrapper le badge statut dans la fiche
   const fiche = document.getElementById('alert-fiche');
@@ -2174,6 +2272,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const defaultCard = document.querySelector('.cat-card[data-cat="clothing"]');
   if (defaultCard) selectCat(defaultCard);
   updateChipCounts();
+  enhanceFeedCards();
 });
 </script>
 </body>
