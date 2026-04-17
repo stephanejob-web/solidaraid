@@ -888,55 +888,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
     </div>
 
 
-    <!-- Réponses existantes -->
-    <div class="section-title">3 personnes proposent leur aide</div>
-    <div class="card" style="margin-bottom:8px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="avatar av-blue">S</div>
-        <div style="flex:1;">
-          <div style="font-weight:600;font-size:15px;">Sophie L. <span style="font-size:12px;color:var(--text-muted);">⭐ 4.9</span></div>
-          <div style="font-size:13px;color:var(--text-muted);">🎁 J'ai un manteau L — je peux apporter</div>
-        </div>
-        <button class="btn btn-sm btn-primary" onclick="openSheet('sheet-chat-prompt')">Accepter</button>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:8px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="avatar av-green">T</div>
-        <div style="flex:1;">
-          <div style="font-weight:600;font-size:15px;">Thomas R.</div>
-          <div style="font-size:13px;color:var(--text-muted);">📍 Je suis déjà sur place</div>
-        </div>
-        <button class="btn btn-sm btn-outline">Accepter</button>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:8px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="avatar av-purple">A</div>
-        <div style="flex:1;">
-          <div style="font-weight:600;font-size:15px;">Amina B.</div>
-          <div style="font-size:13px;color:var(--text-muted);">🚗 Je peux livrer dans 30 min</div>
-        </div>
-        <button class="btn btn-sm btn-outline">Accepter</button>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-    <div class="section-title">Services d'urgence</div>
-    <div style="display:flex;gap:10px;margin-bottom:16px;">
-      <a href="tel:115" style="flex:1;text-decoration:none;"><button class="btn btn-danger" style="font-size:14px;">📞 115</button></a>
-      <a href="tel:15" style="flex:1;text-decoration:none;"><button class="btn btn-secondary" style="font-size:14px;width:100%;">📞 15 SAMU</button></a>
-    </div>
     <button class="btn btn-success" onclick="openSheet('sheet-resolve')">✅ Marquer comme résolu</button>
-
-    <!-- Bouton démo maquette -->
-    <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:10px;border:1px dashed var(--border);">
-      <div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;margin-bottom:8px;">🧪 Démo — simuler un état</div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-sm btn-secondary" onclick="alertTakenBy='other';renderHelpBar()">Simuler : pris par Sophie</button>
-        <button class="btn btn-sm btn-secondary" onclick="alertTakenBy=null;renderHelpBar()">Réinitialiser</button>
-      </div>
-    </div>
   </div>
 
   <!-- Barre d'action fixe en bas -->
