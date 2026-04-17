@@ -1025,31 +1025,23 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   </div>
 </div>
 
-<!-- CHAT -->
+<!-- CHAT GROUPE -->
 <div id="screen-chat" class="screen">
   <div class="topbar" style="padding-bottom:10px;">
-    <button class="back-btn" onclick="goTo('screen-messages')">←</button>
-    <div style="display:flex;align-items:center;gap:10px;flex:1;">
-      <div class="avatar av-blue" style="width:36px;height:36px;font-size:15px;">S</div>
-      <div><div style="font-size:16px;font-weight:700;">Sophie L.</div><div style="font-size:12px;color:var(--success);">● En ligne</div></div>
+    <button class="back-btn" onclick="goBack()">←</button>
+    <div style="flex:1;min-width:0;">
+      <div id="chat-title" style="font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Groupe</div>
+      <div id="chat-subtitle" style="font-size:12px;color:var(--text-muted);">0 aidants</div>
     </div>
-    <button class="icon-btn">ℹ️</button>
+    <div id="chat-avatars" style="display:flex;gap:-6px;"></div>
   </div>
-  <div style="background:var(--primary-light);padding:10px 16px;font-size:13px;color:var(--primary);flex-shrink:0;">📍 Manteau + pantalon homme — Rue de la Paix</div>
+  <div id="chat-context" style="background:var(--primary-light);padding:8px 16px;font-size:13px;color:var(--primary);flex-shrink:0;"></div>
   <div class="screen-body">
-    <div class="chat-wrap" style="padding-bottom:20px;">
-      <div class="msg msg-in"><div class="msg-bubble">Bonjour ! J'ai vu votre signalement. J'ai un manteau taille L disponible.</div><div class="msg-time">14:28</div></div>
-      <div class="msg msg-out"><div class="msg-bubble">Super ! C'est exactement ce dont il a besoin. Vous pouvez apporter quand ?</div><div class="msg-time">14:29</div></div>
-      <div class="msg msg-in"><div class="msg-bubble">Je peux être là dans 20 minutes. On se retrouve où ?</div><div class="msg-time">14:30</div></div>
-      <div class="msg msg-out"><div class="msg-bubble">Il est devant la pharmacie rue de la Paix. Je vous y attendrai.</div><div class="msg-time">14:31</div></div>
-      <div class="msg msg-in"><div class="msg-bubble">Je peux apporter le manteau dans 20 minutes 👍</div><div class="msg-time">14:32</div></div>
-    </div>
+    <div id="chat-messages" class="chat-wrap" style="padding-bottom:20px;"></div>
   </div>
   <div class="chat-input-bar">
-    <button style="font-size:22px;background:none;border:none;cursor:pointer;">📷</button>
-    <button style="font-size:22px;background:none;border:none;cursor:pointer;">📍</button>
-    <input type="text" placeholder="Votre message…">
-    <button class="chat-send-btn">➤</button>
+    <input id="chat-input" type="text" placeholder="Votre message…" onkeydown="if(event.key==='Enter')sendGroupMessage()">
+    <button class="chat-send-btn" onclick="sendGroupMessage()">➤</button>
   </div>
 </div>
 
@@ -1745,6 +1737,10 @@ const alertsData = {
     participants:[
       { name:'Thomas R.', avatar:'T', color:'av-green', status:'Disponible' },
     ],
+    groupMessages:[
+      { name:'Camille D.', avatar:'C', color:'av-purple', text:"La famille est toujours place du Châtelet, côté fontaine. Les enfants ont l'air épuisés 😢", time:'14:05' },
+      { name:'Thomas R.', avatar:'T', color:'av-green', text:"Je peux apporter des sandwichs et de l'eau, j'arrive dans ~20 min.", time:'14:08' },
+    ],
   },
   'alert-3': {
     icon:'🧴', title:'Kit hygiène complet',
@@ -1888,11 +1884,69 @@ function renderParticipants() {
     </div>`).join('');
   section.innerHTML = `
     <div class="card" style="margin-bottom:12px;">
-      <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">
-        👥 ${list.length} personne${list.length > 1 ? 's veulent' : ' veut'} aider
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;">
+          👥 ${list.length} personne${list.length > 1 ? 's veulent' : ' veut'} aider
+        </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">${rows}</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px;">${rows}</div>
+      <button class="btn btn-secondary" style="font-size:14px;gap:8px;" onclick="openGroupChat('${currentAlertId}')">
+        💬 Discussion du groupe
+      </button>
     </div>`;
+}
+
+function openGroupChat(id) {
+  currentAlertId = id;
+  const a = alertsData[id];
+  if (!a) return;
+  const list = a.participants || [];
+  // Topbar
+  document.getElementById('chat-title').textContent = a.icon + ' ' + a.title;
+  document.getElementById('chat-subtitle').textContent = list.length + ' aidant' + (list.length > 1 ? 's' : '');
+  // Avatars
+  const avatarEl = document.getElementById('chat-avatars');
+  avatarEl.innerHTML = list.slice(0,4).map(p =>
+    `<div class="avatar ${p.color}" style="width:30px;height:30px;font-size:12px;margin-left:-6px;border:2px solid var(--white);">${p.avatar}</div>`
+  ).join('');
+  // Contexte
+  document.getElementById('chat-context').textContent = '📍 ' + a.location;
+  // Messages
+  const msgs = a.groupMessages || [];
+  const wrap = document.getElementById('chat-messages');
+  wrap.innerHTML = msgs.map(m => {
+    const mine = m.name === currentUser.name;
+    return `
+      <div class="msg ${mine ? 'msg-out' : 'msg-in'}">
+        ${!mine ? `<div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;padding-left:4px;">${m.name}</div>` : ''}
+        <div class="msg-bubble">${m.text}</div>
+        <div class="msg-time">${m.time}</div>
+      </div>`;
+  }).join('');
+  wrap.scrollTop = wrap.scrollHeight;
+  goTo('screen-chat');
+}
+
+function sendGroupMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  const now = new Date();
+  const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  const wrap = document.getElementById('chat-messages');
+  wrap.innerHTML += `
+    <div class="msg msg-out">
+      <div class="msg-bubble">${text}</div>
+      <div class="msg-time">${time}</div>
+    </div>`;
+  // Persiste dans les données
+  const a = currentAlertId ? alertsData[currentAlertId] : null;
+  if (a) {
+    if (!a.groupMessages) a.groupMessages = [];
+    a.groupMessages.push({ name: currentUser.name, avatar: currentUser.avatar, color: 'av-orange', text, time });
+  }
+  wrap.scrollTop = wrap.scrollHeight;
 }
 
 /* Met à jour la carte dans le feed après prise en charge */
