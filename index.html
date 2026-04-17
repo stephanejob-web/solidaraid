@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SolidarAid — Maquette</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+:root {
+  --primary: #E85D04;
+  --primary-light: #FFF3E0;
+  --primary-dark: #BF4600;
+  --secondary: #1565C0;
+  --success: #2E7D32;
+  --success-light: #E8F5E9;
+  --warning: #F57F17;
+  --warning-light: #FFFDE7;
+  --danger: #C62828;
+  --danger-light: #FFEBEE;
+  --bg: #F5F5F5;
+  --white: #FFFFFF;
+  --text: #212121;
+  --text-muted: #757575;
+  --border: #E0E0E0;
+  --radius: 12px;
+  --nav-h: 64px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { background: #1a1a2e; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+#phone {
+  width: 390px; height: 844px;
+  background: var(--bg); border-radius: 40px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.6), inset 0 0 0 2px #444;
+  overflow: hidden; position: relative;
+}
+#phone::before { content: '9:41'; position: absolute; top: 14px; left: 24px; font-size: 14px; font-weight: 700; color: #fff; z-index: 999; }
+#phone::after { content: '▲ ●●●'; position: absolute; top: 14px; right: 24px; font-size: 11px; color: #fff; z-index: 999; letter-spacing: 2px; }
+
+.screen { display: none; flex-direction: column; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: var(--bg); overflow: hidden; }
+.screen.active { display: flex; }
+.screen-body { flex: 1; overflow-y: auto; padding-bottom: calc(var(--nav-h) + 8px); -webkit-overflow-scrolling: touch; }
+.screen-body::-webkit-scrollbar { display: none; }
+
+.topbar { background: var(--white); padding: 52px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.topbar h1 { font-size: 18px; font-weight: 700; color: var(--text); flex: 1; }
+.back-btn { width: 36px; height: 36px; border: none; background: var(--bg); border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+.icon-btn { width: 36px; height: 36px; border: none; background: transparent; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+
+#bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: var(--white); border-top: 1px solid var(--border); display: none; align-items: center; justify-content: space-around; z-index: 100; padding-bottom: 4px; }
+#bottom-nav.visible { display: flex; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 8px 0; color: var(--text-muted); transition: color .2s; }
+.nav-item.active { color: var(--primary); }
+.nav-icon { font-size: 22px; line-height: 1; }
+.nav-label { font-size: 10px; font-weight: 500; }
+.nav-fab { width: 52px; height: 52px; background: var(--primary); border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 26px; color: white; margin-top: -20px; box-shadow: 0 4px 16px rgba(232,93,4,.5); }
+
+.sheet-overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,.5); z-index: 200; }
+.sheet-overlay.open { display: block; }
+.bottom-sheet { position: absolute; bottom: 0; left: 0; right: 0; background: var(--white); border-radius: 24px 24px 0 0; padding: 16px 20px 32px; max-height: 80%; overflow-y: auto; z-index: 201; transform: translateY(100%); transition: transform .3s ease; }
+.bottom-sheet.open { transform: translateY(0); }
+.sheet-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+
+.btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: opacity .2s; }
+.btn:active { opacity: .8; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+.btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+.btn-danger { background: var(--danger); color: white; }
+.btn-success { background: var(--success); color: white; }
+.btn-sm { padding: 8px 14px; font-size: 14px; width: auto; border-radius: 8px; }
+
+.input-group { margin-bottom: 16px; }
+.input-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+.input-group input, .input-group select, .input-group textarea { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 16px; background: var(--white); color: var(--text); outline: none; font-family: inherit; }
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--primary); }
+.input-group textarea { resize: none; height: 90px; }
+
+.card { background: var(--white); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge-high { background: var(--danger-light); color: var(--danger); }
+.badge-medium { background: var(--warning-light); color: var(--warning); }
+.badge-low { background: var(--success-light); color: var(--success); }
+.badge-open { background: #E3F2FD; color: var(--secondary); }
+.badge-done { background: var(--success-light); color: var(--success); }
+
+.avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: white; flex-shrink: 0; }
+.av-orange { background: var(--primary); }
+.av-blue { background: var(--secondary); }
+.av-green { background: var(--success); }
+.av-purple { background: #6A1B9A; }
+
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.section-title { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 12px; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--text); transition: all .15s; white-space: nowrap; }
+.chip.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+
+.category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 4px 0; }
+.cat-card { background: var(--white); border: 2px solid var(--border); border-radius: var(--radius); padding: 16px 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: all .2s; text-align: center; }
+.cat-card:active, .cat-card.selected { border-color: var(--primary); background: var(--primary-light); }
+.cat-icon { font-size: 32px; }
+.cat-label { font-size: 13px; font-weight: 600; color: var(--text); }
+
+.urgency-row { display: flex; gap: 8px; }
+.urgency-btn { flex: 1; padding: 10px; border-radius: 10px; border: 2px solid var(--border); background: var(--white); cursor: pointer; text-align: center; font-size: 13px; font-weight: 600; transition: all .15s; }
+.urgency-btn.u-low.selected { border-color: var(--success); background: var(--success-light); color: var(--success); }
+.urgency-btn.u-med.selected { border-color: var(--warning); background: var(--warning-light); color: var(--warning); }
+.urgency-btn.u-high.selected { border-color: var(--danger); background: var(--danger-light); color: var(--danger); }
+
+.chat-wrap { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 75%; }
+.msg-in { align-self: flex-start; }
+.msg-out { align-self: flex-end; }
+.msg-bubble { padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.4; }
+.msg-in .msg-bubble { background: var(--white); border-bottom-left-radius: 4px; }
+.msg-out .msg-bubble { background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+.msg-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.msg-in .msg-time { padding-left: 4px; }
+.msg-out .msg-time { text-align: right; padding-right: 4px; }
+.chat-input-bar { padding: 10px 16px; background: var(--white); border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+.chat-input-bar input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 24px; font-size: 15px; outline: none; }
+.chat-send-btn { width: 42px; height: 42px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; font-size: 18px; color: white; display: flex; align-items: center; justify-content: center; }
+
+.steps { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: all .2s; }
+.step-dot.active { width: 24px; border-radius: 4px; background: var(--primary); }
+.step-dot.done { background: var(--primary); }
+
+.alert-card { background: var(--white); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.06); cursor: pointer; transition: transform .15s; }
+.alert-card:active { transform: scale(.98); }
+.alert-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+.alert-card-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+.alert-card-meta span { font-size: 12px; color: var(--text-muted); }
+.alert-cat-icon { font-size: 28px; width: 48px; height: 48px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+.profile-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 60px 20px 30px; text-align: center; color: white; }
+.profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,.25); border: 3px solid white; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; margin: 0 auto 12px; }
+.profile-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.profile-sub { font-size: 14px; opacity: .8; }
+.profile-stats { display: flex; background: var(--white); margin: 0 16px; border-radius: var(--radius); box-shadow: 0 2px 12px rgba(0,0,0,.1); margin-top: -20px; overflow: hidden; }
+.profile-stat { flex: 1; padding: 16px 8px; text-align: center; border-right: 1px solid var(--border); }
+.profile-stat:last-child { border-right: none; }
+.stat-val { font-size: 22px; font-weight: 700; color: var(--primary); }
+.stat-lbl { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+.notif-item { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); cursor: pointer; background: var(--white); transition: background .15s; }
+.notif-item.unread { background: #FFF8F5; }
+.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); margin-top: 6px; flex-shrink: 0; }
+.notif-dot.read { background: transparent; }
+
+.emergency-btn { display: flex; align-items: center; gap: 14px; padding: 18px 16px; border-radius: var(--radius); border: none; cursor: pointer; width: 100%; margin-bottom: 10px; text-align: left; transition: opacity .2s; }
+.emergency-btn:active { opacity: .8; }
+.em-num { font-size: 28px; font-weight: 800; min-width: 56px; }
+.em-info { display: flex; flex-direction: column; gap: 2px; }
+.em-title { font-size: 16px; font-weight: 700; }
+.em-sub { font-size: 13px; opacity: .75; }
+
+#map-leaflet { width: 100%; height: 100%; }
+#map-mini { width: 100%; height: 100%; }
+
+.success-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
+.success-icon { font-size: 72px; margin-bottom: 20px; }
+.success-title { font-size: 24px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+.success-sub { font-size: 16px; color: var(--text-muted); line-height: 1.5; margin-bottom: 32px; }
+
+#screen-splash { background: linear-gradient(160deg, #E85D04 0%, #BF4600 60%, #7c2d00 100%); align-items: center; justify-content: center; }
+.splash-logo { font-size: 56px; margin-bottom: 12px; }
+.splash-name { font-size: 36px; font-weight: 800; color: white; letter-spacing: -1px; }
+.splash-tagline { font-size: 16px; color: rgba(255,255,255,.75); margin-top: 8px; text-align: center; padding: 0 32px; line-height: 1.5; }
+.splash-loader { margin-top: 48px; display: flex; gap: 6px; }
+.loader-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.4); animation: pulse 1.2s ease-in-out infinite; }
+.loader-dot:nth-child(2) { animation-delay: .2s; }
+.loader-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes pulse { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
+
+#screen-onboarding { background: var(--white); }
+.onboard-slide { padding: 0 28px; text-align: center; }
+.onboard-img { font-size: 100px; margin-bottom: 24px; }
+.onboard-title { font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 12px; line-height: 1.2; }
+.onboard-text { font-size: 16px; color: var(--text-muted); line-height: 1.6; }
+.onboard-footer { padding: 20px 24px 32px; }
+.onboard-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; }
+.od { width: 8px; height: 8px; border-radius: 4px; background: var(--border); transition: all .2s; }
+.od.active { width: 24px; background: var(--primary); }
+
+.chips-scroll { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; flex-shrink: 0; }
+.chips-scroll::-webkit-scrollbar { display: none; }
+
+.donate-card { background: linear-gradient(135deg, #1565C0, #0D47A1); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; color: white; }
+.donate-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.donate-card p { font-size: 14px; opacity: .8; margin-bottom: 16px; }
+
+.cold-alert { background: linear-gradient(135deg, #0D47A1, #1565C0); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; color: white; }
+.cold-alert-icon { font-size: 28px; }
+.cold-alert-text strong { font-size: 15px; display: block; }
+.cold-alert-text span { font-size: 13px; opacity: .8; }
+
+.settings-item { display: flex; align-items: center; gap: 14px; padding: 16px; background: var(--white); border-bottom: 1px solid var(--border); cursor: pointer; }
+.settings-item-icon { font-size: 22px; width: 36px; text-align: center; }
+.settings-item-text { flex: 1; }
+.settings-item-text strong { display: block; font-size: 15px; }
+.settings-item-text span { font-size: 13px; color: var(--text-muted); }
+.settings-arrow { color: var(--text-muted); font-size: 16px; }
+
+.toggle { width: 44px; height: 24px; background: var(--border); border-radius: 12px; cursor: pointer; transition: background .2s; position: relative; flex-shrink: 0; }
+.toggle.on { background: var(--primary); }
+.toggle::after { content: ''; width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform .2s; }
+.toggle.on::after { transform: translateX(20px); }
+
+/* ── RADIUS SLIDER ── */
+.radius-bar { padding: 14px 16px 10px; background: var(--white); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.radius-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.radius-label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.radius-val { font-size: 20px; font-weight: 800; color: var(--primary); }
+.radius-slider { width: 100%; height: 6px; border-radius: 3px; outline: none; -webkit-appearance: none; cursor: pointer; background: linear-gradient(to right, var(--primary) 40%, var(--border) 40%); }
+.radius-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: var(--primary); border: 3px solid white; box-shadow: 0 2px 8px rgba(232,93,4,.45); cursor: pointer; }
+.radius-ticks { display: flex; justify-content: space-between; margin-top: 6px; padding: 0 2px; }
+.radius-ticks span { font-size: 11px; color: var(--text-muted); }
+.radius-count { margin-top: 10px; background: var(--primary-light); border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+.radius-count-text { font-size: 13px; font-weight: 600; color: var(--primary); }
+.radius-count-sub { font-size: 12px; color: var(--text-muted); }
+
+/* ── FILTRE CARTES ── */
+.alert-card.filtered-out { display: none; }
+.chip-count { background: var(--border); color: var(--text-muted); padding: 1px 7px; border-radius: 10px; font-size: 11px; margin-left: 3px; font-weight: 700; transition: background .15s, color .15s; }
+.chip.active .chip-count { background: var(--primary); color: white; }
+
+/* ── IMPACT BANNER ── */
+.impact-banner { margin: 10px 16px 0; background: linear-gradient(135deg, #2E7D32, #1B5E20); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; gap: 12px; color: white; }
+.impact-icon { font-size: 28px; }
+.impact-text strong { font-size: 14px; display: block; }
+.impact-text span { font-size: 12px; opacity: .8; }
+
+/* ── DARK MODE ── */
+#phone.dark { --bg: #121212; --white: #1E1E1E; --text: #ECECEC; --text-muted: #9E9E9E; --border: #333333; --primary-light: #3D1F00; --success-light: #1B3A1F; --warning-light: #3A2E00; --danger-light: #3A1010; }
+#phone.dark .topbar { background: var(--white); }
+#phone.dark .bottom-sheet { background: var(--white); }
+#phone.dark #bottom-nav { background: var(--white); }
+#phone.dark .radius-bar { background: var(--white); }
+#phone.dark input, #phone.dark select, #phone.dark textarea { background: #2a2a2a; color: var(--text); border-color: var(--border); }
+#phone.dark .msg-in .msg-bubble { background: #2a2a2a; color: var(--text); }
+
+/* ── HELP TYPE BUTTONS ── */
+.help-type-btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: var(--radius);
+  border: 2px solid var(--border); background: var(--white);
+  cursor: pointer; transition: all .15s;
+}
+.help-type-btn:active { transform: scale(.98); }
+.help-type-btn.selected { border-color: var(--primary); background: var(--primary-light); }
+.help-type-btn.selected div { color: var(--primary); }
+
+/* ── PRISE EN CHARGE ── */
+.taken-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--success-light); border-radius: var(--radius);
+  padding: 12px 14px; border: 1.5px solid var(--success);
+}
+.taken-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--success); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: white; flex-shrink: 0; }
+.taken-info { flex: 1; }
+.taken-info strong { display: block; font-size: 14px; color: var(--success); }
+.taken-info span { font-size: 12px; color: var(--text-muted); }
+
+/* ── HELP BAR ── */
+#help-bar { transition: background .3s; }
+
+/* ── VOICE BTN ── */
+.voice-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--primary-light); border: 2px solid var(--primary); cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .2s; }
+.voice-btn.listening { background: var(--danger); border-color: var(--danger); animation: mic-pulse 1s ease-in-out infinite; }
+@keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(198,40,40,.4)} 50%{box-shadow:0 0 0 10px rgba(198,40,40,0)} }
+</style>
+</head>
+<body>
+<div id="phone">
+
+<!-- SPLASH -->
+<div id="screen-splash" class="screen active">
+  <div class="splash-logo">🤝</div>
+  <div class="splash-name">SolidarAid</div>
+  <div class="splash-tagline">Ensemble, aidons ceux<br>qui en ont besoin</div>
+  <div class="splash-loader">
+    <div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="screen-onboarding" class="screen" style="justify-content:center;">
+  <div style="flex:1;display:flex;align-items:center;">
+    <div id="ob-slide" class="onboard-slide">
+      <div class="onboard-img">👀</div>
+      <div class="onboard-title">Vous voyez quelqu'un dans le besoin ?</div>
+      <div class="onboard-text">Signalez ce dont la personne a besoin — vêtements, nourriture, hygiène — en quelques secondes depuis la rue.</div>
+    </div>
+  </div>
+  <div class="onboard-footer">
+    <div class="onboard-dots">
+      <div class="od active" id="od0"></div><div class="od" id="od1"></div><div class="od" id="od2"></div>
+    </div>
+    <button class="btn btn-primary" onclick="nextOnboard()">Suivant →</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="goTo('screen-login')">Passer</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen" style="background:var(--white);">
+  <div style="flex:1;overflow-y:auto;padding:60px 24px 32px;">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div style="font-size:48px;margin-bottom:12px;">🤝</div>
+      <div style="font-size:26px;font-weight:800;color:var(--text);">Bon retour !</div>
+      <div style="font-size:15px;color:var(--text-muted);margin-top:6px;">Connectez-vous pour aider</div>
+    </div>
+    <div class="input-group"><label>Email</label><input type="email" placeholder="votre@email.com"></div>
+    <div class="input-group"><label>Mot de passe</label><input type="password" placeholder="••••••••"></div>
+    <div style="text-align:right;margin-bottom:20px;"><span style="color:var(--primary);font-size:14px;font-weight:600;cursor:pointer;">Mot de passe oublié ?</span></div>
+    <button class="btn btn-primary" onclick="goToApp()">Se connecter</button>
+    <div style="text-align:center;margin:20px 0;color:var(--text-muted);font-size:14px;">ou</div>
+    <button class="btn btn-secondary"><span style="font-size:20px;font-weight:700;">G</span> Continuer avec Google</button>
+    <div style="text-align:center;margin-top:28px;font-size:15px;color:var(--text-muted);">
+      Pas encore de compte ? <span style="color:var(--primary);font-weight:600;cursor:pointer;" onclick="goTo('screen-register')">S'inscrire</span>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div id="screen-register" class="screen" style="background:var(--white);">
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-login')">←</button><h1>Créer un compte</h1></div>
+  <div class="screen-body" style="padding:20px 24px 32px;">
+    <div class="input-group"><label>Prénom et nom</label><input type="text" placeholder="Marie Dupont"></div>
+    <div class="input-group"><label>Email</label><input type="email" placeholder="marie@email.com"></div>
+    <div class="input-group"><label>Téléphone (optionnel — badge Vérifié)</label><input type="tel" placeholder="+33 6 00 00 00 00"></div>
+    <div class="input-group"><label>Ville</label><input type="text" placeholder="Paris"></div>
+    <div class="input-group"><label>Mot de passe</label><input type="password" placeholder="••••••••"></div>
+    <div class="input-group"><label>Confirmer le mot de passe</label><input type="password" placeholder="••••••••"></div>
+    <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:20px;">
+      <input type="checkbox" style="margin-top:3px;width:auto;">
+      <span style="font-size:14px;color:var(--text-muted);">J'accepte les <span style="color:var(--primary);">CGU</span> et la <span style="color:var(--primary);">politique de confidentialité</span></span>
+    </div>
+    <button class="btn btn-primary" onclick="goToApp()">Créer mon compte</button>
+  </div>
+</div>
+
+<!-- HOME / FEED -->
+<div id="screen-home" class="screen">
+  <div class="topbar" style="padding:46px 16px 10px;gap:8px;">
+    <div style="flex:1;">
+      <div style="font-size:17px;font-weight:800;color:var(--text);line-height:1.2;">Signalements proches</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">Bonjour, Stéphane 👋</div>
+    </div>
+    <button class="icon-btn" onclick="toggleDark()" id="dark-btn" title="Mode nuit">🌙</button>
+    <button class="icon-btn" onclick="goTo('screen-notif')" style="position:relative;">🔔<span style="position:absolute;width:8px;height:8px;background:var(--danger);border-radius:50%;top:0;right:0;"></span></button>
+    <button class="icon-btn" onclick="openSheet('sheet-filters')">⚙️</button>
+  </div>
+
+  <!-- Chips catégorie -->
+  <div class="chips-scroll" style="padding:8px 16px 8px;background:var(--white);">
+    <div class="chip active" data-filter="all" onclick="toggleChip(this)">Tous <span class="chip-count">12</span></div>
+    <div class="chip" data-filter="food" onclick="toggleChip(this)">🍞 Nourriture <span class="chip-count">3</span></div>
+    <div class="chip" data-filter="clothing" onclick="toggleChip(this)">👕 Vêtements <span class="chip-count">3</span></div>
+    <div class="chip" data-filter="hygiene" onclick="toggleChip(this)">🧴 Hygiène <span class="chip-count">2</span></div>
+    <div class="chip" data-filter="medical" onclick="toggleChip(this)">💊 Médical <span class="chip-count">2</span></div>
+    <div class="chip" data-filter="shelter" onclick="toggleChip(this)">🏠 Abri <span class="chip-count">2</span></div>
+  </div>
+
+  <!-- Barre rayon — toujours visible, toujours accessible -->
+  <button onclick="openSheet('sheet-radius')"
+    style="display:flex;align-items:center;justify-content:space-between;
+           flex-shrink:0;width:100%;padding:8px 16px;
+           border:none;cursor:pointer;position:relative;z-index:10;
+           background:var(--primary-light);
+           border-top:1px solid rgba(232,93,4,.15);
+           border-bottom:1px solid rgba(232,93,4,.15);">
+    <span style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:15px;">📍</span>
+      <span style="font-size:13px;font-weight:600;color:var(--primary);">Rayon :</span>
+      <span style="font-size:15px;font-weight:800;color:var(--primary);" id="radius-pill-val">3 km</span>
+    </span>
+    <span style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:13px;color:var(--text-muted);" id="radius-bar-count">4 personnes dans le besoin</span>
+      <span style="font-size:13px;color:var(--primary);font-weight:700;">Modifier ›</span>
+    </span>
+  </button>
+
+  <div class="screen-body" style="padding:8px 16px 80px;">
+
+    <!-- Cartes signalements -->
+    <div style="margin-top:12px;">
+
+      <!-- FOOD 1 — Urgent / Ouvert -->
+      <div class="alert-card" data-alert-id="alert-2" data-category="food" onclick="openAlert('alert-2')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🍞</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Repas chaud — famille avec enfants</div>
+            <div style="font-size:14px;color:var(--text-muted);">Femme + 2 enfants (3 et 6 ans), place du Châtelet — n'ont pas mangé de la journée</div>
+          </div>
+          <span class="badge badge-high">🔴 Urgent</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 650 m</span><span>🚶 8 min</span><span>⏱ il y a 32 min</span>
+          <span style="color:var(--primary);font-weight:600;">💬 1 réponse</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <!-- FOOD 2 — Urgent / Ouvert -->
+      <div class="alert-card" data-alert-id="alert-8" data-category="food" onclick="openAlert('alert-8')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🍼</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Eau + lait infantile — bébé 8 mois</div>
+            <div style="font-size:14px;color:var(--text-muted);">Mère seule devant la mairie du 3e — bébé qui pleure, plus de lait depuis ce matin</div>
+          </div>
+          <span class="badge badge-high">🔴 Urgent</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 400 m</span><span>🚶 5 min</span><span>⏱ il y a 8 min</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <!-- CLOTHING 1 — Urgent / Pris par Sophie -->
+      <div class="alert-card" data-alert-id="alert-1" data-category="clothing" onclick="openAlert('alert-1')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">👕</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Manteau d'hiver + pantalon</div>
+            <div style="font-size:14px;color:var(--text-muted);">Homme ~45 ans, taille L — devant la pharmacie rue de la Paix, tremble de froid</div>
+          </div>
+          <span class="badge badge-high">🔴 Urgent</span>
+        </div>
+        <div class="card-status-banner" style="background:var(--success-light);border-radius:8px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:14px;">✋</span>
+          <span style="font-size:13px;font-weight:600;color:var(--success);">Pris en charge par Sophie L. — arrive dans ~15 min</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 320 m</span><span>🚶 4 min</span><span>⏱ il y a 18 min</span>
+          <span>👤 Signalé par Julien M.</span>
+        </div>
+      </div>
+
+      <!-- CLOTHING 2 — Urgent / Ouvert -->
+      <div class="alert-card" data-alert-id="alert-10" data-category="clothing" onclick="openAlert('alert-10')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🧥</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Manteau femme + bonnet + gants</div>
+            <div style="font-size:14px;color:var(--text-muted);">Femme ~35 ans, assise sur un banc bd Voltaire — tremble, tenue inadaptée au froid</div>
+          </div>
+          <span class="badge badge-high">🔴 Urgent</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 700 m</span><span>🚶 9 min</span><span>⏱ il y a 12 min</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <!-- MEDICAL 1 — Urgent / Ouvert -->
+      <div class="alert-card" data-alert-id="alert-12" data-category="medical" onclick="openAlert('alert-12')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🩹</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Blessure au pied — soins urgents</div>
+            <div style="font-size:14px;color:var(--text-muted);">Homme ~40 ans, pieds nus rue du Temple — plaie ouverte, impossible de marcher, besoin de pansements</div>
+          </div>
+          <span class="badge badge-high">🔴 Urgent</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 500 m</span><span>🚶 6 min</span><span>⏱ il y a 15 min</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <!-- FOOD 3 — Modéré / Ouvert -->
+      <div class="alert-card" data-alert-id="alert-7" data-category="food" onclick="openAlert('alert-7')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🥣</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Soupe chaude + pain</div>
+            <div style="font-size:14px;color:var(--text-muted);">Homme ~55 ans assis sur les marches gare Montparnasse depuis le matin — n'a rien demandé, mais n'a pas mangé</div>
+          </div>
+          <span class="badge badge-medium">🟡 Modéré</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 850 m</span><span>🚶 11 min</span><span>⏱ il y a 1h10</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <!-- CLOTHING 3 — Modéré / Sans réponse -->
+      <div class="alert-card" data-alert-id="alert-9" data-category="clothing" onclick="openAlert('alert-9')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">👟</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Chaussures + chaussettes — H. taille 43</div>
+            <div style="font-size:14px;color:var(--text-muted);">Homme ~28 ans sous le pont de l'Alma — chaussures complètement trouées, se blesse en marchant</div>
+          </div>
+          <span class="badge badge-medium">🟡 Modéré</span>
+        </div>
+        <div class="card-status-banner" style="background:var(--warning-light);border-radius:8px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:14px;">⏰</span>
+          <span style="font-size:13px;color:var(--warning);font-weight:600;">Aucune réponse depuis 2h — personne a besoin d'aide !</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 1,5 km</span><span>🚶 18 min</span><span>⏱ il y a 2h</span>
+          <span>👤 Signalé par Rémi F.</span>
+        </div>
+      </div>
+
+      <!-- HYGIENE 1 — Modéré / Sans réponse -->
+      <div class="alert-card" data-alert-id="alert-3" data-category="hygiene" onclick="openAlert('alert-3')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🧴</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Kit hygiène complet</div>
+            <div style="font-size:14px;color:var(--text-muted);">Homme ~30 ans, gare du Nord — savon, rasoir, dentifrice. Cherche du travail, tient à sa présentation</div>
+          </div>
+          <span class="badge badge-medium">🟡 Modéré</span>
+        </div>
+        <div class="card-status-banner" style="background:var(--warning-light);border-radius:8px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:14px;">⏰</span>
+          <span style="font-size:13px;color:var(--warning);font-weight:600;">Aucune réponse depuis 1h — personne a besoin d'aide !</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 1,2 km</span><span>🚶 15 min</span><span>⏱ il y a 1h05</span>
+          <span>👤 Signalé par Camille R.</span>
+        </div>
+      </div>
+
+      <!-- HYGIENE 2 — Modéré / Pris par Lucie -->
+      <div class="alert-card" data-alert-id="alert-11" data-category="hygiene" onclick="openAlert('alert-11')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🌸</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Produits hygiène féminine</div>
+            <div style="font-size:14px;color:var(--text-muted);">Femme ~25 ans, square des Batignolles — demande de façon discrète, serviettes hygiéniques + savon</div>
+          </div>
+          <span class="badge badge-medium">🟡 Modéré</span>
+        </div>
+        <div class="card-status-banner" style="background:var(--success-light);border-radius:8px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:14px;">✋</span>
+          <span style="font-size:13px;font-weight:600;color:var(--success);">Pris en charge par Lucie D. — arrive dans ~20 min</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 900 m</span><span>🚶 11 min</span><span>⏱ il y a 45 min</span>
+          <span>👤 Signalé par Nina K.</span>
+        </div>
+      </div>
+
+      <!-- SHELTER 1 — Modéré / Pris par moi -->
+      <div class="alert-card" data-alert-id="alert-4" data-category="shelter" onclick="openAlert('alert-4')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🏠</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Couverture + sac de couchage</div>
+            <div style="font-size:14px;color:var(--text-muted);">Homme seul ~60 ans, pont de Grenelle — dort à même le sol depuis plusieurs nuits</div>
+          </div>
+          <span class="badge badge-medium">🟡 Modéré</span>
+        </div>
+        <div class="card-status-banner" style="background:#E3F2FD;border-radius:8px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:14px;">✅</span>
+          <span style="font-size:13px;font-weight:600;color:var(--secondary);">Pris en charge par Stéphane B. — arrivée dans 25 min</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 1,8 km</span><span>🚶 22 min</span><span>⏱ il y a 45 min</span>
+          <span>👤 Signalé par Mohamed K.</span>
+        </div>
+      </div>
+
+      <!-- SHELTER 2 — Modéré / Ouvert -->
+      <div class="alert-card" data-alert-id="alert-13" data-category="shelter" onclick="openAlert('alert-13')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🏕️</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Hébergement d'urgence — famille</div>
+            <div style="font-size:14px;color:var(--text-muted);">Couple + enfant de 5 ans, porte de la Chapelle — à la rue depuis 2 jours, besoin d'un centre d'hébergement</div>
+          </div>
+          <span class="badge badge-medium">🟡 Modéré</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 3,2 km</span><span>🚶 38 min</span><span>⏱ il y a 1h30</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <!-- MEDICAL 2 — Urgent / Ouvert -->
+      <div class="alert-card" data-alert-id="alert-6" data-category="medical" onclick="openAlert('alert-6')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">💊</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Médicaments — douleurs importantes</div>
+            <div style="font-size:14px;color:var(--text-muted);">Homme ~50 ans, square de la République — douleurs importantes, n'a pas les moyens d'acheter des antidouleurs</div>
+          </div>
+          <span class="badge badge-high">🔴 Urgent</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 2,9 km</span><span>🚶 36 min</span><span>⏱ il y a 8 min</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <!-- SUPPORT / Résolu (hors filtre catégorie) -->
+      <div class="alert-card" data-category="support" style="opacity:.75;">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon" style="background:var(--success-light);">🤝</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Accompagnement rendez-vous médical</div>
+            <div style="font-size:14px;color:var(--text-muted);">Dame âgée ~70 ans, rue Oberkampf — ne parle pas français, rendez-vous généraliste ce matin</div>
+          </div>
+          <span class="badge badge-done">✓ Résolu</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 2,4 km</span><span>⏱ il y a 3h</span>
+          <span>💬 2 réponses</span>
+          <span style="font-size:12px;color:var(--success);font-weight:600;">Aidée par Thomas B.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MAP -->
+<div id="screen-map" class="screen" style="position:relative;overflow:hidden;">
+
+  <!-- Carte plein écran -->
+  <div id="map-leaflet" style="position:absolute;inset:0;z-index:1;"></div>
+
+  <!-- Barre supérieure : retour + recherche -->
+  <div style="position:absolute;top:48px;left:12px;right:12px;z-index:500;display:flex;gap:10px;align-items:center;">
+    <button onclick="goToApp();setNav('nav-home')"
+      style="width:44px;height:44px;border-radius:50%;border:none;background:white;
+             box-shadow:0 2px 10px rgba(0,0,0,.2);font-size:20px;cursor:pointer;
+             display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      ←
+    </button>
+    <div style="flex:1;background:white;border-radius:24px;padding:11px 16px;
+                box-shadow:0 2px 10px rgba(0,0,0,.18);display:flex;align-items:center;gap:8px;">
+      <span style="font-size:16px;">🔍</span>
+      <input type="text" placeholder="Rechercher une adresse, un quartier…"
+        style="border:none;outline:none;font-size:15px;width:100%;background:transparent;color:#212121;">
+    </div>
+  </div>
+
+  <!-- Compteur signalements (rayon actuel) -->
+  <div style="position:absolute;top:108px;left:12px;z-index:500;
+              background:var(--primary);color:white;border-radius:20px;
+              padding:6px 14px;font-size:13px;font-weight:700;
+              box-shadow:0 2px 8px rgba(232,93,4,.4);">
+    <span id="map-count">4 signalements</span> dans <span id="map-radius-lbl">3 km</span>
+  </div>
+
+  <!-- Légende -->
+  <div style="position:absolute;top:108px;right:12px;z-index:500;
+              background:white;border-radius:12px;padding:10px 14px;
+              box-shadow:0 2px 10px rgba(0,0,0,.15);font-size:12px;line-height:1.8;">
+    <div>🔴 Urgent</div>
+    <div>🟡 Modéré</div>
+    <div>🟢 Faible</div>
+  </div>
+
+  <!-- Bouton géolocalisation -->
+  <button id="map-geolocate-btn" onclick="geolocateMap()"
+    style="position:absolute;bottom:80px;right:14px;z-index:500;
+           width:52px;height:52px;border-radius:50%;border:none;
+           background:white;box-shadow:0 3px 12px rgba(0,0,0,.25);
+           font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+           transition:all .2s;">
+    📍
+  </button>
+
+  <!-- Bouton créer signalement depuis la carte -->
+  <button onclick="navHistory=[];goTo('screen-create-1')"
+    style="position:absolute;bottom:80px;left:14px;z-index:500;
+           display:flex;align-items:center;gap:8px;
+           padding:12px 18px;border-radius:28px;border:none;
+           background:var(--primary);color:white;font-size:14px;font-weight:700;
+           box-shadow:0 4px 16px rgba(232,93,4,.45);cursor:pointer;">
+    ＋ Signaler ici
+  </button>
+
+  <!-- Toast géolocalisation -->
+  <div id="geo-toast" style="display:none;position:absolute;bottom:144px;right:14px;z-index:600;
+       background:#212121;color:white;font-size:13px;padding:8px 16px;border-radius:20px;
+       white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3);">
+    Position trouvée ✓
+  </div>
+
+</div>
+
+<!-- ALERT DETAIL -->
+<div id="screen-alert-detail" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h1>Signalement</h1>
+    <button class="icon-btn" onclick="openSheet('sheet-report')">⋮</button>
+  </div>
+
+  <div class="screen-body" style="padding:16px 16px 90px;">
+    <!-- Fiche -->
+    <div class="card" id="alert-fiche">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="font-size:40px;">👕</div>
+        <div>
+          <div style="font-size:19px;font-weight:700;">Manteau + pantalon homme</div>
+          <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+            <span class="badge badge-high">🔴 Urgent</span>
+            <span class="badge badge-open">En cours</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:15px;color:var(--text-muted);line-height:1.5;margin-bottom:14px;">Homme d'environ 40 ans, assis devant la pharmacie rue de la Paix. Il fait très froid ce soir, il n'a qu'un t-shirt. Taille L approximativement.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:10px;font-size:14px;"><span>📍</span><span style="color:var(--text-muted);">Rue de la Paix, Paris 2e — 320m • 🚶 4 min à pied</span></div>
+        <div style="display:flex;gap:10px;font-size:14px;"><span>🗂</span><span style="color:var(--text-muted);">Vêtements — Taille L</span></div>
+        <div style="display:flex;gap:10px;font-size:14px;"><span>⏱</span><span style="color:var(--text-muted);">Il y a 12 minutes</span></div>
+        <div style="display:flex;gap:10px;align-items:center;font-size:14px;"><span>👤</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div class="avatar av-orange" style="width:24px;height:24px;font-size:12px;">J</div>
+            <span style="color:var(--text-muted);">Julien M. • ⭐ 4.8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation présence -->
+    <div style="background:var(--warning-light);border:1px solid var(--warning);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;display:flex;gap:10px;align-items:center;">
+      <span style="font-size:20px;">⏰</span>
+      <div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--warning);">Confirmation requise</div><div style="font-size:13px;color:var(--text-muted);">La personne est-elle encore là ?</div></div>
+      <button class="btn btn-sm" style="background:var(--warning);color:white;white-space:nowrap;">Oui ✓</button>
+    </div>
+
+    <!-- Réponses existantes -->
+    <div class="section-title">3 personnes proposent leur aide</div>
+    <div class="card" style="margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="avatar av-blue">S</div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:15px;">Sophie L. <span style="font-size:12px;color:var(--text-muted);">⭐ 4.9</span></div>
+          <div style="font-size:13px;color:var(--text-muted);">🎁 J'ai un manteau L — je peux apporter</div>
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="openSheet('sheet-chat-prompt')">Accepter</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="avatar av-green">T</div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:15px;">Thomas R.</div>
+          <div style="font-size:13px;color:var(--text-muted);">📍 Je suis déjà sur place</div>
+        </div>
+        <button class="btn btn-sm btn-outline">Accepter</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="avatar av-purple">A</div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:15px;">Amina B.</div>
+          <div style="font-size:13px;color:var(--text-muted);">🚗 Je peux livrer dans 30 min</div>
+        </div>
+        <button class="btn btn-sm btn-outline">Accepter</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">Services d'urgence</div>
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <a href="tel:115" style="flex:1;text-decoration:none;"><button class="btn btn-danger" style="font-size:14px;">📞 115</button></a>
+      <a href="tel:15" style="flex:1;text-decoration:none;"><button class="btn btn-secondary" style="font-size:14px;width:100%;">📞 15 SAMU</button></a>
+    </div>
+    <button class="btn btn-success" onclick="openSheet('sheet-resolve')">✅ Marquer comme résolu</button>
+
+    <!-- Bouton démo maquette -->
+    <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:10px;border:1px dashed var(--border);">
+      <div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;margin-bottom:8px;">🧪 Démo — simuler un état</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-sm btn-secondary" onclick="alertTakenBy='other';renderHelpBar()">Simuler : pris par Sophie</button>
+        <button class="btn btn-sm btn-secondary" onclick="alertTakenBy=null;renderHelpBar()">Réinitialiser</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barre d'action fixe en bas -->
+  <div id="help-bar" style="position:absolute;bottom:0;left:0;right:0;padding:12px 16px 20px;background:var(--white);border-top:1px solid var(--border);z-index:50;">
+    <button class="btn btn-primary" style="font-size:17px;border-radius:14px;" onclick="openSheet('sheet-help')">
+      🙋 Je peux aider !
+    </button>
+  </div>
+</div>
+
+<!-- CREATE STEP 1 -->
+<div id="screen-create-1" class="screen" style="background:var(--white);">
+  <div class="topbar"><button class="back-btn" onclick="goBack()">←</button><h1>Nouveau signalement</h1></div>
+  <div class="screen-body" style="padding:20px 16px;">
+    <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+    <div class="section-title">De quoi a-t-il besoin ?</div>
+    <div class="category-grid">
+      <div class="cat-card selected" data-cat="clothing" onclick="selectCat(this)"><div class="cat-icon">👕</div><div class="cat-label">Vêtements</div></div>
+      <div class="cat-card" data-cat="food" onclick="selectCat(this)"><div class="cat-icon">🍞</div><div class="cat-label">Nourriture / Eau</div></div>
+      <div class="cat-card" data-cat="hygiene" onclick="selectCat(this)"><div class="cat-icon">🧴</div><div class="cat-label">Hygiène</div></div>
+      <div class="cat-card" data-cat="medical" onclick="selectCat(this)"><div class="cat-icon">💊</div><div class="cat-label">Médicaments</div></div>
+      <div class="cat-card" data-cat="shelter" onclick="selectCat(this)"><div class="cat-icon">🏠</div><div class="cat-label">Abri / Hébergement</div></div>
+      <div class="cat-card" data-cat="transport" onclick="selectCat(this)"><div class="cat-icon">🚌</div><div class="cat-label">Transport</div></div>
+      <div class="cat-card" data-cat="support" onclick="selectCat(this)"><div class="cat-icon">🤝</div><div class="cat-label">Accompagnement</div></div>
+      <div class="cat-card" data-cat="other" onclick="selectCat(this)"><div class="cat-icon">❓</div><div class="cat-label">Autre</div></div>
+    </div>
+  </div>
+  <div style="padding:16px 16px 32px;background:var(--white);">
+    <button class="btn btn-primary" onclick="goTo('screen-create-2')">Suivant →</button>
+  </div>
+</div>
+
+<!-- CREATE STEP 2 -->
+<div id="screen-create-2" class="screen" style="background:var(--white);">
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-create-1')">←</button><h1>Détails du besoin</h1></div>
+  <div class="screen-body" style="padding:20px 16px;">
+    <div class="steps"><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div></div>
+    <div class="input-group" id="field-items"><label id="lbl-items">Objets spécifiques</label><input id="input-items" type="text" placeholder="ex: manteau, pantalon, chaussettes…"></div>
+    <div style="display:flex;gap:12px;">
+      <div id="field-size" class="input-group" style="flex:1;"><label>Taille / pointure</label><select><option>— Non précisé</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>38</option><option>39</option><option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option></select></div>
+      <div class="input-group" style="flex:1;"><label>Quantité</label><input type="number" value="1" min="1"></div>
+    </div>
+    <div class="input-group">
+      <label style="display:flex;justify-content:space-between;align-items:center;">
+        Description (optionnel)
+        <button class="voice-btn" id="voice-btn" onclick="toggleVoice()" title="Dicter par la voix">🎙️</button>
+      </label>
+      <textarea id="desc-textarea" placeholder="Décrivez la situation… ou appuyez sur 🎙️ pour dicter"></textarea>
+    </div>
+    <div class="input-group">
+      <label>Photo de l'objet (optionnel)</label>
+      <div style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;">
+        <div style="font-size:32px;margin-bottom:8px;">📷</div>
+        <div style="font-size:14px;color:var(--text-muted);">Appuyez pour prendre une photo</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Pas de photo de la personne — respect de sa dignité</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;background:var(--warning-light);border-radius:10px;padding:12px;">
+      <input type="checkbox" style="width:auto;"><span style="font-size:14px;">La personne est un mineur (moins de 18 ans)</span>
+    </div>
+  </div>
+  <div style="padding:16px 16px 32px;background:var(--white);">
+    <button class="btn btn-primary" onclick="goTo('screen-create-3')">Suivant →</button>
+  </div>
+</div>
+
+<!-- CREATE STEP 3 -->
+<div id="screen-create-3" class="screen" style="background:var(--white);">
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-create-2')">←</button><h1>Localisation & urgence</h1></div>
+  <div class="screen-body" style="padding:20px 16px;">
+    <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
+    <div class="section-title">Position de la personne</div>
+    <div style="background:var(--bg);border-radius:var(--radius);height:160px;overflow:hidden;margin-bottom:12px;">
+      <div id="map-mini"></div>
+    </div>
+    <button class="btn btn-outline" style="margin-bottom:16px;">📍 Utiliser ma position actuelle</button>
+    <div class="input-group"><label>Ou saisir une adresse</label><input type="text" placeholder="15 rue de la Paix, Paris…"></div>
+    <div class="divider"></div>
+    <div class="section-title">Niveau d'urgence</div>
+    <div class="urgency-row">
+      <div class="urgency-btn u-low" onclick="selectUrgency(this,'low')">🟢 Faible</div>
+      <div class="urgency-btn u-med" onclick="selectUrgency(this,'med')">🟡 Modéré</div>
+      <div class="urgency-btn u-high selected" onclick="selectUrgency(this,'high')">🔴 Urgent</div>
+    </div>
+    <div id="urgency-info" style="margin-top:16px;background:var(--danger-light);border-radius:10px;padding:12px;font-size:14px;color:var(--danger);">⚠️ Urgent — notifié immédiatement aux utilisateurs proches</div>
+  </div>
+  <div style="padding:16px 16px 32px;background:var(--white);">
+    <button class="btn btn-primary" onclick="goTo('screen-create-success')">Publier le signalement 🚀</button>
+  </div>
+</div>
+
+<!-- CREATE SUCCESS -->
+<div id="screen-create-success" class="screen" style="background:var(--white);">
+  <div class="success-content">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">Signalement publié !</div>
+    <div class="success-sub">Votre signalement a été envoyé à <strong>12 personnes</strong> dans un rayon de 3km.<br><br>Vous serez notifié dès qu'une réponse arrive.</div>
+    <div style="background:var(--primary-light);border-radius:var(--radius);padding:14px;width:100%;text-align:left;margin-bottom:24px;">
+      <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px;">Rappel — Dignité de la personne</div>
+      <div style="font-size:13px;color:var(--text-muted);">Merci de ne pas photographier la personne dans le besoin.</div>
+    </div>
+    <button class="btn btn-primary" onclick="goToApp()" style="width:100%;">Retour à l'accueil</button>
+  </div>
+</div>
+
+<!-- MESSAGES LIST -->
+<div id="screen-messages" class="screen">
+  <div class="topbar"><h1>💬 Messages</h1></div>
+  <div class="screen-body">
+    <div style="padding:12px 16px;"><input type="text" placeholder="🔍 Rechercher…" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:24px;font-size:15px;outline:none;background:var(--white);"></div>
+    <div onclick="goTo('screen-chat')" style="display:flex;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);cursor:pointer;">
+      <div style="position:relative;">
+        <div class="avatar av-blue">S</div>
+        <div style="position:absolute;bottom:0;right:0;width:12px;height:12px;background:#4CAF50;border-radius:50%;border:2px solid white;"></div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-weight:700;font-size:15px;">Sophie L.</span><span style="font-size:12px;color:var(--text-muted);">14:32</span></div>
+        <div style="font-size:14px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Je peux apporter le manteau dans 20 minutes</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Re: Manteau — Rue de la Paix</div>
+      </div>
+      <div style="width:20px;height:20px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;flex-shrink:0;">2</div>
+    </div>
+    <div onclick="goTo('screen-chat')" style="display:flex;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);cursor:pointer;">
+      <div class="avatar av-green">T</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-weight:700;font-size:15px;">Thomas R.</span><span style="font-size:12px;color:var(--text-muted);">Hier</span></div>
+        <div style="font-size:14px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Parfait, merci beaucoup ! 🙏</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Re: Kit hygiène</div>
+      </div>
+    </div>
+    <div style="padding:32px;text-align:center;color:var(--text-muted);font-size:14px;">Vos conversations apparaissent ici</div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="screen-chat" class="screen">
+  <div class="topbar" style="padding-bottom:10px;">
+    <button class="back-btn" onclick="goTo('screen-messages')">←</button>
+    <div style="display:flex;align-items:center;gap:10px;flex:1;">
+      <div class="avatar av-blue" style="width:36px;height:36px;font-size:15px;">S</div>
+      <div><div style="font-size:16px;font-weight:700;">Sophie L.</div><div style="font-size:12px;color:var(--success);">● En ligne</div></div>
+    </div>
+    <button class="icon-btn">ℹ️</button>
+  </div>
+  <div style="background:var(--primary-light);padding:10px 16px;font-size:13px;color:var(--primary);flex-shrink:0;">📍 Manteau + pantalon homme — Rue de la Paix</div>
+  <div class="screen-body">
+    <div class="chat-wrap" style="padding-bottom:20px;">
+      <div class="msg msg-in"><div class="msg-bubble">Bonjour ! J'ai vu votre signalement. J'ai un manteau taille L disponible.</div><div class="msg-time">14:28</div></div>
+      <div class="msg msg-out"><div class="msg-bubble">Super ! C'est exactement ce dont il a besoin. Vous pouvez apporter quand ?</div><div class="msg-time">14:29</div></div>
+      <div class="msg msg-in"><div class="msg-bubble">Je peux être là dans 20 minutes. On se retrouve où ?</div><div class="msg-time">14:30</div></div>
+      <div class="msg msg-out"><div class="msg-bubble">Il est devant la pharmacie rue de la Paix. Je vous y attendrai.</div><div class="msg-time">14:31</div></div>
+      <div class="msg msg-in"><div class="msg-bubble">Je peux apporter le manteau dans 20 minutes 👍</div><div class="msg-time">14:32</div></div>
+    </div>
+  </div>
+  <div class="chat-input-bar">
+    <button style="font-size:22px;background:none;border:none;cursor:pointer;">📷</button>
+    <button style="font-size:22px;background:none;border:none;cursor:pointer;">📍</button>
+    <input type="text" placeholder="Votre message…">
+    <button class="chat-send-btn">➤</button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="screen-profile" class="screen">
+  <div class="profile-header">
+    <div class="profile-avatar">S</div>
+    <div class="profile-name">Stéphane B.</div>
+    <div class="profile-sub">Paris • ✔️ Compte vérifié • ⭐ 4.8/5</div>
+    <div style="margin-top:10px;font-size:13px;opacity:.7;">Membre depuis avril 2026</div>
+  </div>
+  <div class="screen-body" style="padding-top:0;">
+    <div class="profile-stats">
+      <div class="profile-stat"><div class="stat-val">12</div><div class="stat-lbl">Signalements</div></div>
+      <div class="profile-stat"><div class="stat-val">8</div><div class="stat-lbl">Dons</div></div>
+      <div class="profile-stat"><div class="stat-val">23</div><div class="stat-lbl">Aides</div></div>
+    </div>
+    <div style="padding:16px;">
+      <div class="section-title" style="margin-top:8px;">Mes signalements récents</div>
+      <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">👕</span><div><div style="font-weight:600;font-size:15px;">Manteau homme</div><div style="font-size:13px;color:var(--text-muted);">Il y a 12 min</div></div></div><span class="badge badge-open">En cours</span></div></div>
+      <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">🍞</span><div><div style="font-weight:600;font-size:15px;">Nourriture famille</div><div style="font-size:13px;color:var(--text-muted);">Hier</div></div></div><span class="badge badge-done">Résolu ✓</span></div></div>
+      <div class="section-title" style="margin-top:8px;">Actions</div>
+      <div class="settings-item" onclick="goTo('screen-donate-form')"><span class="settings-item-icon">🎁</span><div class="settings-item-text"><strong>Proposer un don</strong><span>Publier un objet disponible</span></div><span class="settings-arrow">›</span></div>
+      <div class="settings-item" onclick="goTo('screen-emergency')"><span class="settings-item-icon">🆘</span><div class="settings-item-text"><strong>Services d'urgence</strong><span>115, 119, ressources locales</span></div><span class="settings-arrow">›</span></div>
+      <div class="settings-item" onclick="goTo('screen-settings')"><span class="settings-item-icon">⚙️</span><div class="settings-item-text"><strong>Paramètres</strong><span>Compte, notifications, accessibilité</span></div><span class="settings-arrow">›</span></div>
+      <div class="settings-item" onclick="goTo('screen-login')"><span class="settings-item-icon">🚪</span><div class="settings-item-text"><strong style="color:var(--danger);">Se déconnecter</strong></div><span class="settings-arrow">›</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DONATE FORM -->
+<div id="screen-donate-form" class="screen" style="background:var(--white);">
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-profile')">←</button><h1>Proposer un don</h1></div>
+  <div class="screen-body" style="padding:20px 16px;">
+    <div class="donate-card"><h3>🎁 Vous avez quelque chose à donner ?</h3><p>Publiez votre don. Si quelqu'un en a besoin dans votre zone, on vous contacte automatiquement.</p></div>
+    <div class="input-group"><label>Catégorie</label><select><option>Choisir…</option><option selected>Vêtements</option><option>Nourriture</option><option>Hygiène</option><option>Médicaments</option><option>Autre</option></select></div>
+    <div class="input-group"><label>Description</label><input type="text" placeholder="Manteau d'hiver, taille L, état neuf…" value="Manteau d'hiver, taille L"></div>
+    <div style="display:flex;gap:12px;">
+      <div class="input-group" style="flex:1;"><label>Taille</label><select><option>L</option></select></div>
+      <div class="input-group" style="flex:1;"><label>État</label><select><option>Bon état</option><option>Neuf</option><option>Usagé</option></select></div>
+    </div>
+    <div class="input-group"><label>Mode de remise</label><select><option>Je peux l'apporter</option><option>À venir chercher</option><option>Les deux</option></select></div>
+    <div class="input-group">
+      <label>Photo (recommandé)</label>
+      <div style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;"><div style="font-size:32px;margin-bottom:6px;">📷</div><div style="font-size:14px;color:var(--text-muted);">Ajouter une photo</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="goTo('screen-home')">Publier mon don ✓</button>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="screen-notif" class="screen">
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-home')">←</button><h1>Notifications</h1><button class="icon-btn" style="font-size:13px;color:var(--primary);width:auto;">Tout lire</button></div>
+  <div class="screen-body">
+    <!-- Notif signalant : aide remise, confirmation demandée -->
+    <div class="notif-item unread" onclick="goTo('screen-alert-detail');setNav('nav-home')">
+      <div class="notif-dot"></div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:600;">📦 Sophie L. dit avoir remis l'aide</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:3px;">Manteau + pantalon — Rue de la Paix. Pouvez-vous confirmer ?</div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn btn-sm btn-success" onclick="event.stopPropagation();this.closest('.notif-item').style.opacity='.6';this.closest('.notif-item').querySelector('.notif-dot').className='notif-dot read';">✅ Confirmer</button>
+          <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();this.closest('.notif-item').style.opacity='.6';">🔄 Rouvrir</button>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">Il y a 5 min · Expiration automatique dans 23h55</div>
+      </div>
+    </div>
+    <div class="notif-item unread"><div class="notif-dot"></div><div><div style="font-size:14px;font-weight:600;">Sophie L. a répondu à votre signalement</div><div style="font-size:13px;color:var(--text-muted);margin-top:3px;">Elle a un manteau L et peut l'apporter</div><div style="font-size:12px;color:var(--text-muted);margin-top:5px;">Il y a 8 min</div></div></div>
+    <div class="notif-item unread"><div class="notif-dot"></div><div><div style="font-size:14px;font-weight:600;">🌨️ Alerte grand froid</div><div style="font-size:13px;color:var(--text-muted);margin-top:3px;">Il fait 2°C à Paris. Les besoins d'abri sont prioritaires.</div><div style="font-size:12px;color:var(--text-muted);margin-top:5px;">Il y a 1h</div></div></div>
+    <div class="notif-item"><div class="notif-dot read"></div><div><div style="font-size:14px;font-weight:600;">Votre signalement expire bientôt</div><div style="font-size:13px;color:var(--text-muted);margin-top:3px;">Confirmez la présence ou clôturez</div><div style="font-size:12px;color:var(--text-muted);margin-top:5px;">Il y a 4h</div></div></div>
+    <div class="notif-item"><div class="notif-dot read"></div><div><div style="font-size:14px;font-weight:600;">Thomas R. a confirmé la remise</div><div style="font-size:13px;color:var(--text-muted);margin-top:3px;">Le kit hygiène a été remis — merci 🙏</div><div style="font-size:12px;color:var(--text-muted);margin-top:5px;">Hier 16:45</div></div></div>
+  </div>
+</div>
+
+<!-- EMERGENCY -->
+<div id="screen-emergency" class="screen">
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-profile')">←</button><h1>🆘 Urgences</h1></div>
+  <div class="screen-body" style="padding:16px;">
+    <div class="section-title">Numéros d'urgence</div>
+    <a href="tel:115" style="text-decoration:none;"><button class="emergency-btn" style="background:#C62828;color:white;"><span class="em-num">115</span><div class="em-info"><span class="em-title">SAMU Social</span><span class="em-sub">Sans-abri — Gratuit 24h/24</span></div><span style="margin-left:auto;font-size:22px;">📞</span></button></a>
+    <a href="tel:15" style="text-decoration:none;"><button class="emergency-btn" style="background:#D32F2F;color:white;"><span class="em-num">15</span><div class="em-info"><span class="em-title">SAMU — Urgence médicale</span><span class="em-sub">Danger vital immédiat</span></div><span style="margin-left:auto;font-size:22px;">📞</span></button></a>
+    <a href="tel:119" style="text-decoration:none;"><button class="emergency-btn" style="background:#1565C0;color:white;"><span class="em-num">119</span><div class="em-info"><span class="em-title">Enfance en danger</span><span class="em-sub">Mineur — Gratuit 24h/24</span></div><span style="margin-left:auto;font-size:22px;">📞</span></button></a>
+    <a href="tel:18" style="text-decoration:none;"><button class="emergency-btn" style="background:#E65100;color:white;"><span class="em-num">18</span><div class="em-info"><span class="em-title">Pompiers</span><span class="em-sub">Secours et sauvetage</span></div><span style="margin-left:auto;font-size:22px;">📞</span></button></a>
+    <div class="divider"></div>
+    <div class="section-title">Ressources locales — Paris</div>
+    <div class="card"><div style="font-weight:700;font-size:15px;margin-bottom:6px;">🏠 Hébergement d'urgence</div><div style="font-size:14px;color:var(--text-muted);">12 rue du Faubourg Saint-Antoine — 0.8km</div><div style="font-size:14px;color:var(--text-muted);">Ouvert 24h/24 — 80 places</div></div>
+    <div class="card"><div style="font-weight:700;font-size:15px;margin-bottom:6px;">🍞 Banque alimentaire</div><div style="font-size:14px;color:var(--text-muted);">Lun/Mer/Ven 11h-13h — 45 boulevard de la Bastille</div></div>
+    <div class="card"><div style="font-weight:700;font-size:15px;margin-bottom:6px;">👕 Vestiaire solidaire</div><div style="font-size:14px;color:var(--text-muted);">Mar/Jeu/Sam 9h-12h — 8 rue Titon</div></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="screen-settings" class="screen">
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-profile')">←</button><h1>Paramètres</h1></div>
+  <div class="screen-body">
+    <div style="padding:12px 16px;font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Mon compte</div>
+    <div class="settings-item"><span class="settings-item-icon">👤</span><div class="settings-item-text"><strong>Modifier le profil</strong><span>Nom, photo, ville</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item"><span class="settings-item-icon">📍</span><div class="settings-item-text"><strong>Zone d'action</strong><span>5km autour de moi</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item"><span class="settings-item-icon">🔐</span><div class="settings-item-text"><strong>Sécurité</strong><span>Mot de passe, téléphone vérifié</span></div><span class="settings-arrow">›</span></div>
+    <div style="padding:12px 16px;font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:8px;">Notifications</div>
+    <div class="settings-item"><span class="settings-item-icon">🔔</span><div class="settings-item-text"><strong>Nouveaux signalements proches</strong></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="settings-item"><span class="settings-item-icon">💬</span><div class="settings-item-text"><strong>Réponses à mes signalements</strong></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="settings-item"><span class="settings-item-icon">🌨️</span><div class="settings-item-text"><strong>Alerte grand froid</strong></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="settings-item"><span class="settings-item-icon">📧</span><div class="settings-item-text"><strong>Notifications email</strong></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    <div style="padding:12px 16px;font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:8px;">Accessibilité</div>
+    <div class="settings-item"><span class="settings-item-icon">🔤</span><div class="settings-item-text"><strong>Grande police</strong></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    <div class="settings-item"><span class="settings-item-icon">🌍</span><div class="settings-item-text"><strong>Langue</strong><span>Français</span></div><span class="settings-arrow">›</span></div>
+    <div style="padding:12px 16px;font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:8px;">Légal</div>
+    <div class="settings-item"><span class="settings-item-icon">📄</span><div class="settings-item-text"><strong>CGU & Confidentialité</strong></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item"><span class="settings-item-icon">🗑</span><div class="settings-item-text"><strong style="color:var(--danger);">Supprimer mon compte</strong><span>Efface toutes vos données (RGPD)</span></div><span class="settings-arrow" style="color:var(--danger);">›</span></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav id="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="goToApp()"><span class="nav-icon">🏠</span><span class="nav-label">Accueil</span></div>
+  <div class="nav-item" id="nav-map" onclick="goToMap()"><span class="nav-icon">🗺</span><span class="nav-label">Carte</span></div>
+  <button class="nav-fab" onclick="navHistory=[];goTo('screen-create-1')">＋</button>
+  <div class="nav-item" id="nav-msg" onclick="goTo('screen-messages');setNav('nav-msg')"><span class="nav-icon">💬</span><span class="nav-label">Messages</span></div>
+  <div class="nav-item" id="nav-profile" onclick="goTo('screen-profile');setNav('nav-profile')"><span class="nav-icon">👤</span><span class="nav-label">Profil</span></div>
+</nav>
+
+<!-- SHEETS -->
+<!-- SHEET — Rayon de recherche -->
+<div id="sheet-overlay-radius" class="sheet-overlay" onclick="closeSheet('sheet-radius')">
+  <div id="sheet-radius" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div style="font-size:17px;font-weight:800;">📍 Rayon de recherche</div>
+      <span style="font-size:26px;font-weight:800;color:var(--primary);" id="sheet-radius-display">3 km</span>
+    </div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px)">Glissez pour ajuster la zone de recherche autour de vous</div>
+    <input type="range" class="radius-slider" id="radius-slider" min="0" max="4" value="2" step="1" oninput="updateRadius(this.value)" style="margin-bottom:6px;">
+    <div class="radius-ticks"><span>500m</span><span>1 km</span><span>3 km</span><span>5 km</span><span>10 km</span></div>
+    <div class="radius-count" style="margin-top:14px;">
+      <div>
+        <div class="radius-count-text" id="radius-count-text">4 personnes dans le besoin</div>
+        <div class="radius-count-sub" id="radius-count-sub">dans un rayon de 3 km autour de vous</div>
+      </div>
+      <span style="font-size:22px;">👥</span>
+    </div>
+    <button id="home-geolocate-btn" onclick="geolocateHome()"
+      style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+             margin-top:14px;padding:12px;border-radius:12px;
+             border:1.5px solid var(--primary);background:var(--primary-light);
+             color:var(--primary);font-size:14px;font-weight:600;cursor:pointer;">
+      📍 Utiliser ma position actuelle
+    </button>
+    <button class="btn btn-primary" style="margin-top:10px;" onclick="closeSheet('sheet-radius')">Appliquer</button>
+  </div>
+</div>
+
+<div id="sheet-overlay-filters" class="sheet-overlay" onclick="closeSheet('sheet-filters')">
+  <div id="sheet-filters" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:16px;">Filtres</div>
+    <div class="input-group"><label>Distance maximum</label><select><option>1km</option><option selected>5km</option><option>10km</option><option>20km</option></select></div>
+    <div class="input-group"><label>Urgence</label><div class="urgency-row"><div class="urgency-btn u-low selected" onclick="this.classList.toggle('selected')">🟢 Faible</div><div class="urgency-btn u-med selected" onclick="this.classList.toggle('selected')">🟡 Modéré</div><div class="urgency-btn u-high selected" onclick="this.classList.toggle('selected')">🔴 Urgent</div></div></div>
+    <div class="input-group"><label>Statut</label><select><option>Tous</option><option>Ouvert</option><option>En cours</option><option>Résolu</option></select></div>
+    <button class="btn btn-primary" style="margin-top:8px;" onclick="closeSheet('sheet-filters')">Appliquer</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-filters')">Réinitialiser</button>
+  </div>
+</div>
+
+<div id="sheet-overlay-resolve" class="sheet-overlay" onclick="closeSheet('sheet-resolve')">
+  <div id="sheet-resolve" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="text-align:center;font-size:40px;margin-bottom:10px;">✅</div>
+    <div style="font-size:18px;font-weight:700;text-align:center;margin-bottom:6px;">Marquer comme résolu</div>
+    <div style="font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:20px;">L'aide a bien été apportée ?</div>
+    <div class="input-group"><label>Commentaire (optionnel)</label><textarea placeholder="Sophie a apporté le manteau…"></textarea></div>
+    <button class="btn btn-success" onclick="closeSheet('sheet-resolve');goTo('screen-home')">Confirmer la résolution</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-resolve')">Annuler</button>
+  </div>
+</div>
+
+<div id="sheet-overlay-report" class="sheet-overlay" onclick="closeSheet('sheet-report')">
+  <div id="sheet-report" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:16px;">Options</div>
+    <div style="padding:14px;cursor:pointer;border-radius:10px;font-size:16px;" onclick="closeSheet('sheet-report')">📤 Partager ce signalement</div>
+    <div style="padding:14px;cursor:pointer;border-radius:10px;font-size:16px;" onclick="closeSheet('sheet-report')">📋 Copier le lien</div>
+    <div style="padding:14px;cursor:pointer;border-radius:10px;font-size:16px;color:var(--danger);" onclick="closeSheet('sheet-report')">🚩 Signaler un contenu abusif</div>
+  </div>
+</div>
+
+<div id="sheet-overlay-chat-prompt" class="sheet-overlay" onclick="closeSheet('sheet-chat-prompt')">
+  <div id="sheet-chat-prompt" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
+      <div class="avatar av-blue">S</div>
+      <div><div style="font-size:17px;font-weight:700;">Réponse acceptée — Sophie L.</div><div style="font-size:13px;color:var(--text-muted);">⭐ 4.9 • Compte vérifié</div></div>
+    </div>
+    <div style="background:var(--success-light);border-radius:var(--radius);padding:12px;margin-bottom:16px;font-size:14px;color:var(--success);">✅ Sophie a été notifiée que vous avez accepté son aide</div>
+    <button class="btn btn-primary" onclick="closeSheet('sheet-chat-prompt');goTo('screen-chat')">💬 Ouvrir la conversation</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-chat-prompt')">Plus tard</button>
+  </div>
+</div>
+
+<!-- SHEET — Backup (déjà pris en charge) -->
+<div id="sheet-overlay-help-backup" class="sheet-overlay" onclick="closeSheet('sheet-help-backup')">
+  <div id="sheet-help-backup" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:36px;margin-bottom:8px;">🔁</div>
+      <div style="font-size:17px;font-weight:800;">Proposer en backup</div>
+      <div style="font-size:14px;color:var(--text-muted);margin-top:4px;">Sophie L. a déjà pris en charge ce besoin.<br>Si elle ne peut finalement pas y aller, vous serez contacté.</div>
+    </div>
+    <div style="background:var(--warning-light);border-radius:10px;padding:12px;margin-bottom:16px;font-size:13px;color:var(--warning);">
+      ⚠️ Vous ne serez activé qu'en cas de désistement de Sophie. <strong>N'intervenez pas en parallèle.</strong>
+    </div>
+    <div class="input-group" style="margin-bottom:14px;">
+      <label>Votre message</label>
+      <textarea placeholder="ex: Je peux prendre le relais si besoin, j'ai aussi un manteau L…" style="height:72px;"></textarea>
+    </div>
+    <button class="btn btn-outline" onclick="closeSheet('sheet-help-backup')">✋ Je me propose en backup</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-help-backup')">Annuler</button>
+  </div>
+</div>
+
+<!-- SHEET — Confirmation remise (GPS) -->
+<div id="sheet-overlay-deliver" class="sheet-overlay" onclick="closeSheet('sheet-deliver')">
+  <div id="sheet-deliver" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:40px;margin-bottom:8px;">📦</div>
+      <div style="font-size:19px;font-weight:800;">J'ai remis l'aide</div>
+      <div style="font-size:14px;color:var(--text-muted);margin-top:4px;">Confirmez que vous avez bien apporté l'aide à la personne</div>
+    </div>
+
+    <!-- Vérification GPS -->
+    <div id="deliver-gps-check" style="background:var(--primary-light);border-radius:var(--radius);padding:14px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span id="deliver-gps-icon" style="font-size:22px;">📍</span>
+        <div style="flex:1;">
+          <div id="deliver-gps-title" style="font-weight:700;font-size:14px;color:var(--primary);">Vérification de votre position</div>
+          <div id="deliver-gps-sub" style="font-size:13px;color:var(--text-muted);">Pour confirmer la remise, vous devez être à proximité du lieu signalé</div>
+        </div>
+        <button onclick="simulateGpsCheck()" id="deliver-gps-btn"
+          style="padding:8px 14px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">
+          Vérifier
+        </button>
+      </div>
+    </div>
+
+    <!-- Contexte — bénéficiaire sans téléphone -->
+    <div style="background:var(--warning-light);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
+      <span style="font-size:18px;flex-shrink:0;">💡</span>
+      <div style="font-size:13px;color:var(--warning);line-height:1.5;">
+        <strong>La personne n'a peut-être pas de téléphone.</strong><br>
+        C'est pourquoi votre confirmation GPS suffit. Le signalant pourra valider de son côté sous 24h.
+      </div>
+    </div>
+
+    <!-- Note optionnelle -->
+    <div class="input-group" style="margin-bottom:12px;">
+      <label>Note (optionnelle)</label>
+      <textarea placeholder="ex: J'ai remis le manteau et le pantalon. Il semblait soulagé." style="height:72px;"></textarea>
+    </div>
+
+    <!-- Photo optionnelle (pas de photo de la personne) -->
+    <div style="border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;margin-bottom:16px;">
+      <span style="font-size:24px;">📷</span>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Photo de l'objet remis (optionnel)<br><strong style="color:var(--danger-light);color:var(--danger);">Pas de photo de la personne</strong></div>
+    </div>
+
+    <button class="btn btn-success" id="deliver-confirm-btn" onclick="confirmDelivery()" disabled style="font-size:16px;">
+      ✅ Confirmer la remise
+    </button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-deliver')">Annuler</button>
+  </div>
+</div>
+
+<!-- SHEET — Prise en charge -->
+<div id="sheet-overlay-help" class="sheet-overlay" onclick="closeSheet('sheet-help')">
+  <div id="sheet-help" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+
+    <!-- Titre -->
+    <div style="margin-bottom:16px;" id="sheet-help-header">
+      <div style="font-size:19px;font-weight:800;margin-bottom:4px;">🙋 Prendre en charge ce besoin</div>
+      <div style="font-size:14px;color:var(--text-muted);" id="sheet-help-subtitle">👕 Manteau + pantalon homme — Rue de la Paix</div>
+    </div>
+
+    <!-- Explication système -->
+    <div style="background:var(--primary-light);border-radius:10px;padding:12px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
+      <span style="font-size:18px;">ℹ️</span>
+      <p style="font-size:13px;color:var(--primary);line-height:1.5;">En prenant en charge ce signalement, vous vous engagez à apporter l'aide. <strong>Les autres utilisateurs verront que c'est déjà géré</strong> et n'interviendront pas en double.</p>
+    </div>
+
+    <!-- Comment -->
+    <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Comment allez-vous aider ?</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <div class="help-type-btn" data-type="give" onclick="selectHelpType(this)">
+        <span style="font-size:22px;">🎁</span>
+        <div style="flex:1;"><div style="font-weight:700;font-size:14px;">J'ai l'objet, je l'apporte</div><div style="font-size:12px;color:var(--text-muted);">Je me déplace avec ce dont il a besoin</div></div>
+      </div>
+      <div class="help-type-btn" data-type="onsite" onclick="selectHelpType(this)">
+        <span style="font-size:22px;">📍</span>
+        <div style="flex:1;"><div style="font-weight:700;font-size:14px;">Je suis déjà sur place</div><div style="font-size:12px;color:var(--text-muted);">Je peux agir maintenant</div></div>
+      </div>
+      <div class="help-type-btn" data-type="buy" onclick="selectHelpType(this)">
+        <span style="font-size:22px;">🛒</span>
+        <div style="flex:1;"><div style="font-weight:700;font-size:14px;">Je vais acheter / préparer ce qu'il faut</div><div style="font-size:12px;color:var(--text-muted);">Je m'en procure et l'apporte</div></div>
+      </div>
+      <div class="help-type-btn" data-type="assoc" onclick="selectHelpType(this)">
+        <span style="font-size:22px;">🤝</span>
+        <div style="flex:1;"><div style="font-weight:700;font-size:14px;">Je contacte une association</div><div style="font-size:12px;color:var(--text-muted);">Je transmets à une structure partenaire</div></div>
+      </div>
+    </div>
+
+    <!-- Temps estimé -->
+    <div class="input-group" style="margin-bottom:12px;">
+      <label>Heure d'arrivée estimée</label>
+      <select id="help-eta">
+        <option>— Je ne sais pas encore</option>
+        <option>Dans moins de 15 minutes</option>
+        <option selected>Dans 20 à 30 minutes</option>
+        <option>Dans 1 heure</option>
+        <option>Ce soir</option>
+        <option>Demain matin</option>
+      </select>
+    </div>
+
+    <!-- Message -->
+    <div class="input-group" style="margin-bottom:16px;">
+      <label>Message pour le signalant (optionnel)</label>
+      <textarea id="help-message" placeholder="ex: J'ai un manteau L et un pantalon 40, j'arrive dans 20 min depuis le métro Opéra…" style="height:72px;"></textarea>
+    </div>
+
+    <button class="btn btn-primary" id="help-submit-btn" onclick="submitHelp()" disabled style="font-size:16px;">
+      ✅ Je prends en charge ce besoin
+    </button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-help')">Annuler</button>
+  </div>
+</div>
+
+</div><!-- /phone -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+let navHistory = [];
+let mapInit = false;
+let mapMiniInit = false;
+let obStep = 0;
+
+const obSlides = [
+  { icon:'👀', title:"Vous voyez quelqu'un dans le besoin ?", text:"Signalez ce dont la personne a besoin — vêtements, nourriture, hygiène — en quelques secondes depuis la rue." },
+  { icon:'🤝', title:"La communauté répond", text:"Des voisins solidaires voient votre signalement et proposent d'apporter l'aide ou de livrer directement sur place." },
+  { icon:'✅', title:"Ensemble, on change les choses", text:"Suivez l'évolution, confirmez la remise, et construisez un réseau de solidarité de proximité." }
+];
+
+function closeAllSheets() {
+  document.querySelectorAll('.sheet-overlay.open').forEach(o => {
+    const id = o.id.replace('sheet-overlay-', '');
+    o.classList.remove('open');
+    const s = document.getElementById(id);
+    if (s) s.classList.remove('open');
+  });
+}
+
+function goTo(id) {
+  closeAllSheets();
+  const prev = document.querySelector('.screen.active');
+  if (prev) { prev.classList.remove('active'); navHistory.push(prev.id); }
+  const next = document.getElementById(id);
+  if (next) next.classList.add('active');
+  const noNavScreens = [
+    'screen-splash','screen-onboarding','screen-login','screen-register',
+    'screen-create-1','screen-create-2','screen-create-3','screen-create-success',
+    'screen-chat'
+  ];
+  document.getElementById('bottom-nav').classList.toggle('visible', !noNavScreens.includes(id));
+  if (id === 'screen-map') initMap();
+  if (id === 'screen-create-3') initMapMini();
+  if (id === 'screen-alert-detail') resetHelpBar();
+}
+
+function goBack() { if (navHistory.length) goTo(navHistory.pop()); }
+
+function goToApp() { navHistory = []; goTo('screen-home'); setNav('nav-home'); }
+function goToMap() { goTo('screen-map'); setNav('nav-map'); }
+
+function setNav(activeId) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById(activeId);
+  if (el) el.classList.add('active');
+}
+
+function nextOnboard() {
+  obStep++;
+  if (obStep >= obSlides.length) { goTo('screen-login'); return; }
+  const s = obSlides[obStep];
+  document.querySelector('#ob-slide .onboard-img').textContent = s.icon;
+  document.querySelector('#ob-slide .onboard-title').textContent = s.title;
+  document.querySelector('#ob-slide .onboard-text').textContent = s.text;
+  for (let i = 0; i < 3; i++) document.getElementById('od'+i).classList.toggle('active', i === obStep);
+}
+
+function _overlayId(id) {
+  /* 'sheet-help' → 'sheet-overlay-help'  (évite le doublon sheet-overlay-sheet-X) */
+  const key = id.startsWith('sheet-') ? id.slice(6) : id;
+  return 'sheet-overlay-' + key;
+}
+function openSheet(id) {
+  const overlay = document.getElementById(_overlayId(id));
+  const sheet   = document.getElementById(id);
+  if (!overlay || !sheet) { console.warn('openSheet: not found →', id, _overlayId(id)); return; }
+  overlay.classList.add('open');
+  setTimeout(() => sheet.classList.add('open'), 10);
+  if (id === 'sheet-help' && currentAlertId && alertsData[currentAlertId]) {
+    const a = alertsData[currentAlertId];
+    const sub = document.getElementById('sheet-help-subtitle');
+    if (sub) sub.textContent = `${a.icon} ${a.title} — ${a.location}`;
+  }
+}
+function closeSheet(id) {
+  const sheet   = document.getElementById(id);
+  const overlay = document.getElementById(_overlayId(id));
+  if (sheet)   sheet.classList.remove('open');
+  if (overlay) setTimeout(() => overlay.classList.remove('open'), 300);
+}
+
+function toggleChip(el) {
+  document.querySelectorAll('.chips-scroll .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const filter = el.dataset.filter || 'all';
+  document.querySelectorAll('#screen-home .alert-card').forEach(card => {
+    const match = filter === 'all' || card.dataset.category === filter;
+    card.classList.toggle('filtered-out', !match);
+  });
+}
+
+function updateChipCounts() {
+  document.querySelectorAll('.chips-scroll .chip[data-filter]').forEach(chip => {
+    const filter = chip.dataset.filter;
+    const total = filter === 'all'
+      ? document.querySelectorAll('#screen-home .alert-card[data-alert-id]').length
+      : document.querySelectorAll(`#screen-home .alert-card[data-category="${filter}"]`).length;
+    const badge = chip.querySelector('.chip-count');
+    if (badge) badge.textContent = total;
+  });
+}
+
+const catConfig = {
+  clothing: {
+    label: 'Vêtements recherchés', showSize: true, useSelect: false,
+    placeholder: 'ex: manteau, pantalon, chaussettes, ceinture…'
+  },
+  food: {
+    label: 'Aliments / boissons', showSize: false, useSelect: true,
+    options: [
+      '— Choisir…',
+      'Repas chaud complet',
+      'Sandwich / casse-croûte',
+      'Conserves / nourriture longue durée',
+      'Eau potable',
+      'Lait infantile / nourriture bébé',
+      'Café / boisson chaude',
+      'Panier alimentaire varié',
+      'Autre aliment',
+    ]
+  },
+  hygiene: {
+    label: 'Articles d\'hygiène', showSize: false, useSelect: true,
+    options: [
+      '— Choisir…',
+      'Savon / gel douche',
+      'Shampooing',
+      'Dentifrice + brosse à dents',
+      'Rasoir / mousse à raser',
+      'Déodorant',
+      'Serviettes hygiéniques',
+      'Couches bébé',
+      'Papier toilette',
+      'Kit hygiène complet',
+      'Autre article d\'hygiène',
+    ]
+  },
+  medical: {
+    label: 'Médicaments / soins', showSize: false, useSelect: true,
+    options: [
+      '— Choisir…',
+      'Antidouleur (doliprane, ibuprofène…)',
+      'Pansements / kit de premiers secours',
+      'Crème antiseptique',
+      'Médicament contre la toux / grippe',
+      'Ordonnance à récupérer en pharmacie',
+      'Lunettes de vue / lentilles',
+      'Autre médicament',
+    ]
+  },
+  shelter: {
+    label: 'Besoin d\'abri', showSize: false, useSelect: true,
+    options: [
+      '— Choisir…',
+      'Place en centre d\'hébergement d\'urgence',
+      'Couverture / sac de couchage',
+      'Tente / abri de fortune',
+      'Hébergement chez un particulier (court terme)',
+      'Accès à un point chaud / réchauffement',
+      'Autre besoin d\'abri',
+    ]
+  },
+  transport: {
+    label: 'Déplacement nécessaire', showSize: false, useSelect: true,
+    options: [
+      '— Choisir…',
+      'Ticket de métro / bus',
+      'Trajet vers hôpital / urgences',
+      'Trajet vers centre d\'hébergement',
+      'Trajet vers administration (préfecture, CAF…)',
+      'Trajet retour depuis la rue',
+      'Autre déplacement',
+    ]
+  },
+  support: {
+    label: 'Type d\'accompagnement', showSize: false, useSelect: true,
+    options: [
+      '— Choisir…',
+      'Rendez-vous médecin / hôpital',
+      'Démarches CAF / Pôle Emploi',
+      'Démarches à la préfecture',
+      'Aide à la lecture / compréhension de documents',
+      'Traduction / interprétariat',
+      'Accompagnement à la pharmacie',
+      'Aide pour téléphoner',
+      'Accès aux droits (logement, RSA…)',
+      'Autre accompagnement',
+    ]
+  },
+  other: {
+    label: 'Ce dont il a besoin', showSize: false, useSelect: false,
+    placeholder: 'Décrivez le besoin en quelques mots…'
+  },
+};
+
+function selectCat(el) {
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const cat = el.dataset.cat || 'other';
+  const cfg = catConfig[cat];
+  const lbl = document.getElementById('lbl-items');
+  const field = document.getElementById('field-items');
+  lbl.textContent = cfg.label;
+  document.getElementById('field-size').style.display = cfg.showSize ? '' : 'none';
+  if (cfg.useSelect) {
+    field.innerHTML = `<label id="lbl-items">${cfg.label}</label>
+      <select id="input-items">
+        ${cfg.options.map(o => `<option>${o}</option>`).join('')}
+      </select>`;
+  } else {
+    field.innerHTML = `<label id="lbl-items">${cfg.label}</label>
+      <input id="input-items" type="text" placeholder="${cfg.placeholder}">`;
+  }
+}
+
+function selectUrgency(el, level) {
+  document.querySelectorAll('.urgency-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  const info = document.getElementById('urgency-info');
+  if (!info) return;
+  const cfg = {
+    low:  { bg:'var(--success-light)', color:'var(--success)', text:'🟢 Faible — visibilité normale dans le feed' },
+    med:  { bg:'var(--warning-light)', color:'var(--warning)', text:'🟡 Modéré — remonté dans le feed' },
+    high: { bg:'var(--danger-light)',  color:'var(--danger)',  text:'⚠️ Urgent — notifié immédiatement aux utilisateurs proches' }
+  };
+  info.style.background = cfg[level].bg;
+  info.style.color = cfg[level].color;
+  info.textContent = cfg[level].text;
+}
+
+function initMap() {
+  if (mapInit) return; mapInit = true;
+  const map = L.map('map-leaflet', { zoomControl: false, attributionControl: false })
+    .setView([48.8566, 2.3522], 14);
+  window._leafletMap = map;
+  setTimeout(() => map.invalidateSize(), 100);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OSM' }).addTo(map);
+  [
+    { pos:[48.8596,2.3477], color:'#C62828', label:'👕 Manteau homme — Urgent' },
+    { pos:[48.8546,2.3572], color:'#C62828', label:'🍞 Nourriture famille — Urgent' },
+    { pos:[48.8576,2.3422], color:'#F57F17', label:'🧴 Kit hygiène — Modéré' },
+    { pos:[48.8516,2.3622], color:'#2E7D32', label:'👟 Chaussures — Résolu' },
+  ].forEach(m => L.circleMarker(m.pos,{color:m.color,fillColor:m.color,fillOpacity:.9,radius:12,weight:2}).addTo(map).bindPopup(m.label));
+  window._userMarker = L.circleMarker([48.8566,2.3522],{color:'#1565C0',fillColor:'#1565C0',fillOpacity:1,radius:8,weight:2}).addTo(map).bindPopup('📍 Votre position');
+  window._mapCircle = L.circle([48.8566,2.3522],{radius:3000,color:'#E85D04',fillColor:'#E85D04',fillOpacity:.07,weight:2,dashArray:'6'}).addTo(map);
+}
+
+function initMapMini() {
+  if (mapMiniInit) return; mapMiniInit = true;
+  const map = L.map('map-mini',{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false}).setView([48.8566,2.3522],15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.marker([48.8566,2.3522]).addTo(map);
+}
+
+setTimeout(() => goTo('screen-onboarding'), 2200);
+
+/* ── RADIUS SLIDER ── */
+const radiusLabels  = ['500 m', '1 km', '3 km', '5 km', '10 km'];
+const radiusCounts  = [0, 1, 4, 6, 9];
+const radiusSubtexts = ['500 mètres', '1 kilomètre', '3 km', '5 km', '10 km'];
+
+function updateRadius(val) {
+  val = parseInt(val);
+  const label = radiusLabels[val];
+  const count = radiusCounts[val];
+  const sub   = radiusSubtexts[val];
+  // Barre rayon toujours visible
+  const pill = document.getElementById('radius-pill-val');
+  if (pill) pill.textContent = label;
+  const barCount = document.getElementById('radius-bar-count');
+  if (barCount) barCount.textContent = count === 0 ? 'Aucun signalement' : `${count} personne${count > 1 ? 's' : ''} dans le besoin`;
+  // Affichage dans le sheet
+  const sheetDisp = document.getElementById('sheet-radius-display');
+  if (sheetDisp) sheetDisp.textContent = label;
+  // Compteur + sous-texte
+  const countEl = document.getElementById('radius-count-text');
+  const subEl   = document.getElementById('radius-count-sub');
+  if (countEl) countEl.textContent = count === 0 ? 'Aucun signalement dans ce rayon' : `${count} personne${count > 1 ? 's' : ''} dans le besoin`;
+  if (subEl)   subEl.textContent = `dans un rayon de ${sub} autour de vous`;
+  // Style du slider
+  const pct = (val / 4) * 100;
+  const slider = document.getElementById('radius-slider');
+  if (slider) slider.style.background = `linear-gradient(to right, var(--primary) ${pct}%, var(--border) ${pct}%)`;
+  // Cercle carte
+  const meters = [500, 1000, 3000, 5000, 10000][val];
+  if (mapInit && window._mapCircle) window._mapCircle.setRadius(meters);
+  // Compteur carte
+  const mc = document.getElementById('map-count');
+  const mr = document.getElementById('map-radius-lbl');
+  if (mc) mc.textContent = `${count} signalement${count > 1 ? 's' : ''}`;
+  if (mr) mr.textContent = label;
+}
+
+/* ── GÉOLOCALISATION ── */
+function geolocateMap() {
+  const btn = document.getElementById('map-geolocate-btn');
+  btn.textContent = '⏳';
+  btn.style.opacity = '.7';
+
+  if (!navigator.geolocation) {
+    btn.textContent = '📍'; btn.style.opacity = '1';
+    centerMapOnPos(48.8566, 2.3522); return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+      btn.textContent = '📍'; btn.style.opacity = '1';
+      centerMapOnPos(lat, lng);
+      showGeoToast();
+    },
+    () => {
+      /* permission refusée → centrer sur Paris par défaut */
+      btn.textContent = '📍'; btn.style.opacity = '1';
+      centerMapOnPos(48.8566, 2.3522);
+      showGeoToast('Position par défaut : Paris');
+    }
+  );
+}
+
+function centerMapOnPos(lat, lng) {
+  if (!mapInit || !window._leafletMap) return;
+  window._leafletMap.setView([lat, lng], 15);
+  if (window._userMarker) window._userMarker.setLatLng([lat, lng]);
+  if (window._mapCircle)  window._mapCircle.setLatLng([lat, lng]);
+}
+
+function showGeoToast(msg) {
+  const toast = document.getElementById('geo-toast');
+  if (!toast) return;
+  toast.textContent = msg || 'Position trouvée ✓';
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 2500);
+}
+
+function geolocateHome() {
+  const btn = document.getElementById('home-geolocate-btn');
+  btn.textContent = '⏳ Localisation…';
+  btn.style.opacity = '.7';
+
+  const done = (label) => {
+    btn.innerHTML = `📍 ${label}`;
+    btn.style.opacity = '1';
+  };
+
+  if (!navigator.geolocation) { done('Paris (défaut)'); return; }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      /* Reverse geocode simplifié — affiche les coordonnées arrondies */
+      const lat = pos.coords.latitude.toFixed(4);
+      const lng = pos.coords.longitude.toFixed(4);
+      done(`${lat}, ${lng}`);
+      /* Met aussi à jour le cercle sur la carte si déjà ouverte */
+      if (mapInit && window._leafletMap) {
+        window._leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 14);
+        if (window._userMarker) window._userMarker.setLatLng([pos.coords.latitude, pos.coords.longitude]);
+        if (window._mapCircle)  window._mapCircle.setLatLng([pos.coords.latitude, pos.coords.longitude]);
+      }
+    },
+    () => done('Position indisponible')
+  );
+}
+
+/* ── MODE NUIT ── */
+let darkMode = false;
+function toggleDark() {
+  darkMode = !darkMode;
+  document.getElementById('phone').classList.toggle('dark', darkMode);
+  document.getElementById('dark-btn').textContent = darkMode ? '☀️' : '🌙';
+}
+
+/* ── UTILISATEUR COURANT ── */
+const currentUser = { name: 'Stéphane B.', avatar: 'S', color: '#E85D04' };
+
+/* ── DONNÉES DES SIGNALEMENTS ── */
+const alertsData = {
+  'alert-1': {
+    icon:'👕', title:'Manteau + pantalon homme',
+    desc:"Homme d'environ 40 ans, assis devant la pharmacie rue de la Paix. Il fait très froid ce soir, il n'a qu'un t-shirt. Taille L approximativement.",
+    location:'Rue de la Paix, Paris 2e', distance:'320 m • 🚶 4 min à pied',
+    category:'Vêtements', items:'Taille L', time:'Il y a 18 min',
+    signaler:'Julien M.', signalerRating:'4.8', signalerAvatar:'J', signalerColor:'av-orange',
+    urgency:'high', initialState:'other', takenByOther:'Sophie L.', takenByOtherEta:'arrive dans ~15 min',
+  },
+  'alert-2': {
+    icon:'🍞', title:'Repas chaud — famille avec enfants',
+    desc:"Femme + 2 enfants en bas âge (3 et 6 ans), place du Châtelet. Elles n'ont pas mangé de la journée. Les enfants semblent épuisés et ont froid.",
+    location:'Place du Châtelet, Paris 1er', distance:'650 m • 🚶 8 min à pied',
+    category:'Nourriture', items:'Repas chaud complet', time:'Il y a 32 min',
+    signaler:'Camille D.', signalerRating:'4.7', signalerAvatar:'C', signalerColor:'av-purple',
+    urgency:'high', initialState:'open',
+  },
+  'alert-3': {
+    icon:'🧴', title:'Kit hygiène complet',
+    desc:"Homme, ~30 ans, gare du Nord — savon, rasoir, dentifrice. Cherche du travail, tient à sa présentation. Aucune réponse depuis 1h.",
+    location:'Gare du Nord, Paris 10e', distance:'1,2 km • 🚶 15 min à pied',
+    category:'Hygiène', items:'Kit hygiène complet', time:'Il y a 1h05',
+    signaler:'Camille R.', signalerRating:'4.6', signalerAvatar:'C', signalerColor:'av-green',
+    urgency:'medium', initialState:'open',
+  },
+  'alert-4': {
+    icon:'🏠', title:'Couverture + sac de couchage',
+    desc:"Homme seul, ~60 ans, sous le pont de Grenelle — dort à même le sol depuis plusieurs nuits. Aidé par Stéphane B.",
+    location:'Pont de Grenelle, Paris 15e', distance:'1,8 km • 🚶 22 min à pied',
+    category:'Abri', items:'Couverture + sac de couchage', time:'Il y a 45 min',
+    signaler:'Mohamed K.', signalerRating:'4.9', signalerAvatar:'M', signalerColor:'av-green',
+    urgency:'medium', initialState:'me',
+  },
+  'alert-6': {
+    icon:'💊', title:'Médicaments — douleurs importantes',
+    desc:"Homme, ~50 ans, square de la République — se plaint de douleurs importantes, n'a pas les moyens d'acheter des antidouleurs.",
+    location:'Square de la République, Paris 11e', distance:'2,9 km • 🚶 36 min à pied',
+    category:'Médicaments', items:'Antidouleur (doliprane…)', time:'Il y a 8 min',
+    signaler:'Lucas P.', signalerRating:'4.5', signalerAvatar:'L', signalerColor:'av-blue',
+    urgency:'high', initialState:'open',
+  },
+  'alert-7': {
+    icon:'🥣', title:'Soupe chaude + pain',
+    desc:"Homme d'environ 55 ans assis sur les marches de la gare Montparnasse depuis le matin. Il n'a rien demandé mais n'a visiblement pas mangé.",
+    location:'Gare Montparnasse, Paris 15e', distance:'850 m • 🚶 11 min à pied',
+    category:'Nourriture', items:'Soupe chaude + baguette', time:'Il y a 1h10',
+    signaler:'Élodie V.', signalerRating:'4.7', signalerAvatar:'É', signalerColor:'av-purple',
+    urgency:'medium', initialState:'open',
+  },
+  'alert-8': {
+    icon:'🍼', title:'Eau + lait infantile — bébé 8 mois',
+    desc:"Mère seule avec son bébé de 8 mois devant la mairie du 3e. Le bébé pleure beaucoup — plus de lait depuis ce matin et la mère n'a pas d'argent.",
+    location:'Mairie du 3e, Paris 3e', distance:'400 m • 🚶 5 min à pied',
+    category:'Nourriture', items:'Lait infantile + eau', time:'Il y a 8 min',
+    signaler:'Amandine C.', signalerRating:'5.0', signalerAvatar:'A', signalerColor:'av-green',
+    urgency:'high', initialState:'open',
+  },
+  'alert-9': {
+    icon:'👟', title:'Chaussures + chaussettes — H. taille 43',
+    desc:"Homme d'environ 28 ans sous le pont de l'Alma. Ses chaussures sont complètement trouées et il se blesse en marchant. Se déplace péniblement.",
+    location:'Pont de l\'Alma, Paris 8e', distance:'1,5 km • 🚶 18 min à pied',
+    category:'Vêtements', items:'Chaussures taille 43 + chaussettes', time:'Il y a 2h',
+    signaler:'Rémi F.', signalerRating:'4.4', signalerAvatar:'R', signalerColor:'av-orange',
+    urgency:'medium', initialState:'open',
+  },
+  'alert-10': {
+    icon:'🧥', title:'Manteau femme + bonnet + gants',
+    desc:"Femme d'environ 35 ans assise sur un banc boulevard Voltaire. Elle tremble, sa tenue est très légère pour la température. Taille M environ.",
+    location:'Boulevard Voltaire, Paris 11e', distance:'700 m • 🚶 9 min à pied',
+    category:'Vêtements', items:'Manteau taille M + bonnet + gants', time:'Il y a 12 min',
+    signaler:'Yasmine B.', signalerRating:'4.8', signalerAvatar:'Y', signalerColor:'av-purple',
+    urgency:'high', initialState:'open',
+  },
+  'alert-11': {
+    icon:'🌸', title:'Produits hygiène féminine',
+    desc:"Femme d'environ 25 ans dans le square des Batignolles. Elle demande de façon très discrète des serviettes hygiéniques et du savon.",
+    location:'Square des Batignolles, Paris 17e', distance:'900 m • 🚶 11 min à pied',
+    category:'Hygiène', items:'Serviettes hygiéniques + savon', time:'Il y a 45 min',
+    signaler:'Nina K.', signalerRating:'4.9', signalerAvatar:'N', signalerColor:'av-green',
+    urgency:'medium', initialState:'other', takenByOther:'Lucie D.', takenByOtherEta:'arrive dans ~20 min',
+  },
+  'alert-12': {
+    icon:'🩹', title:'Blessure au pied — soins urgents',
+    desc:"Homme d'environ 40 ans pieds nus rue du Temple. Il a une plaie ouverte sous le pied droit et ne peut quasiment plus marcher. Besoin de pansements et d'antiseptique.",
+    location:'Rue du Temple, Paris 3e', distance:'500 m • 🚶 6 min à pied',
+    category:'Médical', items:'Pansements + antiseptique', time:'Il y a 15 min',
+    signaler:'Pierre M.', signalerRating:'4.6', signalerAvatar:'P', signalerColor:'av-blue',
+    urgency:'high', initialState:'open',
+  },
+  'alert-13': {
+    icon:'🏕️', title:'Hébergement d\'urgence — famille',
+    desc:"Couple avec un enfant de 5 ans, porte de la Chapelle. À la rue depuis 2 jours après une expulsion. Besoin d'orientation vers un centre d'hébergement d'urgence.",
+    location:'Porte de la Chapelle, Paris 18e', distance:'3,2 km • 🚶 38 min à pied',
+    category:'Abri', items:'Place en centre d\'hébergement', time:'Il y a 1h30',
+    signaler:'Fatou D.', signalerRating:'4.7', signalerAvatar:'F', signalerColor:'av-orange',
+    urgency:'medium', initialState:'open',
+  },
+};
+
+let currentAlertId = null;
+
+function openAlert(id) {
+  currentAlertId = id;
+  const a = alertsData[id];
+  if (!a) { goTo('screen-alert-detail'); return; }
+  // Restaurer l'état initial de prise en charge
+  if (a.initialState === 'other') alertTakenBy = 'other';
+  else if (a.initialState === 'me') alertTakenBy = 'me';
+  else alertTakenBy = null;
+  // Peupler la fiche
+  const urgencyBadge = { high:'<span class="badge badge-high">🔴 Urgent</span>', medium:'<span class="badge badge-medium">🟡 Modéré</span>', low:'<span class="badge badge-low">🟢 Faible</span>' }[a.urgency] || '';
+  const statusBadge = alertTakenBy === 'me'
+    ? `<span class="badge" style="background:#E3F2FD;color:var(--secondary);">En cours — vous</span>`
+    : alertTakenBy === 'other'
+      ? `<span class="badge" style="background:var(--success-light);color:var(--success);">En cours</span>`
+      : `<span class="badge badge-open">Ouvert</span>`;
+  document.getElementById('alert-fiche').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div style="font-size:40px;">${a.icon}</div>
+      <div><div style="font-size:19px;font-weight:700;">${a.title}</div>
+        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">${urgencyBadge}${statusBadge}</div>
+      </div>
+    </div>
+    <p style="font-size:15px;color:var(--text-muted);line-height:1.5;margin-bottom:14px;">${a.desc}</p>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:10px;font-size:14px;"><span>📍</span><span style="color:var(--text-muted);">${a.location} — ${a.distance}</span></div>
+      <div style="display:flex;gap:10px;font-size:14px;"><span>🗂</span><span style="color:var(--text-muted);">${a.category} — ${a.items}</span></div>
+      <div style="display:flex;gap:10px;font-size:14px;"><span>⏱</span><span style="color:var(--text-muted);">${a.time}</span></div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:14px;"><span>👤</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="avatar ${a.signalerColor}" style="width:24px;height:24px;font-size:12px;">${a.signalerAvatar}</div>
+          <span style="color:var(--text-muted);">${a.signaler} • ⭐ ${a.signalerRating}</span>
+        </div>
+      </div>
+    </div>`;
+  goTo('screen-alert-detail');
+}
+
+/* Met à jour la carte dans le feed après prise en charge */
+function updateFeedCard(id, state) {
+  const card = document.querySelector(`[data-alert-id="${id}"]`);
+  if (!card) return;
+  let banner = card.querySelector('.card-status-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.className = 'card-status-banner';
+    banner.style.cssText = 'border-radius:8px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;';
+    const meta = card.querySelector('.alert-card-meta');
+    if (meta) card.insertBefore(banner, meta);
+  }
+  if (state === 'me') {
+    banner.style.background = '#E3F2FD';
+    banner.innerHTML = `<span style="font-size:14px;">✅</span><span style="font-size:13px;font-weight:600;color:var(--secondary);">Pris en charge par ${currentUser.name} — en route</span>`;
+  } else if (state === 'cancelled') {
+    banner.remove();
+  }
+}
+
+/* ── PROPOSITION D'AIDE ── */
+/* État : null=libre, 'me'=par moi, 'other'=par qqun d'autre, 'delivered'=remis */
+let alertTakenBy = null;
+
+function resetHelpBar() {
+  const id = currentAlertId;
+  const a = id ? alertsData[id] : null;
+  if (a) {
+    if (a.initialState === 'other') alertTakenBy = 'other';
+    else if (a.initialState === 'me') alertTakenBy = 'me';
+    else alertTakenBy = null;
+  } else {
+    alertTakenBy = null;
+  }
+  renderHelpBar();
+  document.querySelectorAll('.help-type-btn').forEach(b => b.classList.remove('selected'));
+}
+
+function renderHelpBar() {
+  const bar = document.getElementById('help-bar');
+  if (!bar) return;
+  bar.style.padding = '12px 16px 20px';
+
+  if (!alertTakenBy) {
+    /* Libre — bouton principal */
+    bar.innerHTML = `<button class="btn btn-primary" style="font-size:17px;border-radius:14px;" onclick="openSheet('sheet-help')">🙋 Je prends en charge ce besoin</button>`;
+
+  } else if (alertTakenBy === 'me') {
+    /* Pris par moi */
+    bar.innerHTML = `
+      <div class="taken-bar" style="background:var(--success-light);border-color:var(--success);">
+        <div class="taken-avatar" style="background:${currentUser.color};">${currentUser.avatar}</div>
+        <div class="taken-info">
+          <strong>✅ ${currentUser.name} s'en occupe</strong>
+          <span>Arrivée estimée : dans 20 à 30 minutes</span>
+        </div>
+        <button class="btn btn-sm btn-secondary" style="white-space:nowrap;font-size:12px;" onclick="cancelTaken()">Annuler</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="btn btn-success" style="flex:1;font-size:14px;" onclick="openSheet('sheet-deliver')">📦 J'ai remis l'aide</button>
+        <button class="btn btn-secondary" style="font-size:14px;" onclick="goTo('screen-chat');setNav('nav-msg')">💬</button>
+      </div>`;
+
+  } else if (alertTakenBy === 'delivered') {
+    /* Remis — en attente de confirmation du signalant */
+    bar.innerHTML = `
+      <div style="background:#E8F5E9;border:1.5px solid var(--success);border-radius:var(--radius);padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <span style="font-size:24px;">🙏</span>
+          <div>
+            <div style="font-weight:700;color:var(--success);font-size:15px;">Remise confirmée par vous</div>
+            <div style="font-size:13px;color:var(--text-muted);">En attente de confirmation du signalant (24h)</div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text-muted);display:flex;align-items:flex-start;gap:8px;">
+          <span>ℹ️</span>
+          <span>Julien M. sera notifié et peut confirmer la remise. Sans réponse de sa part, l'alerte sera <strong>résolue automatiquement dans 24h</strong>.</span>
+        </div>
+      </div>`;
+
+  } else {
+    /* Pris par quelqu'un d'autre */
+    const a = currentAlertId ? alertsData[currentAlertId] : null;
+    const otherName = a && a.takenByOther ? a.takenByOther : 'Quelqu\'un';
+    const otherEta  = a && a.takenByOtherEta ? a.takenByOtherEta : 'en route';
+    bar.innerHTML = `
+      <div class="taken-bar">
+        <div class="taken-avatar" style="background:var(--secondary);">${otherName.charAt(0)}</div>
+        <div class="taken-info">
+          <strong>✋ Déjà pris en charge par ${otherName}</strong>
+          <span>${otherEta}</span>
+        </div>
+      </div>
+      <button class="btn btn-secondary" style="margin-top:10px;font-size:14px;" onclick="openSheet('sheet-help-backup')">
+        Proposer en backup si besoin
+      </button>`;
+  }
+}
+
+function selectHelpType(el) {
+  document.querySelectorAll('.help-type-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('help-submit-btn').disabled = false;
+}
+
+function submitHelp() {
+  closeSheet('sheet-help');
+  alertTakenBy = 'me';
+  renderHelpBar();
+  // Persiste dans les données et met à jour le feed
+  if (currentAlertId && alertsData[currentAlertId]) {
+    alertsData[currentAlertId].initialState = 'me';
+    delete alertsData[currentAlertId].takenByOther;
+  }
+  updateFeedCard(currentAlertId, 'me');
+  // Refrapper le badge statut dans la fiche
+  const fiche = document.getElementById('alert-fiche');
+  if (fiche) {
+    const statusBadge = fiche.querySelector('.badge-open, .badge[style*="Ouvert"]');
+    // on réouvre juste pour refresh le badge statut
+    const a = alertsData[currentAlertId];
+    if (a) {
+      const old = fiche.querySelector('div[style*="display:flex;gap:6px"]') || fiche.querySelector('div > div:nth-child(2)');
+      const badges = fiche.querySelectorAll('.badge');
+      badges.forEach(b => { if (b.textContent.includes('Ouvert') || b.textContent.includes('cours')) b.outerHTML = `<span class="badge" style="background:#E3F2FD;color:var(--secondary);">En cours — vous</span>`; });
+    }
+  }
+}
+
+function cancelTaken() {
+  alertTakenBy = null;
+  if (currentAlertId && alertsData[currentAlertId]) {
+    alertsData[currentAlertId].initialState = 'open';
+  }
+  updateFeedCard(currentAlertId, 'cancelled');
+  renderHelpBar();
+}
+
+/* ── SAISIE VOCALE ── */
+let recognition = null;
+let isListening = false;
+
+function toggleVoice() {
+  const btn = document.getElementById('voice-btn');
+  const textarea = document.getElementById('desc-textarea');
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    textarea.value = 'Homme ~40 ans, devant la pharmacie, seulement un t-shirt par ce froid.';
+    textarea.placeholder = '';
+    return;
+  }
+  if (isListening) {
+    recognition.stop(); return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'fr-FR';
+  recognition.interimResults = true;
+  recognition.onstart = () => { isListening = true; btn.classList.add('listening'); btn.textContent = '⏹️'; };
+  recognition.onresult = (e) => {
+    let transcript = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) transcript += e.results[i][0].transcript;
+    textarea.value = transcript;
+  };
+  recognition.onend = () => { isListening = false; btn.classList.remove('listening'); btn.textContent = '🎙️'; };
+  recognition.start();
+}
+
+/* ── CONFIRMATION REMISE GPS ── */
+let gpsVerified = false;
+
+function simulateGpsCheck() {
+  const icon  = document.getElementById('deliver-gps-icon');
+  const title = document.getElementById('deliver-gps-title');
+  const sub   = document.getElementById('deliver-gps-sub');
+  const btn   = document.getElementById('deliver-gps-btn');
+  const box   = document.getElementById('deliver-gps-check');
+  const confirmBtn = document.getElementById('deliver-confirm-btn');
+
+  btn.textContent = '⏳';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    /* Simuler GPS ok — à 85 m du lieu signalé */
+    gpsVerified = true;
+    icon.textContent = '✅';
+    title.textContent = 'Position vérifiée — vous êtes bien sur place';
+    sub.textContent = 'À environ 85 m du lieu signalé (Rue de la Paix, Paris 2e)';
+    box.style.background = 'var(--success-light)';
+    box.style.border = '1.5px solid var(--success)';
+    title.style.color = 'var(--success)';
+    btn.style.display = 'none';
+    if (confirmBtn) confirmBtn.disabled = false;
+  }, 1400);
+}
+
+function confirmDelivery() {
+  closeSheet('sheet-deliver');
+  gpsVerified = false;
+  /* Réinitialiser le bouton GPS pour la prochaine ouverture */
+  setTimeout(() => {
+    const icon  = document.getElementById('deliver-gps-icon');
+    const title = document.getElementById('deliver-gps-title');
+    const sub   = document.getElementById('deliver-gps-sub');
+    const btn   = document.getElementById('deliver-gps-btn');
+    const box   = document.getElementById('deliver-gps-check');
+    const confirmBtn = document.getElementById('deliver-confirm-btn');
+    if (icon)  icon.textContent = '📍';
+    if (title) { title.textContent = 'Vérification de votre position'; title.style.color = 'var(--primary)'; }
+    if (sub)   sub.textContent = 'Pour confirmer la remise, vous devez être à proximité du lieu signalé';
+    if (box)   { box.style.background = 'var(--primary-light)'; box.style.border = ''; }
+    if (btn)   { btn.textContent = 'Vérifier'; btn.disabled = false; btn.style.display = ''; }
+    if (confirmBtn) confirmBtn.disabled = true;
+  }, 400);
+  alertTakenBy = 'delivered';
+  renderHelpBar();
+}
+
+// init step 2 form + compteurs chips
+document.addEventListener('DOMContentLoaded', () => {
+  const defaultCard = document.querySelector('.cat-card[data-cat="clothing"]');
+  if (defaultCard) selectCat(defaultCard);
+  updateChipCounts();
+});
+</script>
+</body>
+</html>
