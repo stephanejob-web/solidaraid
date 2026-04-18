@@ -498,10 +498,10 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
     </div>
     <div class="input-group"><label>Email</label><input type="email" placeholder="votre@email.com"></div>
     <div class="input-group"><label>Mot de passe</label><input type="password" placeholder="••••••••"></div>
-    <div style="text-align:right;margin-bottom:20px;"><span style="color:var(--primary);font-size:14px;font-weight:600;cursor:pointer;">Mot de passe oublié ?</span></div>
+    <div style="text-align:right;margin-bottom:20px;"><span style="color:var(--primary);font-size:14px;font-weight:600;cursor:pointer;" onclick="forgotPassword()">Mot de passe oublié ?</span></div>
     <button class="btn btn-primary" onclick="goToApp()">Se connecter</button>
     <div style="text-align:center;margin:20px 0;color:var(--text-muted);font-size:14px;">ou</div>
-    <button class="btn btn-secondary"><span style="font-size:20px;font-weight:700;">G</span> Continuer avec Google</button>
+    <button class="btn btn-secondary" onclick="showToast('🔗 Redirection vers Google…');setTimeout(goToApp,800);"><span style="font-size:20px;font-weight:700;">G</span> Continuer avec Google</button>
     <div style="text-align:center;margin-top:28px;font-size:15px;color:var(--text-muted);">
       Pas encore de compte ? <span style="color:var(--primary);font-weight:600;cursor:pointer;" onclick="goTo('screen-register')">S'inscrire</span>
     </div>
@@ -993,7 +993,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
     <div style="background:var(--bg);border-radius:var(--radius);height:160px;overflow:hidden;margin-bottom:12px;">
       <div id="map-mini"></div>
     </div>
-    <button class="btn btn-outline" style="margin-bottom:16px;">📍 Utiliser ma position actuelle</button>
+    <button class="btn btn-outline" style="margin-bottom:16px;" onclick="useMyLocationCreate()">📍 Utiliser ma position actuelle</button>
     <div class="input-group"><label>Ou saisir une adresse</label><input type="text" placeholder="15 rue de la Paix, Paris…"></div>
     <div class="divider"></div>
     <div class="section-title">Niveau d'urgence</div>
@@ -1006,6 +1006,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   </div>
   <div style="padding:16px 16px 32px;background:var(--white);">
     <button class="btn btn-primary" onclick="goTo('screen-create-success')">Publier le signalement 🚀</button>
+
   </div>
 </div>
 
@@ -1019,7 +1020,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
       <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px;">Rappel — Dignité de la personne</div>
       <div style="font-size:13px;color:var(--text-muted);">Merci de ne pas photographier la personne dans le besoin.</div>
     </div>
-    <button class="btn btn-primary" onclick="goToApp()" style="width:100%;">Retour à l'accueil</button>
+    <button class="btn btn-primary" onclick="publishAndGoHome()" style="width:100%;">Retour à l'accueil</button>
   </div>
 </div>
 
@@ -1028,7 +1029,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   <div class="topbar"><h1>💬 Messages</h1></div>
   <div class="screen-body">
     <div style="padding:12px 16px;"><input type="text" placeholder="🔍 Rechercher…" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:24px;font-size:15px;outline:none;background:var(--white);"></div>
-    <div onclick="goTo('screen-chat')" style="display:flex;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);cursor:pointer;">
+    <div onclick="openPrivateChat('sophie')" style="display:flex;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);cursor:pointer;">
       <div style="position:relative;">
         <div class="avatar av-blue">S</div>
         <div style="position:absolute;bottom:0;right:0;width:12px;height:12px;background:#4CAF50;border-radius:50%;border:2px solid white;"></div>
@@ -1040,7 +1041,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
       </div>
       <div style="width:20px;height:20px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;flex-shrink:0;">2</div>
     </div>
-    <div onclick="goTo('screen-chat')" style="display:flex;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);cursor:pointer;">
+    <div onclick="openPrivateChat('thomas')" style="display:flex;gap:12px;padding:14px 16px;background:var(--white);border-bottom:1px solid var(--border);cursor:pointer;">
       <div class="avatar av-green">T</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-weight:700;font-size:15px;">Thomas R.</span><span style="font-size:12px;color:var(--text-muted);">Hier</span></div>
@@ -1087,9 +1088,12 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
       <div class="profile-stat"><div class="stat-val">23</div><div class="stat-lbl">Aides</div></div>
     </div>
     <div style="padding:16px;">
-      <div class="section-title" style="margin-top:8px;">Mes signalements récents</div>
-      <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">👕</span><div><div style="font-weight:600;font-size:15px;">Manteau homme</div><div style="font-size:13px;color:var(--text-muted);">Il y a 12 min</div></div></div><span class="badge badge-open">En cours</span></div></div>
-      <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">🍞</span><div><div style="font-weight:600;font-size:15px;">Nourriture famille</div><div style="font-size:13px;color:var(--text-muted);">Hier</div></div></div><span class="badge badge-done">Résolu ✓</span></div></div>
+      <div class="section-title" style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;">
+        Mes signalements
+        <span style="font-size:13px;color:var(--primary);font-weight:600;cursor:pointer;" onclick="goTo('screen-my-alerts')">Voir tout ›</span>
+      </div>
+      <div class="card" style="cursor:pointer;" onclick="goTo('screen-my-alerts')"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">👕</span><div><div style="font-weight:600;font-size:15px;">Manteau homme</div><div style="font-size:13px;color:var(--text-muted);">Il y a 12 min</div></div></div><span class="badge badge-open">En cours</span></div></div>
+      <div class="card" style="cursor:pointer;" onclick="goTo('screen-my-alerts')"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">🍞</span><div><div style="font-weight:600;font-size:15px;">Nourriture famille</div><div style="font-size:13px;color:var(--text-muted);">Hier</div></div></div><span class="badge badge-done">Résolu ✓</span></div></div>
       <div class="section-title" style="margin-top:8px;">Actions</div>
       <div class="settings-item" onclick="goTo('screen-donate-form')"><span class="settings-item-icon">🎁</span><div class="settings-item-text"><strong>Proposer un don</strong><span>Publier un objet disponible</span></div><span class="settings-arrow">›</span></div>
       <div class="settings-item" onclick="goTo('screen-emergency')"><span class="settings-item-icon">🆘</span><div class="settings-item-text"><strong>Services d'urgence</strong><span>115, 119, ressources locales</span></div><span class="settings-arrow">›</span></div>
@@ -1115,7 +1119,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
       <label>Photo (recommandé)</label>
       <div style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;"><div style="font-size:32px;margin-bottom:6px;">📷</div><div style="font-size:14px;color:var(--text-muted);">Ajouter une photo</div></div>
     </div>
-    <button class="btn btn-primary" onclick="goTo('screen-home')">Publier mon don ✓</button>
+    <button class="btn btn-primary" onclick="showToast('🎁 Don publié ! Vous serez contacté si quelqu\'un en a besoin.');setTimeout(goToApp,600);">Publier mon don ✓</button>
   </div>
 </div>
 
@@ -1165,9 +1169,9 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   <div class="topbar"><button class="back-btn" onclick="goTo('screen-profile')">←</button><h1>Paramètres</h1></div>
   <div class="screen-body">
     <div style="padding:12px 16px;font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Mon compte</div>
-    <div class="settings-item"><span class="settings-item-icon">👤</span><div class="settings-item-text"><strong>Modifier le profil</strong><span>Nom, photo, ville</span></div><span class="settings-arrow">›</span></div>
-    <div class="settings-item"><span class="settings-item-icon">📍</span><div class="settings-item-text"><strong>Zone d'action</strong><span>5km autour de moi</span></div><span class="settings-arrow">›</span></div>
-    <div class="settings-item"><span class="settings-item-icon">🔐</span><div class="settings-item-text"><strong>Sécurité</strong><span>Mot de passe, téléphone vérifié</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="openSheet('sheet-edit-profile')"><span class="settings-item-icon">👤</span><div class="settings-item-text"><strong>Modifier le profil</strong><span>Nom, photo, ville</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="openSheet('sheet-radius')"><span class="settings-item-icon">📍</span><div class="settings-item-text"><strong>Zone d'action</strong><span>5km autour de moi</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="showToast('🔐 Vérification téléphone envoyée par SMS')"><span class="settings-item-icon">🔐</span><div class="settings-item-text"><strong>Sécurité</strong><span>Mot de passe, téléphone vérifié</span></div><span class="settings-arrow">›</span></div>
     <div style="padding:12px 16px;font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:8px;">Notifications</div>
     <div class="settings-item"><span class="settings-item-icon">🔔</span><div class="settings-item-text"><strong>Nouveaux signalements proches</strong></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
     <div class="settings-item"><span class="settings-item-icon">💬</span><div class="settings-item-text"><strong>Réponses à mes signalements</strong></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
@@ -1177,8 +1181,191 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
     <div class="settings-item"><span class="settings-item-icon">🔤</span><div class="settings-item-text"><strong>Grande police</strong></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
     <div class="settings-item"><span class="settings-item-icon">🌍</span><div class="settings-item-text"><strong>Langue</strong><span>Français</span></div><span class="settings-arrow">›</span></div>
     <div style="padding:12px 16px;font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:8px;">Légal</div>
-    <div class="settings-item"><span class="settings-item-icon">📄</span><div class="settings-item-text"><strong>CGU & Confidentialité</strong></div><span class="settings-arrow">›</span></div>
-    <div class="settings-item"><span class="settings-item-icon">🗑</span><div class="settings-item-text"><strong style="color:var(--danger);">Supprimer mon compte</strong><span>Efface toutes vos données (RGPD)</span></div><span class="settings-arrow" style="color:var(--danger);">›</span></div>
+    <div class="settings-item" onclick="showToast('📄 CGU disponibles sur solidaraid.fr/cgu')"><span class="settings-item-icon">📄</span><div class="settings-item-text"><strong>CGU & Confidentialité</strong></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="if(confirm('Supprimer votre compte ? Toutes vos données seront effacées (RGPD).'))goTo('screen-login')"><span class="settings-item-icon">🗑</span><div class="settings-item-text"><strong style="color:var(--danger);">Supprimer mon compte</strong><span>Efface toutes vos données (RGPD)</span></div><span class="settings-arrow" style="color:var(--danger);">›</span></div>
+  </div>
+</div>
+
+<!-- MY ALERTS -->
+<div id="screen-my-alerts" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goTo('screen-profile');setNav('nav-profile')">←</button>
+    <h1>Mes signalements</h1>
+  </div>
+  <div class="screen-body" style="padding:16px;">
+    <div class="section-title">En cours</div>
+
+    <div class="card" style="cursor:pointer;margin-bottom:12px;" onclick="openAlert('alert-2')">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <span style="font-size:30px;">🍞</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:15px;">Repas chaud — famille avec enfants</div>
+          <div style="font-size:13px;color:var(--text-muted);">Place du Châtelet — il y a 32 min</div>
+        </div>
+        <span class="badge badge-high">🔴</span>
+      </div>
+      <div style="background:var(--primary-light);border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:14px;font-weight:600;color:var(--primary);">💬 1 personne peut aider</div>
+        <span style="font-size:13px;color:var(--primary);font-weight:700;">Voir ›</span>
+      </div>
+    </div>
+
+    <div class="card" style="cursor:pointer;margin-bottom:12px;" onclick="openAlert('alert-4')">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <span style="font-size:30px;">🏠</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:15px;">Couverture + sac de couchage</div>
+          <div style="font-size:13px;color:var(--text-muted);">Pont de Grenelle — il y a 45 min</div>
+        </div>
+        <span class="badge badge-medium">🟡</span>
+      </div>
+      <div style="background:#E3F2FD;border-radius:8px;padding:10px 12px;">
+        <div style="font-size:13px;font-weight:600;color:var(--secondary);">✅ Prise en charge — Stéphane B. en route</div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px;">Expiration</div>
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <span style="font-size:30px;">🧴</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:15px;">Kit hygiène complet</div>
+          <div style="font-size:13px;color:var(--text-muted);">Gare du Nord — il y a 1h05</div>
+        </div>
+        <span class="badge badge-medium">🟡</span>
+      </div>
+      <div style="background:var(--warning-light);border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:13px;color:var(--warning);font-weight:600;">⏰ Aucune réponse depuis 1h</div>
+        <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();" style="font-size:12px;">Confirmer présence</button>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px;">Résolus récemment</div>
+    <div class="card" style="opacity:.7;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:30px;">🍞</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:15px;">Nourriture famille</div>
+          <div style="font-size:13px;color:var(--text-muted);">Hier — Résolu par Thomas R.</div>
+        </div>
+        <span class="badge badge-done">✓ Résolu</span>
+      </div>
+    </div>
+    <div class="card" style="opacity:.7;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:30px;">🧴</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:15px;">Kit hygiène — avenue Gambetta</div>
+          <div style="font-size:13px;color:var(--text-muted);">Il y a 3 jours — Résolu</div>
+        </div>
+        <span class="badge badge-done">✓ Résolu</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OTHER USER PROFILE -->
+<div id="screen-other-profile" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h1 id="other-profile-title">Profil</h1>
+  </div>
+  <div style="overflow-y:auto;flex:1;">
+    <div class="profile-header">
+      <div class="profile-avatar" id="other-profile-avatar">J</div>
+      <div class="profile-name" id="other-profile-name">Julien M.</div>
+      <div class="profile-sub" id="other-profile-sub">Paris • ⭐ 4.8/5</div>
+      <div style="margin-top:8px;font-size:13px;opacity:.7;">Membre depuis mars 2025</div>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat"><div class="stat-val" id="other-stat-signals">7</div><div class="stat-lbl">Signalements</div></div>
+      <div class="profile-stat"><div class="stat-val" id="other-stat-helps">15</div><div class="stat-lbl">Aides</div></div>
+      <div class="profile-stat"><div class="stat-val" id="other-stat-rating">4.8</div><div class="stat-lbl">Note moy.</div></div>
+    </div>
+    <div style="padding:16px;">
+      <div style="background:var(--success-light);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <span style="font-size:22px;">✔️</span>
+        <div>
+          <div style="font-weight:700;color:var(--success);">Compte vérifié</div>
+          <div style="font-size:13px;color:var(--text-muted);">Email + numéro de téléphone confirmés</div>
+        </div>
+      </div>
+      <div class="section-title">Avis reçus</div>
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div class="avatar av-orange" style="width:28px;height:28px;font-size:12px;">C</div>
+          <span style="font-weight:600;font-size:14px;">Camille D.</span>
+          <span style="font-size:13px;margin-left:4px;">⭐⭐⭐⭐⭐</span>
+          <span style="font-size:12px;color:var(--text-muted);margin-left:auto;">Il y a 3 jours</span>
+        </div>
+        <div style="font-size:14px;color:var(--text-muted);">Très réactif, est arrivé rapidement. Discret et bienveillant.</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div class="avatar av-blue" style="width:28px;height:28px;font-size:12px;">T</div>
+          <span style="font-weight:600;font-size:14px;">Thomas R.</span>
+          <span style="font-size:13px;margin-left:4px;">⭐⭐⭐⭐</span>
+          <span style="font-size:12px;color:var(--text-muted);margin-left:auto;">La semaine dernière</span>
+        </div>
+        <div style="font-size:14px;color:var(--text-muted);">Signalement précis et bien localisé. Merci !</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RATING SCREEN -->
+<div id="screen-rating" class="screen" style="background:var(--white);">
+  <div class="topbar">
+    <button class="back-btn" onclick="goToApp()">←</button>
+    <h1>Laisser un avis</h1>
+  </div>
+  <div class="screen-body" style="padding:32px 24px;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-size:52px;margin-bottom:12px;">🙏</div>
+      <div style="font-size:21px;font-weight:800;">Aide confirmée !</div>
+      <div style="font-size:15px;color:var(--text-muted);margin-top:8px;line-height:1.5;">Merci d'avoir contribué.<br>Comment s'est passée la remise ?</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:28px;padding:16px;background:var(--bg);border-radius:var(--radius);">
+      <div class="avatar av-blue" id="rating-avatar" style="width:52px;height:52px;font-size:22px;">S</div>
+      <div>
+        <div style="font-weight:700;font-size:16px;" id="rating-name">Sophie L.</div>
+        <div style="font-size:13px;color:var(--text-muted);">⭐ 4.9 • Compte vérifié</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;">Votre note</div>
+      <div style="display:flex;gap:6px;justify-content:center;" id="stars-row">
+        <span class="star-btn" data-val="1" onclick="selectStar(1)" style="font-size:38px;cursor:pointer;filter:grayscale(1);transition:filter .15s;">⭐</span>
+        <span class="star-btn" data-val="2" onclick="selectStar(2)" style="font-size:38px;cursor:pointer;filter:grayscale(1);transition:filter .15s;">⭐</span>
+        <span class="star-btn" data-val="3" onclick="selectStar(3)" style="font-size:38px;cursor:pointer;filter:grayscale(1);transition:filter .15s;">⭐</span>
+        <span class="star-btn" data-val="4" onclick="selectStar(4)" style="font-size:38px;cursor:pointer;filter:grayscale(1);transition:filter .15s;">⭐</span>
+        <span class="star-btn" data-val="5" onclick="selectStar(5)" style="font-size:38px;cursor:pointer;filter:grayscale(1);transition:filter .15s;">⭐</span>
+      </div>
+      <div id="rating-label" style="font-size:15px;font-weight:600;color:var(--primary);margin-top:10px;min-height:22px;"></div>
+    </div>
+    <div class="input-group" style="margin-bottom:20px;">
+      <label>Commentaire (optionnel)</label>
+      <textarea placeholder="Décrivez votre expérience — discret, ponctuel, bienveillant…" style="height:80px;"></textarea>
+    </div>
+    <button class="btn btn-primary" id="rating-submit-btn" onclick="submitRating()" disabled style="font-size:16px;">Envoyer mon avis</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="goToApp()">Passer</button>
+  </div>
+</div>
+
+<!-- SHEET — Modifier le profil -->
+<div id="sheet-overlay-edit-profile" class="sheet-overlay" onclick="closeSheet('sheet-edit-profile')">
+  <div id="sheet-edit-profile" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:16px;">✏️ Modifier le profil</div>
+    <div class="input-group"><label>Prénom et nom</label><input type="text" value="Stéphane B."></div>
+    <div class="input-group"><label>Ville</label><input type="text" value="Paris"></div>
+    <div class="input-group"><label>Téléphone (pour badge Vérifié)</label><input type="tel" value="+33 6 12 34 56 78"></div>
+    <div style="border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;margin-bottom:16px;">
+      <div style="font-size:28px;margin-bottom:4px;">📷</div>
+      <div style="font-size:13px;color:var(--text-muted);">Changer la photo de profil</div>
+    </div>
+    <button class="btn btn-primary" onclick="closeSheet('sheet-edit-profile');showToast('✅ Profil mis à jour')">Enregistrer</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-edit-profile')">Annuler</button>
   </div>
 </div>
 
@@ -1240,7 +1427,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
     <div style="font-size:18px;font-weight:700;text-align:center;margin-bottom:6px;">Marquer comme résolu</div>
     <div style="font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:20px;">L'aide a bien été apportée ?</div>
     <div class="input-group"><label>Commentaire (optionnel)</label><textarea placeholder="Sophie a apporté le manteau…"></textarea></div>
-    <button class="btn btn-success" onclick="closeSheet('sheet-resolve');goTo('screen-home')">Confirmer la résolution</button>
+    <button class="btn btn-success" onclick="resolveCurrentAlert()">Confirmer la résolution</button>
     <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-resolve')">Annuler</button>
   </div>
 </div>
@@ -1394,7 +1581,7 @@ function goTo(id) {
   const noNavScreens = [
     'screen-splash','screen-onboarding','screen-login','screen-register',
     'screen-create-1','screen-create-2','screen-create-3','screen-create-success',
-    'screen-chat'
+    'screen-chat','screen-rating'
   ];
   document.getElementById('bottom-nav').classList.toggle('visible', !noNavScreens.includes(id));
   if (id === 'screen-map') initMap();
@@ -1621,6 +1808,7 @@ function selectCat(el) {
   document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
   const cat = el.dataset.cat || 'other';
+  newAlertDraft.category = cat;
   const cfg = catConfig[cat];
   const lbl = document.getElementById('lbl-items');
   const field = document.getElementById('field-items');
@@ -1640,6 +1828,7 @@ function selectCat(el) {
 function selectUrgency(el, level) {
   document.querySelectorAll('.urgency-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
+  newAlertDraft.urgency = level === 'med' ? 'medium' : level;
   const info = document.getElementById('urgency-info');
   if (!info) return;
   const cfg = {
@@ -1657,23 +1846,89 @@ function initMap() {
   const map = L.map('map-leaflet', { zoomControl: false, attributionControl: false })
     .setView([48.8566, 2.3522], 14);
   window._leafletMap = map;
-  setTimeout(() => map.invalidateSize(), 100);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OSM' }).addTo(map);
-  [
-    { pos:[48.8596,2.3477], color:'#C62828', label:'👕 Manteau homme — Urgent' },
-    { pos:[48.8546,2.3572], color:'#C62828', label:'🍞 Nourriture famille — Urgent' },
-    { pos:[48.8576,2.3422], color:'#F57F17', label:'🧴 Kit hygiène — Modéré' },
-    { pos:[48.8516,2.3622], color:'#2E7D32', label:'👟 Chaussures — Résolu' },
-  ].forEach(m => L.circleMarker(m.pos,{color:m.color,fillColor:m.color,fillOpacity:.9,radius:12,weight:2}).addTo(map).bindPopup(m.label));
-  window._userMarker = L.circleMarker([48.8566,2.3522],{color:'#1565C0',fillColor:'#1565C0',fillOpacity:1,radius:8,weight:2}).addTo(map).bindPopup('📍 Votre position');
-  window._mapCircle = L.circle([48.8566,2.3522],{radius:3000,color:'#E85D04',fillColor:'#E85D04',fillOpacity:.07,weight:2,dashArray:'6'}).addTo(map);
+  /* on laisse le temps au DOM de rendre la div avant d'invalider */
+  setTimeout(() => map.invalidateSize(), 300);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OSM', maxZoom:19 }).addTo(map);
+
+  const mapAlerts = [
+    { pos:[48.8596,2.3477], color:'#C62828', alertId:'alert-1',  emoji:'👕', label:'Manteau homme — Urgent' },
+    { pos:[48.8546,2.3572], color:'#C62828', alertId:'alert-2',  emoji:'🍞', label:'Nourriture famille — Urgent' },
+    { pos:[48.8576,2.3422], color:'#F57F17', alertId:'alert-3',  emoji:'🧴', label:'Kit hygiène — Modéré' },
+    { pos:[48.8516,2.3622], color:'#2E7D32', alertId:null,       emoji:'✓',  label:'Chaussures — Résolu' },
+    { pos:[48.8606,2.3502], color:'#C62828', alertId:'alert-6',  emoji:'💊', label:'Médicaments — Urgent' },
+    { pos:[48.8536,2.3542], color:'#C62828', alertId:'alert-8',  emoji:'🍼', label:'Lait infantile — Urgent' },
+    { pos:[48.8556,2.3462], color:'#F57F17', alertId:'alert-4',  emoji:'🏠', label:'Couverture — Modéré' },
+    { pos:[48.8586,2.3562], color:'#C62828', alertId:'alert-10', emoji:'🧥', label:'Manteau femme — Urgent' },
+    { pos:[48.8526,2.3482], color:'#F57F17', alertId:'alert-12', emoji:'🩹', label:'Soins urgents — Modéré' },
+    { pos:[48.8566,2.3612], color:'#F57F17', alertId:'alert-7',  emoji:'🥣', label:'Soupe chaude — Modéré' },
+    { pos:[48.8506,2.3502], color:'#C62828', alertId:'alert-9',  emoji:'👟', label:'Chaussures taille 43' },
+    { pos:[48.8616,2.3442], color:'#F57F17', alertId:'alert-13', emoji:'🏕', label:'Hébergement urgence' },
+  ];
+
+  mapAlerts.forEach(m => {
+    /* divIcon : grand bouton rond avec emoji — bien cliquable sur touch */
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="
+        background:${m.color};color:white;border-radius:50%;
+        width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+        font-size:18px;border:2.5px solid white;
+        box-shadow:0 3px 10px rgba(0,0,0,.35);cursor:pointer;
+        transition:transform .15s;">
+        ${m.emoji}
+      </div>`,
+      iconSize: [40, 40],
+      iconAnchor: [20, 20],
+      popupAnchor: [0, -24],
+    });
+
+    const marker = L.marker(m.pos, { icon }).addTo(map);
+
+    if (m.alertId) {
+      /* popup cliquable avec bouton de navigation */
+      marker.bindPopup(`
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;min-width:150px;">${m.emoji} ${m.label}</div>
+        <button onclick="openAlert('${m.alertId}');setNav('nav-home');"
+          style="background:#E85D04;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;width:100%;">
+          Voir le signalement →
+        </button>`, { maxWidth: 220, closeButton: false });
+      /* clic direct sur l'icône → ouvre la fiche sans popup */
+      marker.on('click', function(e) {
+        L.DomEvent.stopPropagation(e);
+        openAlert(m.alertId);
+        setNav('nav-home');
+      });
+    } else {
+      marker.bindPopup(`<div style="font-size:13px;color:#2E7D32;font-weight:700;">✓ ${m.label}</div>`, { closeButton: false });
+    }
+  });
+
+  /* marqueur position utilisateur */
+  window._userMarker = L.divIcon({
+    className: '',
+    html: `<div style="background:#1565C0;border-radius:50%;width:18px;height:18px;border:3px solid white;box-shadow:0 0 0 4px rgba(21,101,192,.25);"></div>`,
+    iconSize: [18, 18], iconAnchor: [9, 9],
+  });
+  window._userMarker = L.marker([48.8566, 2.3522], { icon: window._userMarker, zIndexOffset: 1000 })
+    .addTo(map).bindPopup('📍 Votre position');
+  window._mapCircle = L.circle([48.8566,2.3522],{
+    radius:3000, color:'#E85D04', fillColor:'#E85D04', fillOpacity:.07, weight:2, dashArray:'6'
+  }).addTo(map);
+}
+
+/* adapte la position du marqueur utilisateur après géolocalisation */
+function _moveUserMarker(lat, lng) {
+  if (window._userMarker) window._userMarker.setLatLng([lat, lng]);
+  if (window._mapCircle)  window._mapCircle.setLatLng([lat, lng]);
 }
 
 function initMapMini() {
   if (mapMiniInit) return; mapMiniInit = true;
   const map = L.map('map-mini',{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false}).setView([48.8566,2.3522],15);
+  window._miniMap = map;
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-  L.marker([48.8566,2.3522]).addTo(map);
+  window._miniMarker = L.marker([48.8566,2.3522]).addTo(map);
 }
 
 setTimeout(() => goTo('screen-onboarding'), 2200);
@@ -1940,9 +2195,10 @@ function openAlert(id) {
       <div style="display:flex;gap:10px;font-size:14px;"><span>🗂</span><span style="color:var(--text-muted);">${a.category} — ${a.items}</span></div>
       <div style="display:flex;gap:10px;font-size:14px;"><span>⏱</span><span style="color:var(--text-muted);">${a.time}</span></div>
       <div style="display:flex;gap:10px;align-items:center;font-size:14px;"><span>👤</span>
-        <div style="display:flex;align-items:center;gap:6px;">
+        <div style="display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="openOtherProfile('${a.signaler}','${a.signalerRating}','${a.signalerAvatar}','${a.signalerColor}')">
           <div class="avatar ${a.signalerColor}" style="width:24px;height:24px;font-size:12px;">${a.signalerAvatar}</div>
           <span style="color:var(--text-muted);">${a.signaler} • ⭐ ${a.signalerRating}</span>
+          <span style="font-size:12px;color:var(--primary);font-weight:600;">Voir profil ›</span>
         </div>
       </div>
     </div>`;
@@ -2101,7 +2357,7 @@ function renderHelpBar() {
       <div style="display:flex;gap:8px;margin-top:10px;">
         <button class="btn btn-secondary" style="flex:1;font-size:13px;" onclick="openSheet('sheet-help')">✏️ Modifier mon message</button>
         <button class="btn btn-success" style="flex:1;font-size:14px;" onclick="openSheet('sheet-deliver')">📦 Remis</button>
-        <button class="btn btn-secondary" style="font-size:14px;" onclick="goTo('screen-chat');setNav('nav-msg')">💬</button>
+        <button class="btn btn-secondary" style="font-size:14px;" onclick="openPrivateChat('sophie');setNav('nav-msg')">💬</button>
       </div>`;
 
   } else if (alertTakenBy === 'delivered') {
@@ -2265,6 +2521,232 @@ function confirmDelivery() {
   }, 400);
   alertTakenBy = 'delivered';
   renderHelpBar();
+  /* Préremplir l'écran de notation avec le signalant */
+  const aRate = currentAlertId ? alertsData[currentAlertId] : null;
+  if (aRate) {
+    const nameEl = document.getElementById('rating-name');
+    const avatarEl = document.getElementById('rating-avatar');
+    if (nameEl) nameEl.textContent = aRate.signaler;
+    if (avatarEl) {
+      avatarEl.textContent = aRate.signalerAvatar;
+      avatarEl.className = 'avatar ' + (aRate.signalerColor || 'av-orange');
+      avatarEl.style.cssText = 'width:52px;height:52px;font-size:22px;';
+    }
+  }
+  selectedRating = 0;
+  document.querySelectorAll('.star-btn').forEach(s => s.style.filter = 'grayscale(1)');
+  const lbl = document.getElementById('rating-label');
+  if (lbl) lbl.textContent = '';
+  const submitBtn = document.getElementById('rating-submit-btn');
+  if (submitBtn) submitBtn.disabled = true;
+  goTo('screen-rating');
+}
+
+/* ── PROFIL AUTRE UTILISATEUR ── */
+/* ── TOAST ── */
+function showToast(msg, duration) {
+  const phone = document.getElementById('phone');
+  const old = phone.querySelector('.global-toast');
+  if (old) old.remove();
+  const t = document.createElement('div');
+  t.className = 'global-toast';
+  t.textContent = msg;
+  t.style.cssText = 'position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:#212121;color:white;font-size:13px;font-weight:600;padding:10px 18px;border-radius:20px;z-index:9999;white-space:nowrap;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.3);';
+  phone.appendChild(t);
+  setTimeout(() => t && t.remove(), duration || 2500);
+}
+
+/* ── CONVERSATIONS PRIVÉES ── */
+const privateChatData = {
+  sophie: {
+    name: 'Sophie L.', subtitle: 'En ligne maintenant',
+    avatar: 'S', color: 'av-blue',
+    alertRef: '👕 Manteau + pantalon — Rue de la Paix',
+    messages: [
+      { from:'Sophie L.',   avatar:'S', color:'av-blue',   text:"Bonjour ! J'ai vu votre signalement. J'ai un manteau taille L en très bon état.", time:'14:20' },
+      { from:'Stéphane B.', avatar:'S', color:'av-orange', text:"Super ! Merci beaucoup. Pouvez-vous l'apporter rue de la Paix ?", time:'14:22' },
+      { from:'Sophie L.',   avatar:'S', color:'av-blue',   text:"Oui je pars maintenant, j'arrive dans environ 20 minutes.", time:'14:28' },
+      { from:'Stéphane B.', avatar:'S', color:'av-orange', text:"Il est encore là, côté vitrine de la pharmacie. Merci !", time:'14:30' },
+      { from:'Sophie L.',   avatar:'S', color:'av-blue',   text:"Je peux apporter le manteau dans 20 minutes", time:'14:32' },
+    ]
+  },
+  thomas: {
+    name: 'Thomas R.', subtitle: 'Vu hier',
+    avatar: 'T', color: 'av-green',
+    alertRef: '🧴 Kit hygiène — Gare du Nord',
+    messages: [
+      { from:'Thomas R.',   avatar:'T', color:'av-green',  text:"Bonjour ! Je passe devant la gare du Nord ce soir vers 18h. Je peux apporter le kit.", time:'Hier 15:10' },
+      { from:'Stéphane B.', avatar:'S', color:'av-orange', text:"Merci Thomas ! Il était encore là tout à l'heure. Je vais confirmer.", time:'Hier 15:30' },
+      { from:'Thomas R.',   avatar:'T', color:'av-green',  text:"C'est fait ! Il était encore là, très reconnaissant. 🙏", time:'Hier 18:12' },
+      { from:'Stéphane B.', avatar:'S', color:'av-orange', text:"Merci beaucoup, tu es formidable !", time:'Hier 18:20' },
+      { from:'Thomas R.',   avatar:'T', color:'av-green',  text:"Parfait, merci beaucoup ! 🙏", time:'Hier 16:45' },
+    ]
+  }
+};
+
+function openPrivateChat(chatId) {
+  const data = privateChatData[chatId];
+  if (!data) return;
+  document.getElementById('chat-title').textContent = data.name;
+  document.getElementById('chat-subtitle').textContent = data.subtitle;
+  const avatarEl = document.getElementById('chat-avatars');
+  avatarEl.innerHTML = `<div class="avatar ${data.color}" style="width:32px;height:32px;font-size:14px;border:2px solid var(--white);">${data.avatar}</div>`;
+  document.getElementById('chat-context').textContent = '💬 Re: ' + data.alertRef;
+  const wrap = document.getElementById('chat-messages');
+  wrap.innerHTML = data.messages.map(m => {
+    const mine = m.from === 'Stéphane B.';
+    return `<div class="msg ${mine ? 'msg-out' : 'msg-in'}">
+      ${!mine ? `<div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;padding-left:4px;">${m.from}</div>` : ''}
+      <div class="msg-bubble">${m.text}</div>
+      <div class="msg-time">${m.time}</div>
+    </div>`;
+  }).join('');
+  wrap.scrollTop = wrap.scrollHeight;
+  goTo('screen-chat');
+}
+
+/* ── CRÉER UN SIGNALEMENT → FEED ── */
+const newAlertDraft = { category: 'clothing', urgency: 'high' };
+
+function publishAndGoHome() {
+  addNewAlertToFeed();
+  goToApp();
+  setTimeout(() => showToast('🎉 Signalement publié ! 12 personnes notifiées'), 400);
+}
+
+function addNewAlertToFeed() {
+  const catIcons  = { clothing:'👕', food:'🍞', hygiene:'🧴', medical:'💊', shelter:'🏠', transport:'🚌', support:'🤝', other:'❓' };
+  const catLabels = { clothing:'Vêtements', food:'Nourriture', hygiene:'Hygiène', medical:'Médical', shelter:'Abri', transport:'Transport', support:'Accompagnement', other:'Autre' };
+  const urgBadge  = { high:'<span class="badge badge-high">🔴 Urgent</span>', medium:'<span class="badge badge-medium">🟡 Modéré</span>', low:'<span class="badge badge-low">🟢 Faible</span>' };
+  const cat  = newAlertDraft.category || 'clothing';
+  const urg  = newAlertDraft.urgency  || 'high';
+  const items = (document.getElementById('input-items') || {}).value || '';
+  const desc  = (document.getElementById('desc-textarea') || {}).value || 'Signalement créé à l\'instant.';
+  const addr  = (document.querySelector('#screen-create-3 input[type="text"]') || {}).value || 'Votre position actuelle';
+  const newId = 'alert-new-' + Date.now();
+  alertsData[newId] = {
+    icon: catIcons[cat],
+    title: catLabels[cat] + (items ? ' — ' + items : ''),
+    desc: desc || 'Signalement publié à l\'instant.',
+    location: addr || 'Votre position', distance: '< 100 m',
+    category: catLabels[cat], items: items || 'Non précisé', time: 'À l\'instant',
+    signaler: 'Stéphane B.', signalerRating: '4.8', signalerAvatar: 'S', signalerColor: 'av-orange',
+    urgency: urg, initialState: 'open',
+  };
+  const card = document.createElement('div');
+  card.className = 'alert-card';
+  card.dataset.alertId = newId;
+  card.dataset.category = cat;
+  card.onclick = () => openAlert(newId);
+  card.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+      <div class="alert-cat-icon">${catIcons[cat]}</div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:700;margin-bottom:3px;">${alertsData[newId].title}</div>
+        <div style="font-size:14px;color:var(--text-muted);">${desc}</div>
+      </div>
+      ${urgBadge[urg]}
+    </div>
+    <div class="alert-card-meta">
+      <span>📍 ${addr}</span><span>⏱ À l'instant</span>
+      <span class="badge badge-open">Ouvert</span>
+      <span style="font-size:12px;color:var(--primary);font-weight:700;">✨ Nouveau</span>
+    </div>`;
+  const feedList = document.getElementById('feed-list');
+  if (feedList) feedList.prepend(card);
+  updateChipCounts();
+}
+
+/* ── RÉSOLUTION ALERTE ── */
+function resolveCurrentAlert() {
+  if (currentAlertId && alertsData[currentAlertId]) {
+    alertsData[currentAlertId].initialState = 'done';
+  }
+  const card = document.querySelector(`[data-alert-id="${currentAlertId}"]`);
+  if (card) {
+    card.style.opacity = '.75';
+    card.dataset.status = 'done';
+    card.querySelectorAll('.card-status-banner').forEach(b => b.remove());
+    card.querySelectorAll('.badge-high,.badge-medium,.badge-low,.badge-open').forEach(b => {
+      b.className = 'badge badge-done'; b.textContent = '✓ Résolu';
+    });
+  }
+  closeSheet('sheet-resolve');
+  goTo('screen-home');
+  setTimeout(() => showToast('✅ Signalement marqué comme résolu'), 300);
+}
+
+/* ── GÉOLOCALISATION ÉTAPE 3 ── */
+function useMyLocationCreate() {
+  const input = document.querySelector('#screen-create-3 input[type="text"]');
+  const btn   = document.querySelector('#screen-create-3 .btn-outline');
+  if (btn) { btn.textContent = '⏳ Localisation…'; btn.disabled = true; }
+  const done = (val) => {
+    if (input) input.value = val;
+    if (btn) {
+      btn.textContent = '📍 Position détectée ✓';
+      btn.disabled = false;
+      btn.style.cssText += ';background:var(--success-light);border-color:var(--success);color:var(--success);';
+    }
+    if (window._miniMap && window._miniMarker) {
+      const parts = val.split(',').map(parseFloat);
+      if (parts.length === 2 && !isNaN(parts[0])) {
+        window._miniMap.setView(parts, 15);
+        window._miniMarker.setLatLng(parts);
+      }
+    }
+  };
+  if (!navigator.geolocation) { done('Paris, France'); return; }
+  navigator.geolocation.getCurrentPosition(
+    p => done(p.coords.latitude.toFixed(5) + ', ' + p.coords.longitude.toFixed(5)),
+    () => done('Paris, France (position approximative)')
+  );
+}
+
+/* ── MOT DE PASSE OUBLIÉ ── */
+function forgotPassword() {
+  showToast('📧 Un lien de réinitialisation a été envoyé');
+}
+
+function openOtherProfile(name, rating, avatar, avatarColor) {
+  document.getElementById('other-profile-title').textContent = name;
+  document.getElementById('other-profile-name').textContent = name;
+  document.getElementById('other-profile-sub').textContent = 'Paris • ⭐ ' + rating + '/5';
+  const avatarEl = document.getElementById('other-profile-avatar');
+  avatarEl.textContent = avatar;
+  avatarEl.className = 'profile-avatar';
+  const bgMap = { 'av-orange': 'rgba(255,255,255,.25)', 'av-blue': 'rgba(255,255,255,.25)', 'av-green': 'rgba(255,255,255,.25)', 'av-purple': 'rgba(255,255,255,.25)' };
+  avatarEl.style.background = bgMap[avatarColor] || 'rgba(255,255,255,.25)';
+  const ratingEl = document.getElementById('other-stat-rating');
+  if (ratingEl) ratingEl.textContent = rating;
+  goTo('screen-other-profile');
+}
+
+/* ── NOTATION ── */
+let selectedRating = 0;
+const ratingLabels = ['', 'Pas terrible…', 'Peut mieux faire', 'Bien', 'Très bien !', 'Excellent — merci 🙏'];
+
+function selectStar(val) {
+  selectedRating = val;
+  document.querySelectorAll('.star-btn').forEach((s, i) => {
+    s.style.filter = i < val ? 'none' : 'grayscale(1)';
+  });
+  const lbl = document.getElementById('rating-label');
+  if (lbl) lbl.textContent = ratingLabels[val] || '';
+  const btn = document.getElementById('rating-submit-btn');
+  if (btn) btn.disabled = false;
+}
+
+function submitRating() {
+  /* Dans la maquette : on retourne à l'accueil avec un toast */
+  goToApp();
+  setTimeout(() => {
+    const toast = document.createElement('div');
+    toast.textContent = '⭐ Avis envoyé — merci !';
+    toast.style.cssText = 'position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:#212121;color:white;font-size:14px;font-weight:600;padding:10px 20px;border-radius:20px;z-index:9999;white-space:nowrap;';
+    document.getElementById('phone').appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+  }, 300);
 }
 
 // init step 2 form + compteurs chips
