@@ -554,23 +554,11 @@ body {
     <button class="icon-btn" onclick="goTo('screen-notif')" style="position:relative;">🔔<span style="position:absolute;width:8px;height:8px;background:var(--danger);border-radius:50%;top:0;right:0;"></span></button>
   </div>
 
-  <!-- Hero CTA -->
-  <div style="padding:12px 16px 10px;background:var(--white);border-bottom:1px solid var(--border-light);">
-    <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">
+  <!-- Contexte feed -->
+  <div style="padding:8px 16px 6px;background:var(--white);border-bottom:1px solid var(--border-light);">
+    <div style="font-size:13px;color:var(--text-muted);line-height:1.5;">
       Ce soir, <strong id="hero-count" style="color:var(--primary);">17 personnes</strong> ont besoin d'aide à moins de <strong style="color:var(--primary);" id="radius-pill-val">3 km</strong>
     </div>
-    <button onclick="navHistory=[];resetCreateForm();goTo('screen-create-1')"
-      style="width:100%;padding:15px 18px;background:var(--primary);color:white;
-             border:none;border-radius:var(--radius);cursor:pointer;
-             display:flex;align-items:center;gap:12px;
-             box-shadow:var(--shadow-primary);transition:transform .15s;"
-      ontouchstart="this.style.transform='scale(.98)'" ontouchend="this.style.transform=''">
-      <span style="font-size:26px;flex-shrink:0;">🚨</span>
-      <div style="text-align:left;flex:1;">
-        <div style="font-size:15px;font-weight:800;line-height:1.2;">Je vois quelqu'un qui a besoin d'aide</div>
-        <div style="font-size:12px;opacity:.8;margin-top:2px;">Signaler en 20 secondes →</div>
-      </div>
-    </button>
   </div>
 
   <!-- Chips catégorie -->
@@ -1050,7 +1038,7 @@ body {
   <div class="screen-body" style="padding:20px 16px;">
     <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div></div>
 
-    <div class="section-title" style="margin-bottom:14px;">Que faut-il apporter ?</div>
+    <div class="section-title" style="margin-bottom:14px;">Que faut-il apporter ? <span style="font-size:13px;font-weight:400;color:var(--text-muted);">plusieurs choix possibles</span></div>
     <div class="category-grid">
       <div class="cat-card" data-cat="food" onclick="selectCat(this)"><div class="cat-icon">🍞</div><div class="cat-label">Nourriture / Eau</div></div>
       <div class="cat-card" data-cat="clothing" onclick="selectCat(this)"><div class="cat-icon">👕</div><div class="cat-label">Vêtements</div></div>
@@ -1059,8 +1047,12 @@ body {
       <div class="cat-card" data-cat="shelter" onclick="selectCat(this)"><div class="cat-icon">🏠</div><div class="cat-label">Abri / Hébergement</div></div>
       <div class="cat-card" data-cat="other" onclick="selectCat(this)"><div class="cat-icon">❓</div><div class="cat-label">Autre besoin</div></div>
     </div>
+    <div id="cat-selection-count" style="font-size:13px;font-weight:700;text-align:center;padding:10px 0 2px;color:var(--text-muted);min-height:24px;">Sélectionnez au moins un besoin</div>
 
-    <div class="divider" style="margin:18px 0;"></div>
+    <!-- Détails dynamiques par catégorie -->
+    <div id="cat-details-container"></div>
+
+    <div class="divider" style="margin:10px 0 18px;"></div>
 
     <!-- Description -->
     <div class="input-group" id="field-desc">
@@ -2066,15 +2058,120 @@ function updateChipCounts() {
 
 function selectCat(el) {
   const cat = el.dataset.cat || 'other';
-  // Sélection simple : un seul besoin à la fois
-  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  newAlertDraft.category = cat;
+  const idx = newAlertDraft.categories.indexOf(cat);
+  if (idx >= 0) {
+    newAlertDraft.categories.splice(idx, 1);
+    el.classList.remove('selected');
+  } else {
+    newAlertDraft.categories.push(cat);
+    el.classList.add('selected');
+  }
+  const n = newAlertDraft.categories.length;
+  const counter = document.getElementById('cat-selection-count');
+  if (counter) {
+    if (n === 0) { counter.textContent = 'Sélectionnez au moins un besoin'; counter.style.color = 'var(--text-muted)'; }
+    else { counter.textContent = n === 1 ? '1 besoin sélectionné ✓' : n + ' besoins sélectionnés ✓'; counter.style.color = 'var(--primary)'; }
+  }
+  updateCatDetails();
+}
+
+function updateCatDetails() {
+  const container = document.getElementById('cat-details-container');
+  if (!container) return;
+  const cats = newAlertDraft.categories;
+
+  // Catégories qui ont un champ de détail
+  const detailCats = ['clothing', 'medical', 'food', 'shelter'];
+  const active = cats.filter(c => detailCats.includes(c));
+
+  if (active.length === 0) { container.innerHTML = ''; return; }
+
+  container.innerHTML = '<div style="margin-top:14px;display:flex;flex-direction:column;gap:14px;">' +
+    active.map(cat => {
+      if (cat === 'clothing') return `
+        <div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px;">👕 Taille approximative</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;" id="size-btns">
+            ${['XS','S','M','L','XL','XXL'].map(s => `
+              <button type="button" onclick="selectSize('${s}',this)"
+                style="padding:8px 14px;border:2px solid var(--border);border-radius:10px;
+                       background:var(--white);font-size:14px;font-weight:700;cursor:pointer;
+                       transition:all .15s;" data-size="${s}">${s}</button>
+            `).join('')}
+            <button type="button" onclick="selectSize('?',this)"
+              style="padding:8px 14px;border:2px solid var(--border);border-radius:10px;
+                     background:var(--white);font-size:14px;font-weight:700;cursor:pointer;" data-size="?">
+              ? Je sais pas
+            </button>
+          </div>
+          <input id="detail-shoe-size" type="text" placeholder="Pointure ? (ex : 42)"
+            style="margin-top:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;
+                   font-size:14px;width:100%;outline:none;font-family:inherit;background:var(--white);">
+        </div>`;
+      if (cat === 'medical') return `
+        <div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px;">💊 Quel médicament / soin ?</div>
+          <input id="detail-medical" type="text" placeholder="ex : Doliprane, pansements, Ventoline…"
+            style="padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;
+                   font-size:14px;width:100%;outline:none;font-family:inherit;background:var(--white);">
+        </div>`;
+      if (cat === 'food') return `
+        <div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px;">🍞 Type de nourriture</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            ${['Repas chaud','Sandwich','Eau','Lait bébé','Conserves','Café'].map(f => `
+              <button type="button" onclick="toggleFoodTag('${f}',this)"
+                style="padding:7px 13px;border:2px solid var(--border);border-radius:20px;
+                       background:var(--white);font-size:13px;font-weight:600;cursor:pointer;
+                       transition:all .15s;" data-food="${f}">${f}</button>
+            `).join('')}
+          </div>
+        </div>`;
+      if (cat === 'shelter') return `
+        <div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px;">🏠 Quel type d'abri / protection ?</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            ${['Couverture','Sac de couchage','Tente','Hébergement d\'urgence'].map(s => `
+              <button type="button" onclick="toggleShelterTag('${s}',this)"
+                style="padding:7px 13px;border:2px solid var(--border);border-radius:20px;
+                       background:var(--white);font-size:13px;font-weight:600;cursor:pointer;
+                       transition:all .15s;" data-shelter="${s}">${s}</button>
+            `).join('')}
+          </div>
+        </div>`;
+      return '';
+    }).join('') + '</div>';
+}
+
+function selectSize(size, btn) {
+  document.querySelectorAll('#size-btns button').forEach(b => {
+    b.style.borderColor = 'var(--border)';
+    b.style.background = 'var(--white)';
+    b.style.color = 'var(--text)';
+  });
+  btn.style.borderColor = 'var(--primary)';
+  btn.style.background = 'var(--primary-light)';
+  btn.style.color = 'var(--primary)';
+  newAlertDraft.size = size === '?' ? null : size;
+}
+
+function toggleFoodTag(val, btn) {
+  const active = btn.style.background === 'var(--primary-light)';
+  btn.style.borderColor = active ? 'var(--border)' : 'var(--primary)';
+  btn.style.background  = active ? 'var(--white)'  : 'var(--primary-light)';
+  btn.style.color       = active ? 'var(--text)'   : 'var(--primary)';
+}
+
+function toggleShelterTag(val, btn) {
+  const active = btn.style.background === 'var(--primary-light)';
+  btn.style.borderColor = active ? 'var(--border)' : 'var(--primary)';
+  btn.style.background  = active ? 'var(--white)'  : 'var(--primary-light)';
+  btn.style.color       = active ? 'var(--text)'   : 'var(--primary)';
 }
 
 function goToStep2() {
-  if (!newAlertDraft.category) {
-    showToast('Choisissez un type de besoin ☝️');
+  if (newAlertDraft.categories.length === 0) {
+    showToast('Sélectionnez au moins un besoin ☝️');
     return;
   }
   goTo('screen-create-2');
@@ -2475,17 +2572,35 @@ function openAlert(id) {
     : alertTakenBy === 'other'
       ? `<span class="badge" style="background:var(--success-light);color:var(--success);">En cours</span>`
       : `<span class="badge badge-open">Ouvert</span>`;
+  // Bloc "Ce dont il a besoin" : liste structurée si multi-catégorie, sinon fallback classique
+  const needsHtml = (a.needsDetail && a.needsDetail.length)
+    ? `<div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Ce dont il a besoin</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${a.needsDetail.map(n => `
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <span style="font-size:20px;flex-shrink:0;">${n.icon}</span>
+              <div>
+                <div style="font-size:14px;font-weight:700;">${n.label}</div>
+                ${n.detail ? `<div style="font-size:13px;color:var(--text-muted);margin-top:1px;">${n.detail}</div>` : ''}
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`
+    : `<div style="display:flex;gap:10px;font-size:14px;margin-bottom:8px;"><span>🗂</span><span style="color:var(--text-muted);">${a.category}${a.items ? ' — ' + a.items : ''}</span></div>`;
+
   document.getElementById('alert-fiche').innerHTML = `
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-      <div style="font-size:40px;">${a.icon}</div>
-      <div><div style="font-size:19px;font-weight:700;">${a.title}</div>
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+      <div style="font-size:36px;flex-shrink:0;">${a.needsDetail && a.needsDetail.length > 1 ? a.needsDetail.slice(0,2).map(n=>n.icon).join('') : a.icon}</div>
+      <div style="flex:1;">
+        <div style="font-size:18px;font-weight:700;line-height:1.3;">${a.title}</div>
         <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">${urgencyBadge}${statusBadge}</div>
       </div>
     </div>
-    <p style="font-size:15px;color:var(--text-muted);line-height:1.5;margin-bottom:14px;">${a.desc}</p>
+    ${a.desc ? `<p style="font-size:15px;color:var(--text-muted);line-height:1.5;margin-bottom:14px;">${a.desc}</p>` : ''}
+    ${needsHtml}
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;gap:10px;font-size:14px;"><span>📍</span><span style="color:var(--text-muted);">${a.location} — ${a.distance}</span></div>
-      <div style="display:flex;gap:10px;font-size:14px;"><span>🗂</span><span style="color:var(--text-muted);">${a.category} — ${a.items}</span></div>
       <div style="display:flex;gap:10px;font-size:14px;"><span>⏱</span><span style="color:var(--text-muted);">${a.time}</span></div>
       <div style="display:flex;gap:10px;align-items:center;font-size:14px;"><span>👤</span>
         <div style="display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="openOtherProfile('${a.signaler}','${a.signalerRating}','${a.signalerAvatar}','${a.signalerColor}')">
@@ -3303,12 +3418,15 @@ function openPrivateChat(chatId) {
 }
 
 /* ── CRÉER UN SIGNALEMENT → FEED ── */
-const newAlertDraft = { category: null, urgency: 'high' };
+const newAlertDraft = { categories: [], urgency: 'high' };
 
 function resetCreateForm() {
-  newAlertDraft.category = null;
+  newAlertDraft.categories = [];
   newAlertDraft.urgency = 'high';
+  newAlertDraft.size = null;
   document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
+  const counter = document.getElementById('cat-selection-count');
+  if (counter) { counter.textContent = 'Sélectionnez au moins un besoin'; counter.style.color = 'var(--text-muted)'; }
   const ta = document.getElementById('desc-textarea');
   if (ta) ta.value = '';
   switchDescMode('text');
@@ -3358,7 +3476,8 @@ function addNewAlertToFeed() {
   const catIcons  = { clothing:'👕', food:'🍞', hygiene:'🧴', medical:'💊', shelter:'🏠', transport:'🚌', support:'🤝', other:'❓', juridique:'⚖️', consult:'🩺', psy:'🧠' };
   const catLabels = { clothing:'Vêtements', food:'Nourriture', hygiene:'Hygiène', medical:'Médical / Soins', shelter:'Abri', transport:'Transport', support:'Accompagnement', other:'Autre besoin', juridique:'Conseil juridique', consult:'Consultation médicale', psy:'Soutien psychologique' };
   const urgBadge  = { high:'<span class="badge badge-high">🔴 Urgent</span>', medium:'<span class="badge badge-medium">🟡 Modéré</span>', low:'<span class="badge badge-low">🟢 Faible</span>' };
-  const cat = newAlertDraft.category || 'other';
+  const cats = newAlertDraft.categories.length > 0 ? newAlertDraft.categories : ['other'];
+  const primaryCat = cats[0];
   const urg = newAlertDraft.urgency || 'high';
   const hasAudio = descMode === 'audio' && (audioBlob || audioSeconds > 0);
   const rawDesc = hasAudio
@@ -3366,32 +3485,66 @@ function addNewAlertToFeed() {
     : ((document.getElementById('desc-textarea') || {}).value || '');
   const addr = (document.getElementById('create-address-input') || {}).value || 'Votre position actuelle';
   const newId = 'alert-new-' + Date.now();
-  const title = catLabels[cat];
-  const descDisplay = rawDesc || 'Signalement publié à l\'instant.';
+  // Lire tous les détails saisis pour chaque catégorie
+  const sizeBtn  = document.querySelector('#size-btns button[style*="primary-light"]');
+  const sizeVal  = (sizeBtn && sizeBtn.dataset.size !== '?') ? sizeBtn.dataset.size : null;
+  const shoeVal  = ((document.getElementById('detail-shoe-size') || {}).value || '').trim() || null;
+  const medVal   = ((document.getElementById('detail-medical') || {}).value || '').trim() || null;
+  const foodTags = [...document.querySelectorAll('[data-food]')].filter(b => b.style.background === 'var(--primary-light)').map(b => b.dataset.food).join(', ') || null;
+  const shelterTags = [...document.querySelectorAll('[data-shelter]')].filter(b => b.style.background === 'var(--primary-light)').map(b => b.dataset.shelter).join(', ') || null;
+
+  // Construire un objet détail par catégorie
+  const catDetailMap = {
+    clothing: [sizeVal ? 'Taille ' + sizeVal : '', shoeVal ? 'Pointure ' + shoeVal : ''].filter(Boolean).join(', ') || null,
+    medical:  medVal,
+    food:     foodTags,
+    shelter:  shelterTags,
+  };
+  // Tableau structuré des besoins avec détails
+  const needsDetail = cats.map(c => ({
+    cat: c,
+    icon: catIcons[c] || '❓',
+    label: catLabels[c],
+    detail: catDetailMap[c] || null,
+  }));
+
+  const iconDisplay = cats.slice(0, 2).map(c => catIcons[c] || '❓').join('');
+  const extras = cats.length - 1;
+  // Titre : catégorie principale + son détail + mention des autres
+  const primaryDetail = catDetailMap[primaryCat];
+  const title = catLabels[primaryCat]
+    + (primaryDetail ? ' — ' + primaryDetail : '')
+    + (extras > 0 ? ` + ${extras} autre${extras > 1 ? 's' : ''}` : '');
+  const tagsHtml = cats.length > 1
+    ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${cats.map(c => `<span style="background:var(--primary-light);color:var(--primary);border-radius:20px;padding:2px 9px;font-size:12px;font-weight:600;">${catIcons[c]} ${catLabels[c]}</span>`).join('')}</div>`
+    : '';
   alertsData[newId] = {
-    icon: catIcons[cat], title,
-    desc: descDisplay,
+    icon: catIcons[primaryCat], title,
+    desc: rawDesc || '',
     location: addr, distance: '< 100 m',
-    categories: [cat], category: catLabels[cat],
-    items: '', time: 'À l\'instant',
+    categories: cats, category: catLabels[primaryCat],
+    items: primaryDetail || '',
+    needsDetail,
+    time: 'À l\'instant',
     signaler: 'Stéphane B.', signalerRating: '4.8', signalerAvatar: 'S', signalerColor: 'av-orange',
     urgency: urg, initialState: 'open',
   };
   const card = document.createElement('div');
   card.className = 'alert-card';
   card.dataset.alertId = newId;
-  card.dataset.category = cat;
-  card.dataset.categories = cat;
+  card.dataset.category = primaryCat;
+  card.dataset.categories = cats.join(' ');
   card.onclick = () => openAlert(newId);
   card.innerHTML = `
     <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
-      <div class="alert-cat-icon">${catIcons[cat]}</div>
+      <div class="alert-cat-icon" style="font-size:${cats.length > 1 ? '16px' : '22px'};letter-spacing:-2px;">${iconDisplay}</div>
       <div style="flex:1;">
         <div style="font-size:16px;font-weight:700;margin-bottom:3px;">${title}</div>
         <div style="font-size:14px;color:var(--text-muted);">${rawDesc || 'Signalement à l\'instant'}</div>
       </div>
       ${urgBadge[urg]}
     </div>
+    ${tagsHtml}
     <div class="alert-card-meta">
       <span>📍 ${addr}</span><span>⏱ À l'instant</span>
       <span class="badge badge-open">Ouvert</span>
