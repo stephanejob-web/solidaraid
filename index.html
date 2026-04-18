@@ -223,21 +223,21 @@ body {
 .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 4px 0; }
 .cat-card {
   background: var(--white); border: 2px solid var(--border-light);
-  border-radius: var(--radius); padding: 20px 12px;
+  border-radius: var(--radius); padding: 24px 12px 20px;
   display: flex; flex-direction: column; align-items: center; gap: 10px;
   cursor: pointer; transition: all .2s; text-align: center;
   box-shadow: var(--shadow-sm); position: relative;
 }
 .cat-card:active { transform: scale(.96); }
-.cat-card.selected { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 0 3px rgba(240,90,26,.12); }
+.cat-card.selected { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 0 3px rgba(240,90,26,.15); }
 .cat-card.selected::after {
   content: '✓'; position: absolute; top: 8px; right: 8px;
-  width: 20px; height: 20px; border-radius: 50%;
+  width: 22px; height: 22px; border-radius: 50%;
   background: var(--primary); color: white;
-  font-size: 11px; font-weight: 800;
+  font-size: 12px; font-weight: 800;
   display: flex; align-items: center; justify-content: center;
 }
-.cat-icon  { font-size: 34px; line-height: 1; }
+.cat-icon  { font-size: 40px; line-height: 1; }
 .cat-label { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; }
 
 /* ── Urgency ── */
@@ -548,43 +548,54 @@ body {
 <div id="screen-home" class="screen">
   <div class="topbar" style="padding:46px 16px 10px;gap:8px;">
     <div style="flex:1;">
-      <div style="font-size:17px;font-weight:800;color:var(--text);line-height:1.2;">Signalements proches</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">Bonjour, Stéphane 👋</div>
+      <div style="font-size:18px;font-weight:800;color:var(--primary);line-height:1.2;">SolidarAid</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:1px;">Bonjour, Stéphane 👋</div>
     </div>
     <button class="icon-btn" onclick="goTo('screen-notif')" style="position:relative;">🔔<span style="position:absolute;width:8px;height:8px;background:var(--danger);border-radius:50%;top:0;right:0;"></span></button>
-    <button class="icon-btn" onclick="openSheet('sheet-filters')">⚙️</button>
+  </div>
+
+  <!-- Hero CTA -->
+  <div style="padding:12px 16px 10px;background:var(--white);border-bottom:1px solid var(--border-light);">
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">
+      Ce soir, <strong id="hero-count" style="color:var(--primary);">17 personnes</strong> ont besoin d'aide à moins de <strong style="color:var(--primary);" id="radius-pill-val">3 km</strong>
+    </div>
+    <button onclick="navHistory=[];resetCreateForm();goTo('screen-create-1')"
+      style="width:100%;padding:15px 18px;background:var(--primary);color:white;
+             border:none;border-radius:var(--radius);cursor:pointer;
+             display:flex;align-items:center;gap:12px;
+             box-shadow:var(--shadow-primary);transition:transform .15s;"
+      ontouchstart="this.style.transform='scale(.98)'" ontouchend="this.style.transform=''">
+      <span style="font-size:26px;flex-shrink:0;">🚨</span>
+      <div style="text-align:left;flex:1;">
+        <div style="font-size:15px;font-weight:800;line-height:1.2;">Je vois quelqu'un qui a besoin d'aide</div>
+        <div style="font-size:12px;opacity:.8;margin-top:2px;">Signaler en 20 secondes →</div>
+      </div>
+    </button>
   </div>
 
   <!-- Chips catégorie -->
   <div class="chips-scroll" style="padding:8px 16px 8px;background:var(--white);">
-    <div class="chip active" data-filter="all" onclick="toggleChip(this)">Tous <span class="chip-count">15</span></div>
+    <div class="chip active" data-filter="all" onclick="toggleChip(this)">Tous <span class="chip-count">17</span></div>
     <div class="chip" data-filter="food" onclick="toggleChip(this)">🍞 Nourriture <span class="chip-count">3</span></div>
     <div class="chip" data-filter="clothing" onclick="toggleChip(this)">👕 Vêtements <span class="chip-count">3</span></div>
     <div class="chip" data-filter="hygiene" onclick="toggleChip(this)">🧴 Hygiène <span class="chip-count">2</span></div>
     <div class="chip" data-filter="medical" onclick="toggleChip(this)">💊 Médical <span class="chip-count">2</span></div>
     <div class="chip" data-filter="shelter" onclick="toggleChip(this)">🏠 Abri <span class="chip-count">2</span></div>
-    <div class="chip" data-filter="juridique" onclick="toggleChip(this)">⚖️ Juridique <span class="chip-count">1</span></div>
-    <div class="chip" data-filter="consult" onclick="toggleChip(this)">🩺 Médecin <span class="chip-count">1</span></div>
-    <div class="chip" data-filter="psy" onclick="toggleChip(this)">🧠 Psy <span class="chip-count">1</span></div>
   </div>
 
-  <!-- Barre rayon — toujours visible, toujours accessible -->
+  <!-- Rayon compact -->
   <button onclick="openSheet('sheet-radius')"
     style="display:flex;align-items:center;justify-content:space-between;
-           flex-shrink:0;width:100%;padding:8px 16px;
-           border:none;cursor:pointer;position:relative;z-index:10;
+           flex-shrink:0;width:100%;padding:7px 16px;
+           border:none;cursor:pointer;
            background:var(--primary-light);
-           border-top:1px solid rgba(232,93,4,.15);
-           border-bottom:1px solid rgba(232,93,4,.15);">
-    <span style="display:flex;align-items:center;gap:8px;">
-      <span style="font-size:15px;">📍</span>
-      <span style="font-size:13px;font-weight:600;color:var(--primary);">Rayon :</span>
-      <span style="font-size:15px;font-weight:800;color:var(--primary);" id="radius-pill-val">3 km</span>
-    </span>
+           border-top:1px solid rgba(232,93,4,.10);
+           border-bottom:1px solid rgba(232,93,4,.10);">
     <span style="display:flex;align-items:center;gap:6px;">
-      <span style="font-size:13px;color:var(--text-muted);" id="radius-bar-count">4 personnes dans le besoin</span>
-      <span style="font-size:13px;color:var(--primary);font-weight:700;">Modifier ›</span>
+      <span style="font-size:12px;">📍</span>
+      <span style="font-size:12px;font-weight:600;color:var(--primary);" id="radius-bar-count">17 personnes dans le besoin</span>
     </span>
+    <span style="font-size:12px;color:var(--primary);font-weight:700;">Modifier le rayon ›</span>
   </button>
 
   <div class="screen-body" style="padding:8px 16px 80px;">
@@ -858,8 +869,45 @@ body {
         </div>
       </div>
 
-      <!-- SUPPORT / Résolu (hors filtre catégorie) -->
-      <div class="alert-card" data-category="support" style="opacity:.75;">
+      <div class="alert-card" data-alert-id="alert-17" data-category="transport" onclick="openAlert('alert-17')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🚌</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Transport — rendez-vous préfecture</div>
+            <div style="font-size:14px;color:var(--text-muted);">Homme ~45 ans, rue de la Roquette — besoin d'un covoiturage pour un rendez-vous urgent demain matin</div>
+          </div>
+          <span class="badge badge-medium">🟡 Modéré</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 0,9 km</span><span>🚶 11 min</span><span>⏱ il y a 1h</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <div class="alert-card" data-alert-id="alert-18" data-category="support" onclick="openAlert('alert-18')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🤝</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Accompagnement — démarches CAF</div>
+            <div style="font-size:14px;color:var(--text-muted);">Femme ~35 ans avec 2 enfants, Belleville — courrier CAF incompréhensible, besoin d'aide pour le dossier</div>
+          </div>
+          <span class="badge badge-medium">🟡 Modéré</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 2,0 km</span><span>🚶 25 min</span><span>⏱ il y a 2h</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Toggle résolus -->
+    <div id="show-resolved-toggle" style="text-align:center;padding:12px 0 4px;cursor:pointer;" onclick="toggleResolvedCards()">
+      <span style="font-size:13px;color:var(--text-muted);font-weight:600;border-bottom:1px dashed var(--border);">Voir 1 signalement résolu ↓</span>
+    </div>
+    <!-- Cartes résolues (masquées par défaut) -->
+    <div id="resolved-cards" style="display:none;">
+      <div class="alert-card" data-category="support" style="opacity:.65;">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon" style="background:var(--success-light);">🤝</div>
           <div style="flex:1;">
@@ -874,8 +922,8 @@ body {
           <span style="font-size:12px;color:var(--success);font-weight:600;">Aidée par Thomas B.</span>
         </div>
       </div>
-
     </div>
+
   </div>
 </div>
 
@@ -1000,86 +1048,43 @@ body {
 <div id="screen-create-1" class="screen" style="background:var(--white);">
   <div class="topbar"><button class="back-btn" onclick="goBack()">←</button><h1>Nouveau signalement</h1></div>
   <div class="screen-body" style="padding:20px 16px;">
-    <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+    <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div></div>
 
-    <!-- Situation de la personne -->
-    <div class="section-title">Quelle est sa situation ?</div>
-    <div id="situation-cards">
-      <div class="situation-card selected" data-sit="rue" onclick="selectSituation(this,'rue')">
-        <div class="situation-icon">🚶</div>
-        <div><div class="situation-title">Dans la rue / sans abri</div><div class="situation-sub">Personne sans domicile, espace public</div></div>
-      </div>
-      <div class="situation-card" data-sit="home" onclick="selectSituation(this,'home')">
-        <div class="situation-icon">🏠</div>
-        <div><div class="situation-title">À domicile</div><div class="situation-sub">Logement précaire, revenus modestes, difficultés financières</div></div>
-      </div>
-      <div class="situation-card" data-sit="aged" onclick="selectSituation(this,'aged')">
-        <div class="situation-icon">🧓</div>
-        <div><div class="situation-title">Personne âgée / isolée</div><div class="situation-sub">Mobilité réduite, isolement social</div></div>
-      </div>
-      <div class="situation-card" data-sit="family" onclick="selectSituation(this,'family')">
-        <div class="situation-icon">👨‍👩‍👧</div>
-        <div><div class="situation-title">Famille en difficulté</div><div class="situation-sub">Avec enfants, fin de mois difficile</div></div>
-      </div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="section-title">De quoi a-t-il besoin ? <span style="font-size:13px;font-weight:400;color:var(--text-muted);">plusieurs choix possibles</span></div>
-    <div id="cat-selection-count">1 besoin sélectionné</div>
+    <div class="section-title" style="margin-bottom:14px;">Que faut-il apporter ?</div>
     <div class="category-grid">
-      <div class="cat-card selected" data-cat="clothing" onclick="selectCat(this)"><div class="cat-icon">👕</div><div class="cat-label">Vêtements</div></div>
       <div class="cat-card" data-cat="food" onclick="selectCat(this)"><div class="cat-icon">🍞</div><div class="cat-label">Nourriture / Eau</div></div>
+      <div class="cat-card" data-cat="clothing" onclick="selectCat(this)"><div class="cat-icon">👕</div><div class="cat-label">Vêtements</div></div>
       <div class="cat-card" data-cat="hygiene" onclick="selectCat(this)"><div class="cat-icon">🧴</div><div class="cat-label">Hygiène</div></div>
-      <div class="cat-card" data-cat="medical" onclick="selectCat(this)"><div class="cat-icon">💊</div><div class="cat-label">Médicaments</div></div>
+      <div class="cat-card" data-cat="medical" onclick="selectCat(this)"><div class="cat-icon">💊</div><div class="cat-label">Médical / Soins</div></div>
       <div class="cat-card" data-cat="shelter" onclick="selectCat(this)"><div class="cat-icon">🏠</div><div class="cat-label">Abri / Hébergement</div></div>
-      <div class="cat-card" data-cat="transport" onclick="selectCat(this)"><div class="cat-icon">🚌</div><div class="cat-label">Transport</div></div>
-      <div class="cat-card" data-cat="support" onclick="selectCat(this)"><div class="cat-icon">🤝</div><div class="cat-label">Accompagnement</div></div>
-      <div class="cat-card" data-cat="other" onclick="selectCat(this)"><div class="cat-icon">❓</div><div class="cat-label">Autre</div></div>
-      <div class="cat-card" data-cat="juridique" onclick="selectCat(this)"><div class="cat-icon">⚖️</div><div class="cat-label">Conseil juridique</div></div>
-      <div class="cat-card" data-cat="consult" onclick="selectCat(this)"><div class="cat-icon">🩺</div><div class="cat-label">Consultation médicale</div></div>
-      <div class="cat-card" data-cat="psy" onclick="selectCat(this)"><div class="cat-icon">🧠</div><div class="cat-label">Soutien psychologique</div></div>
+      <div class="cat-card" data-cat="other" onclick="selectCat(this)"><div class="cat-icon">❓</div><div class="cat-label">Autre besoin</div></div>
     </div>
-  </div>
-  <div style="padding:16px 16px 32px;background:var(--white);">
-    <button class="btn btn-primary" onclick="goToStep2()">Suivant →</button>
-  </div>
-</div>
 
-<!-- CREATE STEP 2 -->
-<div id="screen-create-2" class="screen" style="background:var(--white);">
-  <div class="topbar"><button class="back-btn" onclick="goTo('screen-create-1')">←</button><h1>Détails du besoin</h1></div>
-  <div class="screen-body" style="padding:20px 16px;">
-    <div class="steps"><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div></div>
-    <!-- Sections de besoins générées dynamiquement par buildStep2Form() -->
-    <div id="needs-sections-container"></div>
+    <div class="divider" style="margin:18px 0;"></div>
+
+    <!-- Description -->
     <div class="input-group" id="field-desc">
-      <label style="margin-bottom:10px;">Description <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel)</span></label>
-      <!-- Onglets mode -->
+      <label style="margin-bottom:10px;">En quelques mots <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel)</span></label>
       <div style="display:flex;gap:8px;margin-bottom:12px;">
         <button id="tab-text" class="desc-tab active" onclick="switchDescMode('text')">✏️ Écrire</button>
-        <button id="tab-audio" class="desc-tab" onclick="switchDescMode('audio')">🎙️ Message audio</button>
+        <button id="tab-audio" class="desc-tab" onclick="switchDescMode('audio')">🎙️ Audio</button>
       </div>
-      <!-- Mode texte -->
       <div id="desc-text-mode">
-        <textarea id="desc-textarea" placeholder="Décrivez la situation en quelques mots…" style="margin-bottom:0;"></textarea>
+        <textarea id="desc-textarea" placeholder="ex : Homme ~40 ans, t-shirt bleu, devant la pharmacie. Il fait froid." style="margin-bottom:0;height:80px;"></textarea>
       </div>
-      <!-- Mode audio -->
       <div id="desc-audio-mode" style="display:none;">
-        <!-- Idle : bouton enregistrer -->
         <div id="audio-idle">
           <button class="audio-record-btn" id="audio-record-btn" onclick="toggleAudioRecord()">
             <span style="font-size:22px;">🎙️</span> Appuyer pour enregistrer
           </button>
-          <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">Max 60 secondes — votre voix, pas de photo de la personne</div>
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">Max 60 secondes — voix uniquement, pas de photo de la personne</div>
         </div>
-        <!-- En cours d'enregistrement -->
         <div id="audio-recording" style="display:none;">
           <button class="audio-record-btn recording" onclick="toggleAudioRecord()">
             <div class="rec-dot"></div>
             <span id="audio-timer">0:00</span> — Appuyer pour arrêter
           </button>
         </div>
-        <!-- Aperçu après enregistrement -->
         <div id="audio-preview" style="display:none;">
           <div class="audio-preview-card">
             <div style="width:40px;height:40px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🎙️</div>
@@ -1092,66 +1097,67 @@ body {
         </div>
       </div>
     </div>
-    <!-- Photos de l'endroit -->
-    <div class="input-group">
-      <label style="margin-bottom:4px;">Photos de l'endroit <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel — 3 max)</span></label>
-      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Aide les bénévoles à localiser la personne — <strong>pas de photo de la personne</strong></div>
-      <div id="location-photos-grid" style="display:flex;gap:10px;">
-        <!-- Slot 1 — bouton ajouter -->
-        <div id="photo-slot-1" class="photo-slot" onclick="addLocationPhoto(1)">
-          <span style="font-size:24px;">📷</span>
-          <span style="font-size:11px;color:var(--text-muted);margin-top:4px;">Photo 1</span>
-        </div>
-        <!-- Slot 2 — désactivé jusqu'à ce que le 1 soit rempli -->
-        <div id="photo-slot-2" class="photo-slot photo-slot-disabled">
-          <span style="font-size:24px;opacity:.3;">📷</span>
-          <span style="font-size:11px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 2</span>
-        </div>
-        <!-- Slot 3 — désactivé jusqu'à ce que le 2 soit rempli -->
-        <div id="photo-slot-3" class="photo-slot photo-slot-disabled">
-          <span style="font-size:24px;opacity:.3;">📷</span>
-          <span style="font-size:11px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 3</span>
-        </div>
-      </div>
-    </div>
+
     <div style="display:flex;gap:10px;align-items:center;background:var(--warning-light);border-radius:10px;padding:12px;">
-      <input type="checkbox" style="width:auto;"><span style="font-size:14px;">La personne est un mineur (moins de 18 ans)</span>
+      <input type="checkbox" id="mineur-check" style="width:auto;flex-shrink:0;"><span style="font-size:14px;">La personne est un mineur (moins de 18 ans)</span>
     </div>
   </div>
   <div style="padding:16px 16px 32px;background:var(--white);">
-    <button class="btn btn-primary" onclick="goTo('screen-create-3')">Suivant →</button>
+    <button class="btn btn-primary" onclick="goToStep2()">Suivant →</button>
   </div>
 </div>
 
-<!-- CREATE STEP 3 -->
-<div id="screen-create-3" class="screen" style="background:var(--white);">
-  <div class="topbar"><button class="back-btn" onclick="goTo('screen-create-2')">←</button><h1>Localisation & urgence</h1></div>
+<!-- CREATE STEP 2 -->
+<div id="screen-create-2" class="screen" style="background:var(--white);">
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-create-1')">←</button><h1>Localisation & urgence</h1></div>
   <div class="screen-body" style="padding:20px 16px;">
-    <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
-    <div class="section-title">Position de la personne</div>
-    <div style="background:var(--bg);border-radius:var(--radius);height:160px;overflow:hidden;margin-bottom:12px;">
+    <div class="steps"><div class="step-dot done"></div><div class="step-dot active"></div></div>
+
+    <div class="section-title">Où se trouve-t-il ?</div>
+
+    <!-- Bouton géolocalisation principale -->
+    <button id="loc-btn" class="btn btn-primary" style="margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px;" onclick="useMyLocationCreate()">
+      <span style="font-size:20px;">📍</span> Utiliser ma position actuelle
+    </button>
+
+    <div class="input-group">
+      <label>Ou saisir une adresse</label>
+      <input id="create-address-input" type="text" placeholder="15 rue de la Paix, Paris…">
+    </div>
+
+    <!-- Mini carte -->
+    <div style="background:var(--bg);border-radius:var(--radius);height:150px;overflow:hidden;margin-bottom:20px;">
       <div id="map-mini"></div>
     </div>
-    <button class="btn btn-outline" style="margin-bottom:16px;" onclick="useMyLocationCreate()">📍 Utiliser ma position actuelle</button>
-    <div class="input-group"><label>Ou saisir une adresse</label><input type="text" placeholder="15 rue de la Paix, Paris…"></div>
 
-    <!-- Mode de rencontre — généré dynamiquement selon la situation (buildMeetOptions) -->
-    <div class="section-title" style="margin-top:8px;">Comment se retrouver ?</div>
-    <div id="meet-options-container" style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px;"></div>
-    <div class="divider"></div>
+    <!-- Photos de l'endroit (optionnel) -->
+    <div class="input-group">
+      <label style="margin-bottom:4px;">Photo de l'endroit <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel)</span></label>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Aide les bénévoles à localiser — <strong>pas de photo de la personne</strong></div>
+      <div id="location-photos-grid" style="display:flex;gap:10px;">
+        <div id="photo-slot-1" class="photo-slot" onclick="addLocationPhoto(1)"><span style="font-size:24px;">📷</span><span style="font-size:11px;color:var(--text-muted);margin-top:4px;">Photo 1</span></div>
+        <div id="photo-slot-2" class="photo-slot photo-slot-disabled"><span style="font-size:24px;opacity:.3;">📷</span><span style="font-size:11px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 2</span></div>
+        <div id="photo-slot-3" class="photo-slot photo-slot-disabled"><span style="font-size:24px;opacity:.3;">📷</span><span style="font-size:11px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 3</span></div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin:8px 0 20px;"></div>
+
     <div class="section-title">Niveau d'urgence</div>
     <div class="urgency-row">
       <div class="urgency-btn u-low" onclick="selectUrgency(this,'low')">🟢 Faible</div>
       <div class="urgency-btn u-med" onclick="selectUrgency(this,'med')">🟡 Modéré</div>
       <div class="urgency-btn u-high selected" onclick="selectUrgency(this,'high')">🔴 Urgent</div>
     </div>
-    <div id="urgency-info" style="margin-top:16px;background:var(--danger-light);border-radius:10px;padding:12px;font-size:14px;color:var(--danger);">⚠️ Urgent — notifié immédiatement aux utilisateurs proches</div>
+    <div id="urgency-info" style="margin-top:14px;background:var(--danger-light);border-radius:10px;padding:12px;font-size:14px;color:var(--danger);">⚠️ Urgent — notifié immédiatement aux utilisateurs proches</div>
   </div>
   <div style="padding:16px 16px 32px;background:var(--white);">
-    <button class="btn btn-primary" onclick="goTo('screen-create-success')">Publier le signalement 🚀</button>
-
+    <button class="btn btn-primary" onclick="publishAndShowSuccess()">Publier le signalement 🚀</button>
   </div>
 </div>
+
+<!-- CREATE STEP 3 — redirige vers étape 2 (conservé pour compatibilité liens) -->
+<div id="screen-create-3" class="screen" style="display:none!important;"></div>
 
 <!-- CREATE SUCCESS -->
 <div id="screen-create-success" class="screen" style="background:var(--white);">
@@ -1163,7 +1169,7 @@ body {
       <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px;">Rappel — Dignité de la personne</div>
       <div style="font-size:13px;color:var(--text-muted);">Merci de ne pas photographier la personne dans le besoin.</div>
     </div>
-    <button class="btn btn-primary" onclick="publishAndGoHome()" style="width:100%;">Retour à l'accueil</button>
+    <button class="btn btn-primary" onclick="goToApp();setTimeout(()=>showToast('🎉 Signalement publié ! 12 personnes notifiées'),400);" style="width:100%;">Retour à l'accueil</button>
   </div>
 </div>
 
@@ -1269,7 +1275,7 @@ body {
 
 <!-- NOTIFICATIONS -->
 <div id="screen-notif" class="screen">
-  <div class="topbar"><button class="back-btn" onclick="goTo('screen-home')">←</button><h1>Notifications</h1><button class="icon-btn" style="font-size:13px;color:var(--primary);width:auto;">Tout lire</button></div>
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-home')">←</button><h1>Notifications</h1><button class="icon-btn" style="font-size:13px;color:var(--primary);width:auto;" onclick="markAllNotifsRead()">Tout lire</button></div>
   <div class="screen-body">
     <!-- Notif signalant : aide remise, confirmation demandée -->
     <div class="notif-item unread" onclick="goTo('screen-alert-detail');setNav('nav-home')">
@@ -1917,7 +1923,7 @@ function goTo(id) {
   ];
   document.getElementById('bottom-nav').classList.toggle('visible', !noNavScreens.includes(id));
   if (id === 'screen-map') initMap();
-  if (id === 'screen-create-3') { initMapMini(); buildMeetOptions(); }
+  if (id === 'screen-create-2') initMapMini();
   if (id === 'screen-alert-detail') resetHelpBar();
 }
 
@@ -2035,6 +2041,7 @@ function enhanceFeedCards() {
 
 function updateChipCounts() {
   const allCards = document.querySelectorAll('#screen-home .alert-card[data-alert-id]');
+  const total = allCards.length;
   document.querySelectorAll('.chips-scroll .chip[data-filter]').forEach(chip => {
     const filter = chip.dataset.filter;
     let count = 0;
@@ -2046,206 +2053,31 @@ function updateChipCounts() {
     const badge = chip.querySelector('.chip-count');
     if (badge) badge.textContent = count;
   });
+  // Mettre à jour les compteurs "X personnes dans le besoin"
+  const label = `${total} personne${total > 1 ? 's' : ''} dans le besoin`;
+  const el1 = document.getElementById('radius-bar-count');
+  const el2 = document.getElementById('radius-count-text');
+  const el3 = document.getElementById('hero-count');
+  if (el1) el1.textContent = label;
+  if (el2) el2.textContent = label;
+  if (el3) el3.textContent = total + ' personne' + (total > 1 ? 's' : '');
 }
 
-const catConfig = {
-  clothing: {
-    label: 'Vêtements recherchés', showSize: true, useSelect: false,
-    placeholder: 'ex: manteau, pantalon, chaussettes, ceinture…'
-  },
-  food: {
-    label: 'Aliments / boissons', showSize: false, useSelect: true,
-    options: [
-      '— Choisir…',
-      'Repas chaud complet',
-      'Sandwich / casse-croûte',
-      'Conserves / nourriture longue durée',
-      'Eau potable',
-      'Lait infantile / nourriture bébé',
-      'Café / boisson chaude',
-      'Panier alimentaire varié',
-      'Autre aliment',
-    ]
-  },
-  hygiene: {
-    label: 'Articles d\'hygiène', showSize: false, useSelect: true,
-    options: [
-      '— Choisir…',
-      'Savon / gel douche',
-      'Shampooing',
-      'Dentifrice + brosse à dents',
-      'Rasoir / mousse à raser',
-      'Déodorant',
-      'Serviettes hygiéniques',
-      'Couches bébé',
-      'Papier toilette',
-      'Kit hygiène complet',
-      'Autre article d\'hygiène',
-    ]
-  },
-  medical: {
-    label: 'Médicaments / soins', showSize: false, useSelect: true,
-    options: [
-      '— Choisir…',
-      'Antidouleur (doliprane, ibuprofène…)',
-      'Pansements / kit de premiers secours',
-      'Crème antiseptique',
-      'Médicament contre la toux / grippe',
-      'Ordonnance à récupérer en pharmacie',
-      'Lunettes de vue / lentilles',
-      'Autre médicament',
-    ]
-  },
-  shelter: {
-    label: 'Besoin d\'abri', showSize: false, useSelect: true,
-    options: [
-      '— Choisir…',
-      'Place en centre d\'hébergement d\'urgence',
-      'Couverture / sac de couchage',
-      'Tente / abri de fortune',
-      'Hébergement chez un particulier (court terme)',
-      'Accès à un point chaud / réchauffement',
-      'Autre besoin d\'abri',
-    ]
-  },
-  transport: {
-    label: 'Déplacement nécessaire', showSize: false, useSelect: true,
-    options: [
-      '— Choisir…',
-      'Ticket de métro / bus',
-      'Trajet vers hôpital / urgences',
-      'Trajet vers centre d\'hébergement',
-      'Trajet vers administration (préfecture, CAF…)',
-      'Trajet retour depuis la rue',
-      'Autre déplacement',
-    ]
-  },
-  support: {
-    label: 'Type d\'accompagnement', showSize: false, useSelect: true,
-    options: [
-      '— Choisir…',
-      'Rendez-vous médecin / hôpital',
-      'Démarches CAF / Pôle Emploi',
-      'Démarches à la préfecture',
-      'Aide à la lecture / compréhension de documents',
-      'Traduction / interprétariat',
-      'Accompagnement à la pharmacie',
-      'Aide pour téléphoner',
-      'Accès aux droits (logement, RSA…)',
-      'Autre accompagnement',
-    ]
-  },
-  other: {
-    label: 'Ce dont il a besoin', showSize: false, useSelect: false,
-    placeholder: 'Décrivez le besoin en quelques mots…'
-  },
-  juridique: {
-    label: 'Type de question juridique', showSize: false, useSelect: true,
-    options: [
-      '— Choisir…',
-      'Droit au RSA / allocation sociale',
-      'Aide Médicale de l\'État (AME)',
-      'Droit au logement / expulsion',
-      'Régularisation / titre de séjour',
-      'Droit du travail / licenciement',
-      'Accès à la protection juridictionnelle',
-      'Autre question juridique',
-    ]
-  },
-  consult: {
-    label: 'Type de consultation médicale', showSize: false, useSelect: true,
-    options: [
-      '— Choisir…',
-      'Consultation généraliste',
-      'Soins urgents (blessure, douleur aiguë)',
-      'Suivi traitement chronique',
-      'Consultation pédiatrique (enfant)',
-      'Santé mentale / psychiatrie',
-      'Bilan de santé général',
-      'Autre consultation médicale',
-    ]
-  },
-  psy: {
-    label: 'Type de soutien psychologique', showSize: false, useSelect: true,
-    options: [
-      '— Choisir…',
-      'Écoute et soutien émotionnel',
-      'Trauma / choc post-traumatique',
-      'Anxiété / dépression',
-      'Situation de crise aiguë',
-      'Suivi psychologique régulier',
-      'Accompagnement enfant / adolescent',
-      'Autre soutien psychologique',
-    ]
-  },
-};
 
 function selectCat(el) {
   const cat = el.dataset.cat || 'other';
-  const idx = newAlertDraft.categories.indexOf(cat);
-  if (idx >= 0) {
-    newAlertDraft.categories.splice(idx, 1);
-    el.classList.remove('selected');
-  } else {
-    newAlertDraft.categories.push(cat);
-    el.classList.add('selected');
-  }
-  updateCatCounter();
-}
-
-function updateCatCounter() {
-  const n = newAlertDraft.categories.length;
-  const counter = document.getElementById('cat-selection-count');
-  if (counter) {
-    counter.textContent = n === 0 ? 'Sélectionnez au moins un besoin' :
-      n === 1 ? '1 besoin sélectionné' : n + ' besoins sélectionnés';
-    counter.style.color = n === 0 ? 'var(--danger)' : 'var(--primary)';
-  }
+  // Sélection simple : un seul besoin à la fois
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  newAlertDraft.category = cat;
 }
 
 function goToStep2() {
-  if (newAlertDraft.categories.length === 0) {
-    showToast('Sélectionnez au moins un besoin ☝️');
+  if (!newAlertDraft.category) {
+    showToast('Choisissez un type de besoin ☝️');
     return;
   }
-  buildStep2Form();
   goTo('screen-create-2');
-}
-
-function buildStep2Form() {
-  const catIcons  = { clothing:'👕', food:'🍞', hygiene:'🧴', medical:'💊', shelter:'🏠', transport:'🚌', support:'🤝', other:'❓', juridique:'⚖️', consult:'🩺', psy:'🧠' };
-  const catLabels = { clothing:'Vêtements', food:'Nourriture / Eau', hygiene:'Hygiène', medical:'Médicaments', shelter:'Abri / Hébergement', transport:'Transport', support:'Accompagnement', other:'Autre', juridique:'Conseil juridique', consult:'Consultation médicale', psy:'Soutien psychologique' };
-  const container = document.getElementById('needs-sections-container');
-  if (!container) return;
-  const cats = newAlertDraft.categories;
-  container.innerHTML = '';
-  cats.forEach((cat, idx) => {
-    const cfg = catConfig[cat];
-    if (!cfg) return;
-    const sizeOptions = ['— Non précisé','XS','S','M','L','XL','XXL','38','39','40','41','42','43','44','45'].map(o=>`<option>${o}</option>`).join('');
-    let fieldsHtml = cfg.useSelect
-      ? `<div class="input-group"><label>${cfg.label}</label><select data-cat="${cat}" data-field="items">${cfg.options.map(o=>`<option>${o}</option>`).join('')}</select></div>`
-      : `<div class="input-group"><label>${cfg.label}</label><input type="text" placeholder="${cfg.placeholder||''}" data-cat="${cat}" data-field="items"></div>`;
-    if (cfg.showSize) {
-      fieldsHtml += `<div style="display:flex;gap:12px;">
-        <div class="input-group" style="flex:1;"><label>Taille / pointure</label><select data-cat="${cat}" data-field="size">${sizeOptions}</select></div>
-        <div class="input-group" style="flex:1;"><label>Quantité</label><input type="number" value="1" min="1" data-cat="${cat}" data-field="qty"></div>
-      </div>`;
-    }
-    const section = document.createElement('div');
-    section.className = 'need-section';
-    section.dataset.cat = cat;
-    section.innerHTML = `
-      <div class="need-section-header">
-        <span style="font-size:26px;line-height:1;">${catIcons[cat]}</span>
-        <div>
-          <div style="font-size:15px;font-weight:800;">${catLabels[cat]}</div>
-          ${cats.length > 1 ? `<div style="font-size:12px;color:var(--primary);opacity:.7;">Besoin ${idx+1} sur ${cats.length}</div>` : ''}
-        </div>
-      </div>
-      ${fieldsHtml}`;
-    container.appendChild(section);
-  });
 }
 
 function selectUrgency(el, level) {
@@ -2287,6 +2119,11 @@ function initMap() {
     { pos:[48.8566,2.3612], color:'#F57F17', alertId:'alert-7',  emoji:'🥣', label:'Soupe chaude — Modéré' },
     { pos:[48.8506,2.3502], color:'#C62828', alertId:'alert-9',  emoji:'👟', label:'Chaussures taille 43' },
     { pos:[48.8616,2.3442], color:'#F57F17', alertId:'alert-13', emoji:'🏕', label:'Hébergement urgence' },
+    { pos:[48.8636,2.3532], color:'#C62828', alertId:'alert-14', emoji:'⚖️', label:'Conseil juridique — Urgent' },
+    { pos:[48.8576,2.3652], color:'#C62828', alertId:'alert-15', emoji:'🩺', label:'Consultation médicale — Urgent' },
+    { pos:[48.8546,2.3592], color:'#C62828', alertId:'alert-16', emoji:'🧠', label:'Soutien psychologique — Urgent' },
+    { pos:[48.8558,2.3498], color:'#F57F17', alertId:'alert-17', emoji:'🚌', label:'Transport — Modéré' },
+    { pos:[48.8572,2.3648], color:'#F57F17', alertId:'alert-18', emoji:'🤝', label:'Accompagnement — Modéré' },
   ];
 
   mapAlerts.forEach(m => {
@@ -2602,6 +2439,22 @@ const alertsData = {
     category:'Soutien psychologique', items:'Situation de crise aiguë', time:'Il y a 12 min',
     signaler:'Lucie M.', signalerRating:'4.9', signalerAvatar:'L', signalerColor:'av-green',
     urgency:'high', initialState:'open',
+  },
+  'alert-17': {
+    icon:'🚌', title:'Transport — rendez-vous préfecture',
+    desc:"Homme d'environ 45 ans, sans véhicule ni titre de transport. Il a un rendez-vous urgent à la préfecture demain matin pour renouveler ses papiers. Il ne peut pas marcher jusqu'aux transports en commun. Cherche un covoiturage ou un conducteur bénévole.",
+    location:'Rue de la Roquette, Paris 11e', distance:'0,9 km • 🚶 11 min à pied',
+    category:'Transport', items:'Covoiturage / accompagnement véhicule', time:'Il y a 1h',
+    signaler:'Fatou D.', signalerRating:'4.7', signalerAvatar:'F', signalerColor:'av-purple',
+    urgency:'medium', initialState:'open',
+  },
+  'alert-18': {
+    icon:'🤝', title:'Accompagnement — démarches CAF',
+    desc:"Femme d'environ 35 ans avec deux enfants, domiciliée Belleville. Elle a reçu un courrier de la CAF qu'elle ne comprend pas. Elle a besoin qu'on l'accompagne ou l'aide à comprendre les démarches et compléter un dossier en ligne.",
+    location:'Rue de Belleville, Paris 20e', distance:'2,0 km • 🚶 25 min à pied',
+    category:'Accompagnement', items:'Aide administrative CAF', time:'Il y a 2h',
+    signaler:'Omar S.', signalerRating:'4.5', signalerAvatar:'O', signalerColor:'av-orange',
+    urgency:'medium', initialState:'open',
   },
 };
 
@@ -2996,63 +2849,10 @@ function startAudioTimer() {
   }, 1000);
 }
 
-/* ── SITUATION DE LA PERSONNE ── */
-function selectSituation(el, val) {
-  newAlertDraft.situation = val;
-  document.querySelectorAll('.situation-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-}
-
-/* ── MODE DE RENCONTRE ── */
-let meetMode = 'place';
-
-function buildMeetOptions() {
-  const sit = newAlertDraft.situation || 'rue';
-  const container = document.getElementById('meet-options-container');
-  if (!container) return;
-
-  const isStreet = sit === 'rue';
-  const opts = isStreet ? [
-    { val:'place',    emoji:'📍', title:'Sur place',              sub:'Le bénévole se rend là où se trouve la personne', def:true },
-    { val:'rdv',      emoji:'🤝', title:'Point de rendez-vous',   sub:'Définir un lieu neutre nearby (café, pharmacie…)', rdv:true },
-    { val:'fetch',    emoji:'🚗', title:'Je peux aller la chercher', sub:'Le signaleur propose de l\'accompagner au bénévole' },
-  ] : [
-    { val:'delivery', emoji:'🏠', title:'Livraison à domicile',   sub:'Le bénévole apporte l\'aide à l\'adresse indiquée', def:true },
-    { val:'rdv',      emoji:'🤝', title:'Point de rendez-vous',   sub:'Se retrouver à un lieu neutre choisi ensemble', rdv:true },
-    { val:'canmove',  emoji:'🚶', title:'La personne peut se déplacer', sub:'Elle peut venir chercher l\'aide ou se retrouver ailleurs' },
-  ];
-
-  meetMode = opts.find(o => o.def)?.val || opts[0].val;
-
-  container.innerHTML = opts.map((opt, i) => `
-    <label class="meet-option" onclick="selectMeetMode('${opt.val}', this)">
-      <div class="meet-option-inner${i === 0 ? ' meet-selected' : ''}">
-        <span style="font-size:22px;">${opt.emoji}</span>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:700;">${opt.title}</div>
-          <div style="font-size:12px;color:var(--text-muted);">${opt.sub}</div>
-        </div>
-        <div class="meet-check" style="opacity:${i === 0 ? '1' : '0'};">✓</div>
-      </div>
-      ${opt.rdv ? `<div id="rdv-address-field" style="display:none;margin-top:10px;padding:0 4px;">
-        <input type="text" id="rdv-address-input" placeholder="Ex : Devant la pharmacie du Marché, Paris 11e…"
-          style="width:100%;padding:13px 16px;border:2px solid var(--primary);border-radius:14px;font-size:14px;outline:none;background:var(--white);font-family:inherit;">
-      </div>` : ''}
-    </label>`).join('');
-}
-
-function selectMeetMode(mode, labelEl) {
-  meetMode = mode;
-  document.querySelectorAll('#meet-options-container .meet-option-inner').forEach(el => {
-    el.classList.remove('meet-selected');
-    el.querySelector('.meet-check').style.opacity = '0';
-  });
-  const inner = labelEl.querySelector('.meet-option-inner');
-  inner.classList.add('meet-selected');
-  inner.querySelector('.meet-check').style.opacity = '1';
-  const rdvField = document.getElementById('rdv-address-field');
-  if (rdvField) rdvField.style.display = mode === 'rdv' ? 'block' : 'none';
-}
+/* ── STUB : fonctions supprimées mais conservées pour éviter erreurs de liaisons résiduelles ── */
+function selectSituation() {}
+function buildMeetOptions() {}
+function selectMeetMode() {}
 
 /* ── PHOTOS DE LOCALISATION ── */
 const locationPhotos = { 1: null, 2: null, 3: null };
@@ -3372,6 +3172,26 @@ function openDroitsQuestion(id) {
   goTo('screen-droits-detail');
 }
 
+function toggleResolvedCards() {
+  const container = document.getElementById('resolved-cards');
+  const toggle = document.getElementById('show-resolved-toggle');
+  if (!container || !toggle) return;
+  const isHidden = container.style.display === 'none';
+  container.style.display = isHidden ? '' : 'none';
+  toggle.querySelector('span').textContent = isHidden
+    ? 'Masquer les résolus ↑'
+    : 'Voir 1 signalement résolu ↓';
+}
+
+function markAllNotifsRead() {
+  document.querySelectorAll('#screen-notif .notif-item.unread').forEach(item => {
+    item.classList.remove('unread');
+    const dot = item.querySelector('.notif-dot');
+    if (dot) dot.classList.add('read');
+  });
+  showToast('✅ Toutes les notifications marquées comme lues');
+}
+
 function toggleDroitsChip(el, filter) {
   document.querySelectorAll('#screen-droits .chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
@@ -3483,25 +3303,49 @@ function openPrivateChat(chatId) {
 }
 
 /* ── CRÉER UN SIGNALEMENT → FEED ── */
-const newAlertDraft = { categories: ['clothing'], urgency: 'high', situation: 'rue' };
+const newAlertDraft = { category: null, urgency: 'high' };
 
 function resetCreateForm() {
-  // Remet les catégories à zéro (vêtements par défaut)
-  newAlertDraft.categories = ['clothing'];
+  newAlertDraft.category = null;
   newAlertDraft.urgency = 'high';
-  newAlertDraft.situation = 'rue';
-  document.querySelectorAll('.situation-card').forEach(c => c.classList.remove('selected'));
-  const defaultSit = document.querySelector('.situation-card[data-sit="rue"]');
-  if (defaultSit) defaultSit.classList.add('selected');
   document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
-  const defaultCard = document.querySelector('.cat-card[data-cat="clothing"]');
-  if (defaultCard) defaultCard.classList.add('selected');
-  updateCatCounter();
-  // Reset description
   const ta = document.getElementById('desc-textarea');
   if (ta) ta.value = '';
   switchDescMode('text');
   clearAudioRecord();
+  // Reset mineur checkbox
+  const minCheck = document.getElementById('mineur-check');
+  if (minCheck) minCheck.checked = false;
+  // Reset bouton localisation
+  const locBtn = document.getElementById('loc-btn');
+  if (locBtn) { locBtn.textContent = ''; locBtn.innerHTML = '<span style="font-size:20px;">📍</span> Utiliser ma position actuelle'; locBtn.disabled = false; locBtn.style.cssText = ''; }
+  const addrInput = document.getElementById('create-address-input');
+  if (addrInput) addrInput.value = '';
+  // Reset urgency
+  document.querySelectorAll('.urgency-btn').forEach(b => b.classList.remove('selected'));
+  const highBtn = document.querySelector('.urgency-btn.u-high');
+  if (highBtn) highBtn.classList.add('selected');
+  newAlertDraft.urgency = 'high';
+  // Reset photos
+  locationPhotos[1] = locationPhotos[2] = locationPhotos[3] = null;
+  [1,2,3].forEach(i => {
+    const slot = document.getElementById('photo-slot-'+i);
+    if (!slot) return;
+    if (i === 1) {
+      slot.innerHTML = '<span style="font-size:24px;">📷</span><span style="font-size:11px;color:var(--text-muted);margin-top:4px;">Photo 1</span>';
+      slot.classList.remove('photo-slot-disabled');
+      slot.onclick = () => addLocationPhoto(1);
+    } else {
+      slot.innerHTML = `<span style="font-size:24px;opacity:.3;">📷</span><span style="font-size:11px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo ${i}</span>`;
+      slot.classList.add('photo-slot-disabled');
+      slot.onclick = null;
+    }
+  });
+}
+
+function publishAndShowSuccess() {
+  addNewAlertToFeed();
+  goTo('screen-create-success');
 }
 
 function publishAndGoHome() {
@@ -3512,55 +3356,42 @@ function publishAndGoHome() {
 
 function addNewAlertToFeed() {
   const catIcons  = { clothing:'👕', food:'🍞', hygiene:'🧴', medical:'💊', shelter:'🏠', transport:'🚌', support:'🤝', other:'❓', juridique:'⚖️', consult:'🩺', psy:'🧠' };
-  const catLabels = { clothing:'Vêtements', food:'Nourriture', hygiene:'Hygiène', medical:'Médical', shelter:'Abri', transport:'Transport', support:'Accompagnement', other:'Autre', juridique:'Conseil juridique', consult:'Consultation médicale', psy:'Soutien psychologique' };
+  const catLabels = { clothing:'Vêtements', food:'Nourriture', hygiene:'Hygiène', medical:'Médical / Soins', shelter:'Abri', transport:'Transport', support:'Accompagnement', other:'Autre besoin', juridique:'Conseil juridique', consult:'Consultation médicale', psy:'Soutien psychologique' };
   const urgBadge  = { high:'<span class="badge badge-high">🔴 Urgent</span>', medium:'<span class="badge badge-medium">🟡 Modéré</span>', low:'<span class="badge badge-low">🟢 Faible</span>' };
-  const cats = newAlertDraft.categories.length > 0 ? newAlertDraft.categories : ['clothing'];
-  const primaryCat = cats[0];
+  const cat = newAlertDraft.category || 'other';
   const urg = newAlertDraft.urgency || 'high';
-  // Récupère la valeur du premier champ "items" parmi les sections
-  const firstItemsEl = document.querySelector(`[data-cat="${primaryCat}"][data-field="items"]`);
-  const itemsVal = firstItemsEl ? firstItemsEl.value : '';
   const hasAudio = descMode === 'audio' && (audioBlob || audioSeconds > 0);
-  const desc = hasAudio
+  const rawDesc = hasAudio
     ? '🎙️ Message audio (' + audioSeconds + ' sec)'
-    : ((document.getElementById('desc-textarea') || {}).value || 'Signalement créé à l\'instant.');
-  const addr = (document.querySelector('#screen-create-3 input[type="text"]') || {}).value || 'Votre position actuelle';
+    : ((document.getElementById('desc-textarea') || {}).value || '');
+  const addr = (document.getElementById('create-address-input') || {}).value || 'Votre position actuelle';
   const newId = 'alert-new-' + Date.now();
-  // Titre : catégorie principale + extras si multi
-  const extraCount = cats.length - 1;
-  const title = catLabels[primaryCat] + (itemsVal ? ' — ' + itemsVal : '')
-    + (extraCount > 0 ? ` + ${extraCount} autre${extraCount > 1 ? 's' : ''} besoin${extraCount > 1 ? 's' : ''}` : '');
-  // Icône : jusqu'à 2 emojis côte à côte si multi
-  const iconDisplay = cats.slice(0,2).map(c => catIcons[c]||'❓').join('');
-  // Tags de catégories
-  const catTagsHtml = cats.length > 1
-    ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${cats.map(c=>`<span style="background:var(--primary-light);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;">${catIcons[c]} ${catLabels[c]}</span>`).join('')}</div>`
-    : '';
+  const title = catLabels[cat];
+  const descDisplay = rawDesc || 'Signalement publié à l\'instant.';
   alertsData[newId] = {
-    icon: catIcons[primaryCat], title,
-    desc: desc || 'Signalement publié à l\'instant.',
-    location: addr || 'Votre position', distance: '< 100 m',
-    categories: cats, category: catLabels[primaryCat],
-    items: itemsVal || 'Non précisé', time: 'À l\'instant',
+    icon: catIcons[cat], title,
+    desc: descDisplay,
+    location: addr, distance: '< 100 m',
+    categories: [cat], category: catLabels[cat],
+    items: '', time: 'À l\'instant',
     signaler: 'Stéphane B.', signalerRating: '4.8', signalerAvatar: 'S', signalerColor: 'av-orange',
     urgency: urg, initialState: 'open',
   };
   const card = document.createElement('div');
   card.className = 'alert-card';
   card.dataset.alertId = newId;
-  card.dataset.category = primaryCat;
-  card.dataset.categories = cats.join(' ');
+  card.dataset.category = cat;
+  card.dataset.categories = cat;
   card.onclick = () => openAlert(newId);
   card.innerHTML = `
     <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
-      <div class="alert-cat-icon" style="font-size:${cats.length > 1 ? '16px' : '22px'};letter-spacing:-2px;">${iconDisplay}</div>
+      <div class="alert-cat-icon">${catIcons[cat]}</div>
       <div style="flex:1;">
         <div style="font-size:16px;font-weight:700;margin-bottom:3px;">${title}</div>
-        <div style="font-size:14px;color:var(--text-muted);">${desc}</div>
+        <div style="font-size:14px;color:var(--text-muted);">${rawDesc || 'Signalement à l\'instant'}</div>
       </div>
       ${urgBadge[urg]}
     </div>
-    ${catTagsHtml}
     <div class="alert-card-meta">
       <span>📍 ${addr}</span><span>⏱ À l'instant</span>
       <span class="badge badge-open">Ouvert</span>
@@ -3590,22 +3421,22 @@ function resolveCurrentAlert() {
   setTimeout(() => showToast('✅ Signalement marqué comme résolu'), 300);
 }
 
-/* ── GÉOLOCALISATION ÉTAPE 3 ── */
+/* ── GÉOLOCALISATION ÉTAPE 2 ── */
 function useMyLocationCreate() {
-  const input = document.querySelector('#screen-create-3 input[type="text"]');
-  const btn   = document.querySelector('#screen-create-3 .btn-outline');
-  if (btn) { btn.textContent = '⏳ Localisation…'; btn.disabled = true; }
+  const input = document.getElementById('create-address-input');
+  const btn   = document.getElementById('loc-btn');
+  if (btn) { btn.innerHTML = '⏳ Localisation en cours…'; btn.disabled = true; }
   const done = (val) => {
     if (input) input.value = val;
     if (btn) {
-      btn.textContent = '📍 Position détectée ✓';
+      btn.innerHTML = '<span style="font-size:20px;">✅</span> Position détectée';
       btn.disabled = false;
-      btn.style.cssText += ';background:var(--success-light);border-color:var(--success);color:var(--success);';
+      btn.style.background = 'var(--success)';
     }
     if (window._miniMap && window._miniMarker) {
       const parts = val.split(',').map(parseFloat);
       if (parts.length === 2 && !isNaN(parts[0])) {
-        window._miniMap.setView(parts, 15);
+        window._miniMap.setView(parts, 16);
         window._miniMarker.setLatLng(parts);
       }
     }
@@ -3665,10 +3496,6 @@ function submitRating() {
 
 // init step 1 sélection + compteurs chips
 document.addEventListener('DOMContentLoaded', () => {
-  // Vêtements sélectionné par défaut (déjà dans newAlertDraft.categories)
-  const defaultCard = document.querySelector('.cat-card[data-cat="clothing"]');
-  if (defaultCard) defaultCard.classList.add('selected');
-  updateCatCounter();
   updateChipCounts();
   enhanceFeedCards();
 });
