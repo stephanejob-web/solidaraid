@@ -260,171 +260,6 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
    Hue de base : 220° (bleu nuit froid)
    Tous les fonds partagent la même teinte
    ══════════════════════════════════════ */
-#phone.dark {
-  /* ── Fonds — même famille de teinte, niveaux d'élévation ── */
-  --bg:            #0D1117;   /* arrière-plan (niveau 0) */
-  --white:         #161C27;   /* cartes / topbar / nav (niveau 1) */
-  --surface-2:     #1D2336;   /* inputs / éléments élevés (niveau 2) */
-
-  /* ── Texte ── */
-  --text:          #E2E8F5;   /* principal — blanc doux, légèrement bleuté */
-  --text-muted:    #7A8499;   /* secondaire — gris moyen lisible */
-
-  /* ── Séparateurs ── */
-  --border:        #242C3E;   /* bordures très discrètes */
-
-  /* ── Orange principal — vif pour contraster sur fond sombre ── */
-  --primary:       #FF7640;
-  --primary-light: #1C1008;   /* fond orange ultra-sombre */
-  --primary-dark:  #D0581C;
-
-  /* ── Accents sémantiques ── */
-  --secondary:     #60ADFF;   /* bleu lumineux */
-  --success:       #4ED87A;   /* vert vif */
-  --success-light: #0A1F14;   /* fond vert sombre */
-  --warning:       #FFC84A;   /* ambre doux */
-  --warning-light: #1C1400;   /* fond ambre sombre */
-  --danger:        #FF7171;   /* rouge doux */
-  --danger-light:  #260C0C;   /* fond rouge sombre */
-}
-
-/* ── Couleur de texte globale — cascade sur tout ── */
-#phone.dark { color: var(--text); }
-
-/* ── Surfaces ── */
-#phone.dark .screen           { background: var(--bg); }
-#phone.dark .screen-body      { background: var(--bg); }
-#phone.dark .topbar           { background: var(--white); border-color: var(--border); }
-#phone.dark .topbar h1        { color: var(--text); }
-#phone.dark .bottom-sheet     { background: var(--white); }
-#phone.dark #bottom-nav       { background: var(--white); border-color: var(--border); }
-#phone.dark .card             { background: var(--white); color: var(--text); box-shadow: 0 1px 8px rgba(0,0,0,.5); }
-#phone.dark .alert-card       { background: var(--white); color: var(--text); box-shadow: 0 1px 6px rgba(0,0,0,.45); }
-#phone.dark .chips-scroll     { background: var(--white); }
-
-/* ── Boutons retour / icônes ── */
-#phone.dark .back-btn         { background: var(--surface-2); color: var(--text); }
-#phone.dark .icon-btn         { color: var(--text); }
-
-/* ── Boutons principaux ── */
-#phone.dark .btn-secondary    { background: var(--surface-2); color: var(--text); border-color: var(--border); }
-#phone.dark .btn-outline      { border-color: var(--primary); color: var(--primary); background: transparent; }
-
-/* ── Barre rayon ── */
-#phone.dark #screen-home > button[onclick] {
-  background: #160E04 !important;
-  border-color: rgba(255,118,64,.18) !important;
-}
-
-/* ── Formulaires ── */
-#phone.dark input, #phone.dark select, #phone.dark textarea {
-  background: var(--surface-2); color: var(--text); border-color: var(--border);
-}
-#phone.dark .input-group label { color: var(--text-muted); }
-#phone.dark .input-group input:focus,
-#phone.dark .input-group select:focus,
-#phone.dark .input-group textarea:focus { border-color: var(--primary); }
-
-/* ── Chat ── */
-#phone.dark .chat-input-bar        { background: var(--white); border-color: var(--border); }
-#phone.dark .chat-input-bar input  { background: var(--surface-2); border-color: var(--border); color: var(--text); }
-#phone.dark .msg-in .msg-bubble    { background: var(--surface-2); color: var(--text); }
-
-/* ── Chips filtre ── */
-#phone.dark .chip               { background: var(--white); border-color: var(--border); color: var(--text); }
-#phone.dark .chip.active        { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
-#phone.dark .chip-count         { background: var(--border); color: var(--text-muted); }
-#phone.dark .chip.active .chip-count { background: rgba(255,255,255,.25); color: white; }
-
-/* ── Badges ── */
-#phone.dark .badge-high    { background: var(--danger-light);  color: var(--danger); }
-#phone.dark .badge-medium  { background: var(--warning-light); color: var(--warning); }
-#phone.dark .badge-low     { background: var(--success-light); color: var(--success); }
-#phone.dark .badge-open    { background: #0B1828; color: var(--secondary); }
-#phone.dark .badge-done    { background: var(--success-light); color: var(--success); }
-
-/* ── Icône catégorie ── */
-#phone.dark .alert-cat-icon { background: var(--primary-light); }
-
-/* ── Catégorie cards (create) ── */
-#phone.dark .cat-card         { background: var(--white); border-color: var(--border); }
-#phone.dark .cat-label        { color: var(--text); }
-#phone.dark .cat-card.selected,
-#phone.dark .cat-card:active  { border-color: var(--primary); background: var(--primary-light); }
-
-/* ── Bandeaux statut (couleurs inline hardcodées) ── */
-#phone.dark [style*="background:var(--success-light)"],
-#phone.dark .card-status-banner[style*="success-light"] { background: var(--success-light) !important; }
-#phone.dark [style*="background:var(--warning-light)"],
-#phone.dark .card-status-banner[style*="warning-light"] { background: var(--warning-light) !important; }
-#phone.dark [style*="background:#E3F2FD"],
-#phone.dark [style*="background: #E3F2FD"],
-#phone.dark .card-status-banner[style*="#E3F2FD"]       { background: #0B1828 !important; }
-#phone.dark [style*="background:#E8F5E9"],
-#phone.dark [style*="background: #E8F5E9"]              { background: var(--success-light) !important; }
-/* textes colorés dans les bandeaux */
-#phone.dark [style*="color:var(--secondary)"]           { color: var(--secondary) !important; }
-
-/* ── Help type buttons ── */
-#phone.dark .help-type-btn           { background: var(--white); border-color: var(--border); color: var(--text); }
-#phone.dark .help-type-btn.selected  { background: var(--primary-light); border-color: var(--primary); }
-#phone.dark .help-type-btn.selected div { color: var(--primary); }
-
-/* ── Taken bar ── */
-#phone.dark .taken-bar         { background: var(--success-light) !important; border-color: var(--success) !important; }
-#phone.dark .taken-info strong { color: var(--success); }
-#phone.dark .taken-info span   { color: var(--text-muted); }
-
-/* ── Navigation ── */
-#phone.dark .nav-item          { color: var(--text-muted); }
-#phone.dark .nav-item.active   { color: var(--primary); }
-#phone.dark .nav-fab           { background: var(--primary); }
-
-/* ── Notifications ── */
-#phone.dark .notif-item        { background: var(--white); border-color: var(--border); color: var(--text); }
-#phone.dark .notif-item.unread { background: #180F04; }
-
-/* ── Settings ── */
-#phone.dark .settings-item     { background: var(--white); border-color: var(--border); color: var(--text); }
-#phone.dark .divider           { background: var(--border); }
-
-/* ── Urgency buttons ── */
-#phone.dark .urgency-btn       { background: var(--white); border-color: var(--border); color: var(--text); }
-#phone.dark .urgency-btn.u-low.selected  { border-color: var(--success); background: var(--success-light); color: var(--success); }
-#phone.dark .urgency-btn.u-med.selected  { border-color: var(--warning); background: var(--warning-light); color: var(--warning); }
-#phone.dark .urgency-btn.u-high.selected { border-color: var(--danger); background: var(--danger-light); color: var(--danger); }
-
-/* ── Zone rayon / radius ── */
-#phone.dark .radius-count      { background: var(--primary-light); }
-#phone.dark .radius-count-text { color: var(--primary); }
-
-/* ── Confirmation présence (warning) ── */
-#phone.dark [style*="var(--warning-light)"] { background: var(--warning-light) !important; border-color: rgba(255,200,74,.3) !important; }
-#phone.dark [style*="color:var(--warning)"] { color: var(--warning) !important; }
-
-/* ── Profil ── */
-#phone.dark .profile-stats     { background: var(--white); box-shadow: 0 2px 12px rgba(0,0,0,.4); }
-#phone.dark .profile-stat      { border-color: var(--border); }
-#phone.dark .stat-lbl          { color: var(--text-muted); }
-#phone.dark .section-title     { color: var(--text-muted); }
-
-/* ── Carte MAP — éléments hardcodés blanc ── */
-#phone.dark #screen-map [style*="background:white"],
-#phone.dark #screen-map [style*="background: white"] {
-  background: var(--white) !important;
-  color: var(--text) !important;
-}
-#phone.dark #screen-map input[style*="color:#212121"] { color: var(--text) !important; }
-
-/* ── Démo section ── */
-#phone.dark [style*="background:var(--bg)"] { background: var(--surface-2) !important; }
-
-/* ── Onboarding ── */
-#phone.dark #screen-onboarding { background: var(--white); }
-
-/* ── Login / Register ── */
-#phone.dark #screen-login,
-#phone.dark #screen-register { background: var(--white); }
 
 /* ── HELP TYPE BUTTONS ── */
 .help-type-btn {
@@ -455,6 +290,29 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
 .voice-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--primary-light); border: 2px solid var(--primary); cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .2s; }
 .voice-btn.listening { background: var(--danger); border-color: var(--danger); animation: mic-pulse 1s ease-in-out infinite; }
 @keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(198,40,40,.4)} 50%{box-shadow:0 0 0 10px rgba(198,40,40,0)} }
+.desc-tab { flex:1; padding:9px 12px; border-radius:10px; border:1.5px solid var(--border); background:var(--white); font-size:13px; font-weight:600; cursor:pointer; color:var(--text-muted); transition:all .2s; }
+.desc-tab.active { border-color:var(--primary); background:var(--primary-light); color:var(--primary); }
+.audio-record-btn { width:100%; padding:18px; border-radius:14px; border:2px dashed var(--primary); background:var(--primary-light); font-size:15px; font-weight:700; color:var(--primary); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:all .2s; }
+.audio-record-btn.recording { border-style:solid; border-color:var(--danger); background:#fff5f5; color:var(--danger); animation:mic-pulse 1.2s ease-in-out infinite; }
+.audio-preview-card { background:var(--bg); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+@keyframes rec-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.rec-dot { width:10px; height:10px; border-radius:50%; background:var(--danger); animation:rec-blink 1s infinite; flex-shrink:0; }
+.cat-card { position:relative; }
+.cat-card.selected::after { content:'✓'; position:absolute; top:6px; right:6px; width:18px; height:18px; border-radius:50%; background:var(--primary); color:white; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+#cat-selection-count { font-size:13px; font-weight:600; text-align:center; padding:6px 0 2px; color:var(--primary); min-height:22px; }
+.need-section { margin-bottom:4px; }
+.need-section-header { display:flex; align-items:center; gap:12px; background:var(--primary-light); border-radius:10px; padding:12px 14px; margin-bottom:14px; border-left:4px solid var(--primary); }
+.need-section + .need-section { border-top:1px solid var(--border); padding-top:16px; margin-top:4px; }
+.photo-slot { flex:1; aspect-ratio:1; border:2px dashed var(--border); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:var(--bg); transition:all .2s; position:relative; overflow:hidden; }
+.photo-slot:not(.photo-slot-disabled):hover { border-color:var(--primary); background:var(--primary-light); }
+.photo-slot-disabled { cursor:default; pointer-events:none; }
+.photo-slot-filled { border-style:solid; border-color:var(--primary); }
+.photo-slot-filled img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:10px; }
+.photo-slot-filled .photo-remove { position:absolute; top:4px; right:4px; width:22px; height:22px; border-radius:50%; background:rgba(0,0,0,.6); color:white; font-size:13px; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:2; border:none; }
+.meet-option { display:block; cursor:pointer; }
+.meet-option-inner { display:flex; align-items:center; gap:14px; padding:14px; border-radius:12px; border:1.5px solid var(--border); background:var(--white); transition:all .2s; }
+.meet-option-inner.meet-selected { border-color:var(--primary); background:var(--primary-light); }
+.meet-check { width:22px; height:22px; border-radius:50%; background:var(--primary); color:white; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:opacity .2s; }
 </style>
 </head>
 <body>
@@ -533,19 +391,21 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
       <div style="font-size:17px;font-weight:800;color:var(--text);line-height:1.2;">Signalements proches</div>
       <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">Bonjour, Stéphane 👋</div>
     </div>
-    <button class="icon-btn" onclick="toggleDark()" id="dark-btn" title="Mode nuit">🌙</button>
     <button class="icon-btn" onclick="goTo('screen-notif')" style="position:relative;">🔔<span style="position:absolute;width:8px;height:8px;background:var(--danger);border-radius:50%;top:0;right:0;"></span></button>
     <button class="icon-btn" onclick="openSheet('sheet-filters')">⚙️</button>
   </div>
 
   <!-- Chips catégorie -->
   <div class="chips-scroll" style="padding:8px 16px 8px;background:var(--white);">
-    <div class="chip active" data-filter="all" onclick="toggleChip(this)">Tous <span class="chip-count">12</span></div>
+    <div class="chip active" data-filter="all" onclick="toggleChip(this)">Tous <span class="chip-count">15</span></div>
     <div class="chip" data-filter="food" onclick="toggleChip(this)">🍞 Nourriture <span class="chip-count">3</span></div>
     <div class="chip" data-filter="clothing" onclick="toggleChip(this)">👕 Vêtements <span class="chip-count">3</span></div>
     <div class="chip" data-filter="hygiene" onclick="toggleChip(this)">🧴 Hygiène <span class="chip-count">2</span></div>
     <div class="chip" data-filter="medical" onclick="toggleChip(this)">💊 Médical <span class="chip-count">2</span></div>
     <div class="chip" data-filter="shelter" onclick="toggleChip(this)">🏠 Abri <span class="chip-count">2</span></div>
+    <div class="chip" data-filter="juridique" onclick="toggleChip(this)">⚖️ Juridique <span class="chip-count">1</span></div>
+    <div class="chip" data-filter="consult" onclick="toggleChip(this)">🩺 Médecin <span class="chip-count">1</span></div>
+    <div class="chip" data-filter="psy" onclick="toggleChip(this)">🧠 Psy <span class="chip-count">1</span></div>
   </div>
 
   <!-- Barre rayon — toujours visible, toujours accessible -->
@@ -575,7 +435,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
       <div class="msg">Aucun besoin dans cette catégorie à proximité.</div>
       <button class="btn btn-secondary" onclick="document.querySelector('.chip[data-filter=\'all\']').click()">Voir tous les besoins</button>
     </div>
-    <div id="feed-list" style="margin-top:12px;">
+    <div id="feed-list" style="margin-top:4px;">
 
       <!-- FOOD 1 — Urgent / Ouvert -->
       <div class="alert-card" data-alert-id="alert-2" data-category="food" onclick="openAlert('alert-2')">
@@ -790,6 +650,54 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
         </div>
       </div>
 
+      <!-- JURIDIQUE — Ouvert -->
+      <div class="alert-card" data-alert-id="alert-14" data-category="juridique" onclick="openAlert('alert-14')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">⚖️</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Question RSA — homme sans ressources</div>
+            <div style="font-size:14px;color:var(--text-muted);">Homme ~38 ans, gare de Lyon — ne touche pas le RSA, ne sait pas s'il y a droit. Besoin d'un avocat ou conseiller bénévole.</div>
+          </div>
+          <span class="badge badge-high">🔴 Urgent</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 1,1 km</span><span>🚶 14 min</span><span>⏱ il y a 25 min</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <!-- CONSULT — Ouvert -->
+      <div class="alert-card" data-alert-id="alert-15" data-category="consult" onclick="openAlert('alert-15')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🩺</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Consultation médicale — femme diabétique</div>
+            <div style="font-size:14px;color:var(--text-muted);">Femme ~55 ans, rue de Belleville — diabétique sans couverture médicale, n'a pas consulté de médecin depuis des mois.</div>
+          </div>
+          <span class="badge badge-high">🔴 Urgent</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 2,1 km</span><span>🚶 26 min</span><span>⏱ il y a 40 min</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
+      <!-- PSY — Ouvert -->
+      <div class="alert-card" data-alert-id="alert-16" data-category="psy" onclick="openAlert('alert-16')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <div class="alert-cat-icon">🧠</div>
+          <div style="flex:1;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Soutien psychologique — état de crise</div>
+            <div style="font-size:14px;color:var(--text-muted);">Jeune homme ~22 ans, parc de Belleville — semble en grande détresse émotionnelle. Besoin d'une écoute bienveillante en urgence.</div>
+          </div>
+          <span class="badge badge-high">🔴 Urgent</span>
+        </div>
+        <div class="alert-card-meta">
+          <span>📍 1,7 km</span><span>🚶 21 min</span><span>⏱ il y a 12 min</span>
+          <span class="badge badge-open">Ouvert</span>
+        </div>
+      </div>
+
       <!-- SUPPORT / Résolu (hors filtre catégorie) -->
       <div class="alert-card" data-category="support" style="opacity:.75;">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
@@ -861,7 +769,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   </button>
 
   <!-- Bouton créer signalement depuis la carte -->
-  <button onclick="navHistory=[];goTo('screen-create-1')"
+  <button onclick="navHistory=[];resetCreateForm();goTo('screen-create-1')"
     style="position:absolute;bottom:80px;left:14px;z-index:500;
            display:flex;align-items:center;gap:8px;
            padding:12px 18px;border-radius:28px;border:none;
@@ -933,7 +841,8 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   <div class="topbar"><button class="back-btn" onclick="goBack()">←</button><h1>Nouveau signalement</h1></div>
   <div class="screen-body" style="padding:20px 16px;">
     <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
-    <div class="section-title">De quoi a-t-il besoin ?</div>
+    <div class="section-title">De quoi a-t-il besoin ? <span style="font-size:13px;font-weight:400;color:var(--text-muted);">plusieurs choix possibles</span></div>
+    <div id="cat-selection-count">1 besoin sélectionné</div>
     <div class="category-grid">
       <div class="cat-card selected" data-cat="clothing" onclick="selectCat(this)"><div class="cat-icon">👕</div><div class="cat-label">Vêtements</div></div>
       <div class="cat-card" data-cat="food" onclick="selectCat(this)"><div class="cat-icon">🍞</div><div class="cat-label">Nourriture / Eau</div></div>
@@ -943,10 +852,13 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
       <div class="cat-card" data-cat="transport" onclick="selectCat(this)"><div class="cat-icon">🚌</div><div class="cat-label">Transport</div></div>
       <div class="cat-card" data-cat="support" onclick="selectCat(this)"><div class="cat-icon">🤝</div><div class="cat-label">Accompagnement</div></div>
       <div class="cat-card" data-cat="other" onclick="selectCat(this)"><div class="cat-icon">❓</div><div class="cat-label">Autre</div></div>
+      <div class="cat-card" data-cat="juridique" onclick="selectCat(this)"><div class="cat-icon">⚖️</div><div class="cat-label">Conseil juridique</div></div>
+      <div class="cat-card" data-cat="consult" onclick="selectCat(this)"><div class="cat-icon">🩺</div><div class="cat-label">Consultation médicale</div></div>
+      <div class="cat-card" data-cat="psy" onclick="selectCat(this)"><div class="cat-icon">🧠</div><div class="cat-label">Soutien psychologique</div></div>
     </div>
   </div>
   <div style="padding:16px 16px 32px;background:var(--white);">
-    <button class="btn btn-primary" onclick="goTo('screen-create-2')">Suivant →</button>
+    <button class="btn btn-primary" onclick="goToStep2()">Suivant →</button>
   </div>
 </div>
 
@@ -955,24 +867,68 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   <div class="topbar"><button class="back-btn" onclick="goTo('screen-create-1')">←</button><h1>Détails du besoin</h1></div>
   <div class="screen-body" style="padding:20px 16px;">
     <div class="steps"><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div></div>
-    <div class="input-group" id="field-items"><label id="lbl-items">Objets spécifiques</label><input id="input-items" type="text" placeholder="ex: manteau, pantalon, chaussettes…"></div>
-    <div style="display:flex;gap:12px;">
-      <div id="field-size" class="input-group" style="flex:1;"><label>Taille / pointure</label><select><option>— Non précisé</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>38</option><option>39</option><option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option></select></div>
-      <div class="input-group" style="flex:1;"><label>Quantité</label><input type="number" value="1" min="1"></div>
+    <!-- Sections de besoins générées dynamiquement par buildStep2Form() -->
+    <div id="needs-sections-container"></div>
+    <div class="input-group" id="field-desc">
+      <label style="margin-bottom:10px;">Description <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel)</span></label>
+      <!-- Onglets mode -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button id="tab-text" class="desc-tab active" onclick="switchDescMode('text')">✏️ Écrire</button>
+        <button id="tab-audio" class="desc-tab" onclick="switchDescMode('audio')">🎙️ Message audio</button>
+      </div>
+      <!-- Mode texte -->
+      <div id="desc-text-mode">
+        <textarea id="desc-textarea" placeholder="Décrivez la situation en quelques mots…" style="margin-bottom:0;"></textarea>
+      </div>
+      <!-- Mode audio -->
+      <div id="desc-audio-mode" style="display:none;">
+        <!-- Idle : bouton enregistrer -->
+        <div id="audio-idle">
+          <button class="audio-record-btn" id="audio-record-btn" onclick="toggleAudioRecord()">
+            <span style="font-size:22px;">🎙️</span> Appuyer pour enregistrer
+          </button>
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">Max 60 secondes — votre voix, pas de photo de la personne</div>
+        </div>
+        <!-- En cours d'enregistrement -->
+        <div id="audio-recording" style="display:none;">
+          <button class="audio-record-btn recording" onclick="toggleAudioRecord()">
+            <div class="rec-dot"></div>
+            <span id="audio-timer">0:00</span> — Appuyer pour arrêter
+          </button>
+        </div>
+        <!-- Aperçu après enregistrement -->
+        <div id="audio-preview" style="display:none;">
+          <div class="audio-preview-card">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🎙️</div>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Message audio enregistré</div>
+              <audio id="audio-playback" controls style="width:100%;height:32px;"></audio>
+            </div>
+            <button onclick="clearAudioRecord()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);" title="Supprimer">🗑️</button>
+          </div>
+        </div>
+      </div>
     </div>
+    <!-- Photos de l'endroit -->
     <div class="input-group">
-      <label style="display:flex;justify-content:space-between;align-items:center;">
-        Description (optionnel)
-        <button class="voice-btn" id="voice-btn" onclick="toggleVoice()" title="Dicter par la voix">🎙️</button>
-      </label>
-      <textarea id="desc-textarea" placeholder="Décrivez la situation… ou appuyez sur 🎙️ pour dicter"></textarea>
-    </div>
-    <div class="input-group">
-      <label>Photo de l'objet (optionnel)</label>
-      <div style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;">
-        <div style="font-size:32px;margin-bottom:8px;">📷</div>
-        <div style="font-size:14px;color:var(--text-muted);">Appuyez pour prendre une photo</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Pas de photo de la personne — respect de sa dignité</div>
+      <label style="margin-bottom:4px;">Photos de l'endroit <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel — 3 max)</span></label>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Aide les bénévoles à localiser la personne — <strong>pas de photo de la personne</strong></div>
+      <div id="location-photos-grid" style="display:flex;gap:10px;">
+        <!-- Slot 1 — bouton ajouter -->
+        <div id="photo-slot-1" class="photo-slot" onclick="addLocationPhoto(1)">
+          <span style="font-size:24px;">📷</span>
+          <span style="font-size:11px;color:var(--text-muted);margin-top:4px;">Photo 1</span>
+        </div>
+        <!-- Slot 2 — désactivé jusqu'à ce que le 1 soit rempli -->
+        <div id="photo-slot-2" class="photo-slot photo-slot-disabled">
+          <span style="font-size:24px;opacity:.3;">📷</span>
+          <span style="font-size:11px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 2</span>
+        </div>
+        <!-- Slot 3 — désactivé jusqu'à ce que le 2 soit rempli -->
+        <div id="photo-slot-3" class="photo-slot photo-slot-disabled">
+          <span style="font-size:24px;opacity:.3;">📷</span>
+          <span style="font-size:11px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 3</span>
+        </div>
       </div>
     </div>
     <div style="display:flex;gap:10px;align-items:center;background:var(--warning-light);border-radius:10px;padding:12px;">
@@ -995,6 +951,53 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
     </div>
     <button class="btn btn-outline" style="margin-bottom:16px;" onclick="useMyLocationCreate()">📍 Utiliser ma position actuelle</button>
     <div class="input-group"><label>Ou saisir une adresse</label><input type="text" placeholder="15 rue de la Paix, Paris…"></div>
+
+    <!-- Mode de rencontre -->
+    <div class="section-title" style="margin-top:8px;">Comment se retrouver ?</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px;">
+
+      <label class="meet-option" onclick="selectMeetMode('place', this)">
+        <input type="radio" name="meet-mode" value="place" checked style="display:none;">
+        <div class="meet-option-inner meet-selected">
+          <span style="font-size:22px;">📍</span>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;">Sur place</div>
+            <div style="font-size:12px;color:var(--text-muted);">Le bénévole se rend à l'adresse indiquée ci-dessus</div>
+          </div>
+          <div class="meet-check">✓</div>
+        </div>
+      </label>
+
+      <label class="meet-option" onclick="selectMeetMode('rdv', this)">
+        <input type="radio" name="meet-mode" value="rdv" style="display:none;">
+        <div class="meet-option-inner">
+          <span style="font-size:22px;">🤝</span>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;">Point de rendez-vous</div>
+            <div style="font-size:12px;color:var(--text-muted);">Définir un lieu neutre pour la remise</div>
+          </div>
+          <div class="meet-check" style="opacity:0;">✓</div>
+        </div>
+        <!-- Champ adresse RDV — affiché uniquement si sélectionné -->
+        <div id="rdv-address-field" style="display:none;margin-top:10px;padding:0 4px;">
+          <input type="text" id="rdv-address-input" placeholder="Ex : Devant la pharmacie du Marché, Paris 11e…"
+            style="width:100%;padding:12px 14px;border:1.5px solid var(--primary);border-radius:10px;font-size:14px;outline:none;background:var(--white);">
+        </div>
+      </label>
+
+      <label class="meet-option" onclick="selectMeetMode('fetch', this)">
+        <input type="radio" name="meet-mode" value="fetch" style="display:none;">
+        <div class="meet-option-inner">
+          <span style="font-size:22px;">🚗</span>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;">Je peux aller la chercher</div>
+            <div style="font-size:12px;color:var(--text-muted);">Le signaleur propose d'amener la personne au bénévole</div>
+          </div>
+          <div class="meet-check" style="opacity:0;">✓</div>
+        </div>
+      </label>
+
+    </div>
     <div class="divider"></div>
     <div class="section-title">Niveau d'urgence</div>
     <div class="urgency-row">
@@ -1095,6 +1098,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
       <div class="card" style="cursor:pointer;" onclick="goTo('screen-my-alerts')"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">👕</span><div><div style="font-weight:600;font-size:15px;">Manteau homme</div><div style="font-size:13px;color:var(--text-muted);">Il y a 12 min</div></div></div><span class="badge badge-open">En cours</span></div></div>
       <div class="card" style="cursor:pointer;" onclick="goTo('screen-my-alerts')"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">🍞</span><div><div style="font-weight:600;font-size:15px;">Nourriture famille</div><div style="font-size:13px;color:var(--text-muted);">Hier</div></div></div><span class="badge badge-done">Résolu ✓</span></div></div>
       <div class="section-title" style="margin-top:8px;">Actions</div>
+      <div class="settings-item" onclick="goTo('screen-droits')"><span class="settings-item-icon">⚖️</span><div class="settings-item-text"><strong>Questions & Droits</strong><span>Droits sociaux, aides, démarches</span></div><span class="settings-arrow">›</span></div>
       <div class="settings-item" onclick="goTo('screen-donate-form')"><span class="settings-item-icon">🎁</span><div class="settings-item-text"><strong>Proposer un don</strong><span>Publier un objet disponible</span></div><span class="settings-arrow">›</span></div>
       <div class="settings-item" onclick="goTo('screen-emergency')"><span class="settings-item-icon">🆘</span><div class="settings-item-text"><strong>Services d'urgence</strong><span>115, 119, ressources locales</span></div><span class="settings-arrow">›</span></div>
       <div class="settings-item" onclick="goTo('screen-settings')"><span class="settings-item-icon">⚙️</span><div class="settings-item-text"><strong>Paramètres</strong><span>Compte, notifications, accessibilité</span></div><span class="settings-arrow">›</span></div>
@@ -1352,6 +1356,194 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
   </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     QUESTIONS & DROITS
+══════════════════════════════════════ -->
+
+<!-- DROITS — FEED -->
+<div id="screen-droits" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h1>⚖️ Questions & Droits</h1>
+    <button class="icon-btn" style="font-size:22px;" onclick="goTo('screen-droits-ask')">✏️</button>
+  </div>
+
+  <div class="chips-scroll" style="padding:8px 16px;background:var(--white);border-bottom:1px solid var(--border);">
+    <div class="chip active" onclick="toggleDroitsChip(this,'all')">Tous <span class="chip-count">5</span></div>
+    <div class="chip" onclick="toggleDroitsChip(this,'rsa')">💰 RSA <span class="chip-count">2</span></div>
+    <div class="chip" onclick="toggleDroitsChip(this,'logement')">🏠 Logement <span class="chip-count">1</span></div>
+    <div class="chip" onclick="toggleDroitsChip(this,'sante')">🏥 Santé <span class="chip-count">1</span></div>
+    <div class="chip" onclick="toggleDroitsChip(this,'documents')">📄 Documents <span class="chip-count">1</span></div>
+  </div>
+
+  <div class="screen-body" style="padding:12px 16px 90px;">
+    <div style="background:#E3F2FD;border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
+      <span style="font-size:20px;flex-shrink:0;">💡</span>
+      <div style="font-size:13px;line-height:1.5;color:var(--secondary);"><strong>Travailleurs sociaux et juristes bénévoles</strong> répondent à vos questions sur les droits sociaux. Réponse sous 24h en général.</div>
+    </div>
+
+    <!-- Q1 — RSA, répondu -->
+    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="rsa" onclick="openDroitsQuestion(1)">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <span style="background:#E3F2FD;color:#1565C0;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;">💰 RSA</span>
+        <div style="font-size:15px;font-weight:700;line-height:1.4;">Homme ~50 ans sans domicile depuis 6 mois — a-t-il droit au RSA ?</div>
+      </div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Il n'a aucun revenu et dort dans la rue. Il n'a jamais fait de demande car il ne savait pas s'il y avait droit sans adresse.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div class="avatar av-orange" style="width:22px;height:22px;font-size:10px;">S</div>
+          <span style="font-size:12px;color:var(--text-muted);">Stéphane B. • Il y a 2h</span>
+        </div>
+        <span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;">✓ 2 réponses</span>
+      </div>
+    </div>
+
+    <!-- Q2 — Santé, répondu -->
+    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="sante" onclick="openDroitsQuestion(2)">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <span style="background:#FCE4EC;color:#C62828;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;">🏥 Santé</span>
+        <div style="font-size:15px;font-weight:700;line-height:1.4;">Personne sans papiers — comment accéder aux soins médicaux ?</div>
+      </div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Elle refuse d'aller à l'hôpital par peur d'être expulsée. Elle a une infection qui empire depuis 2 semaines.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div class="avatar av-purple" style="width:22px;height:22px;font-size:10px;">C</div>
+          <span style="font-size:12px;color:var(--text-muted);">Camille D. • Il y a 4h</span>
+        </div>
+        <span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;">✓ 1 réponse</span>
+      </div>
+    </div>
+
+    <!-- Q3 — Logement, en attente -->
+    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="logement" onclick="openDroitsQuestion(3)">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <span style="background:#E8F5E9;color:#2E7D32;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;">🏠 Logement</span>
+        <div style="font-size:15px;font-weight:700;line-height:1.4;">Famille expulsée avec 3 enfants — quelles démarches en urgence ?</div>
+      </div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Expulsion hier soir, ils dorment dans leur voiture. Enfants de 4, 7 et 12 ans. Aucun réseau local.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div class="avatar av-green" style="width:22px;height:22px;font-size:10px;">T</div>
+          <span style="font-size:12px;color:var(--text-muted);">Thomas R. • Il y a 1h</span>
+        </div>
+        <span style="background:var(--warning-light);color:var(--warning);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;">⏳ En attente</span>
+      </div>
+    </div>
+
+    <!-- Q4 — RSA jeune, répondu -->
+    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="rsa" onclick="openDroitsQuestion(4)">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <span style="background:#E3F2FD;color:#1565C0;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;">💰 RSA</span>
+        <div style="font-size:15px;font-weight:700;line-height:1.4;">Jeune de 24 ans sans emploi — peut-il toucher le RSA ?</div>
+      </div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Il pensait ne pas y avoir droit avant 25 ans et n'a jamais fait de demande.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div class="avatar av-purple" style="width:22px;height:22px;font-size:10px;">É</div>
+          <span style="font-size:12px;color:var(--text-muted);">Élodie V. • Hier</span>
+        </div>
+        <span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;">✓ 3 réponses</span>
+      </div>
+    </div>
+
+    <!-- Q5 — Documents, répondu -->
+    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="documents" onclick="openDroitsQuestion(5)">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <span style="background:#F3E5F5;color:#6A1B9A;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;">📄 Documents</span>
+        <div style="font-size:15px;font-weight:700;line-height:1.4;">Sans pièce d'identité ni adresse — comment refaire ses papiers ?</div>
+      </div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">A tout perdu dans un incendie. Sans adresse depuis, ne sait pas par où commencer.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div class="avatar av-green" style="width:22px;height:22px;font-size:10px;">N</div>
+          <span style="font-size:12px;color:var(--text-muted);">Nina K. • Hier</span>
+        </div>
+        <span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;">✓ 2 réponses</span>
+      </div>
+    </div>
+  </div>
+
+  <button onclick="goTo('screen-droits-ask')" style="position:absolute;bottom:80px;right:16px;z-index:100;
+    width:56px;height:56px;border-radius:50%;border:none;background:var(--secondary);color:white;
+    font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(21,101,192,.5);">✏️</button>
+</div>
+
+<!-- DROITS — DÉTAIL QUESTION -->
+<div id="screen-droits-detail" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h1 id="droits-detail-cat" style="font-size:15px;">Question</h1>
+  </div>
+  <div class="screen-body" style="padding:16px 16px 80px;">
+
+    <!-- La question -->
+    <div class="card" style="margin-bottom:16px;">
+      <div id="droits-detail-catbadge" style="display:inline-block;border-radius:8px;padding:3px 10px;font-size:11px;font-weight:700;margin-bottom:10px;"></div>
+      <div id="droits-detail-question" style="font-size:17px;font-weight:800;line-height:1.4;margin-bottom:10px;"></div>
+      <div id="droits-detail-context" style="font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:12px;padding:12px;background:var(--bg);border-radius:10px;border-left:3px solid var(--border);"></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div id="droits-detail-avatar" class="avatar" style="width:26px;height:26px;font-size:11px;"></div>
+        <span id="droits-detail-meta" style="font-size:12px;color:var(--text-muted);"></span>
+      </div>
+    </div>
+
+    <!-- Réponses -->
+    <div id="droits-answers-container"></div>
+
+    <!-- Bouton répondre -->
+    <button class="btn btn-outline" style="margin-top:8px;" onclick="showToast('💬 Fonctionnalité réservée aux experts vérifiés')">
+      ✍️ Apporter une réponse
+    </button>
+  </div>
+</div>
+
+<!-- DROITS — POSER UNE QUESTION -->
+<div id="screen-droits-ask" class="screen" style="background:var(--white);">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h1>Poser une question</h1>
+  </div>
+  <div class="screen-body" style="padding:20px 16px 40px;">
+    <div style="background:#E3F2FD;border-radius:var(--radius);padding:14px;margin-bottom:20px;font-size:13px;color:var(--secondary);line-height:1.5;">
+      💡 Des travailleurs sociaux et juristes bénévoles répondent. Plus vous donnez de contexte, plus la réponse sera utile.
+    </div>
+
+    <div class="input-group">
+      <label>Thème</label>
+      <select id="droits-ask-cat">
+        <option value="">— Choisir un thème —</option>
+        <option value="rsa">💰 RSA / Revenus de solidarité</option>
+        <option value="logement">🏠 Logement / Hébergement</option>
+        <option value="sante">🏥 Santé / Accès aux soins</option>
+        <option value="documents">📄 Documents / Papiers d'identité</option>
+        <option value="aah">♿ AAH / Handicap</option>
+        <option value="immigration">🌍 Immigration / Droits des étrangers</option>
+        <option value="famille">👨‍👩‍👧 Famille / Enfants / Protection</option>
+        <option value="autre">❓ Autre</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label>Votre question</label>
+      <textarea id="droits-ask-question" placeholder="Ex : Homme ~50 ans, sans domicile depuis 6 mois — a-t-il droit au RSA ?" style="height:90px;"></textarea>
+    </div>
+
+    <div class="input-group">
+      <label>Contexte de la situation <span style="font-weight:400;text-transform:none;">(optionnel mais utile)</span></label>
+      <textarea id="droits-ask-context" placeholder="Décrivez la situation : âge approximatif, historique, ce que vous savez déjà, ce que vous avez essayé…" style="height:110px;"></textarea>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:20px;padding:12px;background:var(--bg);border-radius:10px;">
+      <input type="checkbox" id="droits-ask-anon" style="width:auto;margin-top:2px;">
+      <label for="droits-ask-anon" style="font-size:14px;color:var(--text-muted);cursor:pointer;">Publier de façon anonyme (votre nom ne sera pas affiché)</label>
+    </div>
+
+    <button class="btn btn-primary" style="font-size:16px;" onclick="submitDroitsQuestion()">
+      Publier ma question →
+    </button>
+  </div>
+</div>
+
 <!-- SHEET — Modifier le profil -->
 <div id="sheet-overlay-edit-profile" class="sheet-overlay" onclick="closeSheet('sheet-edit-profile')">
   <div id="sheet-edit-profile" class="bottom-sheet" onclick="event.stopPropagation()">
@@ -1373,7 +1565,7 @@ body { background: #1a1a2e; display: flex; justify-content: center; align-items:
 <nav id="bottom-nav">
   <div class="nav-item active" id="nav-home" onclick="goToApp()"><span class="nav-icon">🏠</span><span class="nav-label">Accueil</span></div>
   <div class="nav-item" id="nav-map" onclick="goToMap()"><span class="nav-icon">🗺</span><span class="nav-label">Carte</span></div>
-  <button class="nav-fab" onclick="navHistory=[];goTo('screen-create-1')">＋</button>
+  <button class="nav-fab" onclick="navHistory=[];resetCreateForm();goTo('screen-create-1')">＋</button>
   <div class="nav-item" id="nav-msg" onclick="goTo('screen-messages');setNav('nav-msg')"><span class="nav-icon">💬</span><span class="nav-label">Messages</span></div>
   <div class="nav-item" id="nav-profile" onclick="goTo('screen-profile');setNav('nav-profile')"><span class="nav-icon">👤</span><span class="nav-label">Profil</span></div>
 </nav>
@@ -1640,7 +1832,8 @@ function toggleChip(el) {
   const filter = el.dataset.filter || 'all';
   let visible = 0;
   document.querySelectorAll('#screen-home .alert-card').forEach(card => {
-    const match = filter === 'all' || card.dataset.category === filter;
+    const cats = card.dataset.categories ? card.dataset.categories.split(' ') : [card.dataset.category];
+    const match = filter === 'all' || cats.includes(filter);
     card.classList.toggle('filtered-out', !match);
     if (match) visible++;
   });
@@ -1701,13 +1894,17 @@ function enhanceFeedCards() {
 }
 
 function updateChipCounts() {
+  const allCards = document.querySelectorAll('#screen-home .alert-card[data-alert-id]');
   document.querySelectorAll('.chips-scroll .chip[data-filter]').forEach(chip => {
     const filter = chip.dataset.filter;
-    const total = filter === 'all'
-      ? document.querySelectorAll('#screen-home .alert-card[data-alert-id]').length
-      : document.querySelectorAll(`#screen-home .alert-card[data-category="${filter}"]`).length;
+    let count = 0;
+    allCards.forEach(card => {
+      if (filter === 'all') { count++; return; }
+      const cats = card.dataset.categories ? card.dataset.categories.split(' ') : [card.dataset.category];
+      if (cats.includes(filter)) count++;
+    });
     const badge = chip.querySelector('.chip-count');
-    if (badge) badge.textContent = total;
+    if (badge) badge.textContent = count;
   });
 }
 
@@ -1802,27 +1999,113 @@ const catConfig = {
     label: 'Ce dont il a besoin', showSize: false, useSelect: false,
     placeholder: 'Décrivez le besoin en quelques mots…'
   },
+  juridique: {
+    label: 'Type de question juridique', showSize: false, useSelect: true,
+    options: [
+      '— Choisir…',
+      'Droit au RSA / allocation sociale',
+      'Aide Médicale de l\'État (AME)',
+      'Droit au logement / expulsion',
+      'Régularisation / titre de séjour',
+      'Droit du travail / licenciement',
+      'Accès à la protection juridictionnelle',
+      'Autre question juridique',
+    ]
+  },
+  consult: {
+    label: 'Type de consultation médicale', showSize: false, useSelect: true,
+    options: [
+      '— Choisir…',
+      'Consultation généraliste',
+      'Soins urgents (blessure, douleur aiguë)',
+      'Suivi traitement chronique',
+      'Consultation pédiatrique (enfant)',
+      'Santé mentale / psychiatrie',
+      'Bilan de santé général',
+      'Autre consultation médicale',
+    ]
+  },
+  psy: {
+    label: 'Type de soutien psychologique', showSize: false, useSelect: true,
+    options: [
+      '— Choisir…',
+      'Écoute et soutien émotionnel',
+      'Trauma / choc post-traumatique',
+      'Anxiété / dépression',
+      'Situation de crise aiguë',
+      'Suivi psychologique régulier',
+      'Accompagnement enfant / adolescent',
+      'Autre soutien psychologique',
+    ]
+  },
 };
 
 function selectCat(el) {
-  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
   const cat = el.dataset.cat || 'other';
-  newAlertDraft.category = cat;
-  const cfg = catConfig[cat];
-  const lbl = document.getElementById('lbl-items');
-  const field = document.getElementById('field-items');
-  lbl.textContent = cfg.label;
-  document.getElementById('field-size').style.display = cfg.showSize ? '' : 'none';
-  if (cfg.useSelect) {
-    field.innerHTML = `<label id="lbl-items">${cfg.label}</label>
-      <select id="input-items">
-        ${cfg.options.map(o => `<option>${o}</option>`).join('')}
-      </select>`;
+  const idx = newAlertDraft.categories.indexOf(cat);
+  if (idx >= 0) {
+    newAlertDraft.categories.splice(idx, 1);
+    el.classList.remove('selected');
   } else {
-    field.innerHTML = `<label id="lbl-items">${cfg.label}</label>
-      <input id="input-items" type="text" placeholder="${cfg.placeholder}">`;
+    newAlertDraft.categories.push(cat);
+    el.classList.add('selected');
   }
+  updateCatCounter();
+}
+
+function updateCatCounter() {
+  const n = newAlertDraft.categories.length;
+  const counter = document.getElementById('cat-selection-count');
+  if (counter) {
+    counter.textContent = n === 0 ? 'Sélectionnez au moins un besoin' :
+      n === 1 ? '1 besoin sélectionné' : n + ' besoins sélectionnés';
+    counter.style.color = n === 0 ? 'var(--danger)' : 'var(--primary)';
+  }
+}
+
+function goToStep2() {
+  if (newAlertDraft.categories.length === 0) {
+    showToast('Sélectionnez au moins un besoin ☝️');
+    return;
+  }
+  buildStep2Form();
+  goTo('screen-create-2');
+}
+
+function buildStep2Form() {
+  const catIcons  = { clothing:'👕', food:'🍞', hygiene:'🧴', medical:'💊', shelter:'🏠', transport:'🚌', support:'🤝', other:'❓', juridique:'⚖️', consult:'🩺', psy:'🧠' };
+  const catLabels = { clothing:'Vêtements', food:'Nourriture / Eau', hygiene:'Hygiène', medical:'Médicaments', shelter:'Abri / Hébergement', transport:'Transport', support:'Accompagnement', other:'Autre', juridique:'Conseil juridique', consult:'Consultation médicale', psy:'Soutien psychologique' };
+  const container = document.getElementById('needs-sections-container');
+  if (!container) return;
+  const cats = newAlertDraft.categories;
+  container.innerHTML = '';
+  cats.forEach((cat, idx) => {
+    const cfg = catConfig[cat];
+    if (!cfg) return;
+    const sizeOptions = ['— Non précisé','XS','S','M','L','XL','XXL','38','39','40','41','42','43','44','45'].map(o=>`<option>${o}</option>`).join('');
+    let fieldsHtml = cfg.useSelect
+      ? `<div class="input-group"><label>${cfg.label}</label><select data-cat="${cat}" data-field="items">${cfg.options.map(o=>`<option>${o}</option>`).join('')}</select></div>`
+      : `<div class="input-group"><label>${cfg.label}</label><input type="text" placeholder="${cfg.placeholder||''}" data-cat="${cat}" data-field="items"></div>`;
+    if (cfg.showSize) {
+      fieldsHtml += `<div style="display:flex;gap:12px;">
+        <div class="input-group" style="flex:1;"><label>Taille / pointure</label><select data-cat="${cat}" data-field="size">${sizeOptions}</select></div>
+        <div class="input-group" style="flex:1;"><label>Quantité</label><input type="number" value="1" min="1" data-cat="${cat}" data-field="qty"></div>
+      </div>`;
+    }
+    const section = document.createElement('div');
+    section.className = 'need-section';
+    section.dataset.cat = cat;
+    section.innerHTML = `
+      <div class="need-section-header">
+        <span style="font-size:26px;line-height:1;">${catIcons[cat]}</span>
+        <div>
+          <div style="font-size:15px;font-weight:800;">${catLabels[cat]}</div>
+          ${cats.length > 1 ? `<div style="font-size:12px;color:var(--primary);opacity:.7;">Besoin ${idx+1} sur ${cats.length}</div>` : ''}
+        </div>
+      </div>
+      ${fieldsHtml}`;
+    container.appendChild(section);
+  });
 }
 
 function selectUrgency(el, level) {
@@ -2042,13 +2325,6 @@ function geolocateHome() {
 }
 
 /* ── MODE NUIT ── */
-let darkMode = false;
-function toggleDark() {
-  darkMode = !darkMode;
-  document.getElementById('phone').classList.toggle('dark', darkMode);
-  document.getElementById('dark-btn').textContent = darkMode ? '☀️' : '🌙';
-}
-
 /* ── UTILISATEUR COURANT ── */
 const currentUser = { name: 'Stéphane B.', avatar: 'S', color: '#E85D04' };
 
@@ -2162,6 +2438,30 @@ const alertsData = {
     category:'Abri', items:'Place en centre d\'hébergement', time:'Il y a 1h30',
     signaler:'Fatou D.', signalerRating:'4.7', signalerAvatar:'F', signalerColor:'av-orange',
     urgency:'medium', initialState:'open',
+  },
+  'alert-14': {
+    icon:'⚖️', title:'Question RSA — homme sans ressources',
+    desc:"Homme d'environ 38 ans à la gare de Lyon. Il ne touche pas le RSA mais pense y avoir droit. Il ne sait pas comment faire les démarches et a peur de mal comprendre les formulaires. Cherche un avocat ou conseiller bénévole.",
+    location:'Gare de Lyon, Paris 12e', distance:'1,1 km • 🚶 14 min à pied',
+    category:'Conseil juridique', items:'Droit au RSA / allocation sociale', time:'Il y a 25 min',
+    signaler:'Karim B.', signalerRating:'4.6', signalerAvatar:'K', signalerColor:'av-blue',
+    urgency:'high', initialState:'open',
+  },
+  'alert-15': {
+    icon:'🩺', title:'Consultation médicale — femme diabétique',
+    desc:"Femme d'environ 55 ans, rue de Belleville. Elle est diabétique mais n'a pas de couverture médicale (sans AME ni carte vitale). Elle n'a pas vu de médecin depuis plusieurs mois et se sent mal. Besoin d'un médecin bénévole.",
+    location:'Rue de Belleville, Paris 20e', distance:'2,1 km • 🚶 26 min à pied',
+    category:'Consultation médicale', items:'Consultation généraliste', time:'Il y a 40 min',
+    signaler:'Nadia R.', signalerRating:'4.8', signalerAvatar:'N', signalerColor:'av-purple',
+    urgency:'high', initialState:'open',
+  },
+  'alert-16': {
+    icon:'🧠', title:'Soutien psychologique — état de crise',
+    desc:"Jeune homme d'environ 22 ans au parc de Belleville. Il semble en grande détresse émotionnelle — assis seul depuis des heures, pleure. Il a besoin d'une écoute bienveillante et d'un soutien psychologique urgent.",
+    location:'Parc de Belleville, Paris 20e', distance:'1,7 km • 🚶 21 min à pied',
+    category:'Soutien psychologique', items:'Situation de crise aiguë', time:'Il y a 12 min',
+    signaler:'Lucie M.', signalerRating:'4.9', signalerAvatar:'L', signalerColor:'av-green',
+    urgency:'high', initialState:'open',
   },
 };
 
@@ -2448,28 +2748,206 @@ function cancelTaken() {
 let recognition = null;
 let isListening = false;
 
+/* ── DESCRIPTION : SWITCH MODE TEXTE / AUDIO ── */
+let descMode = 'text';
+
+function switchDescMode(mode) {
+  descMode = mode;
+  document.getElementById('tab-text').classList.toggle('active', mode === 'text');
+  document.getElementById('tab-audio').classList.toggle('active', mode === 'audio');
+  document.getElementById('desc-text-mode').style.display = mode === 'text' ? '' : 'none';
+  document.getElementById('desc-audio-mode').style.display = mode === 'audio' ? '' : 'none';
+  // Si on repasse en texte, on arrête l'enregistrement en cours
+  if (mode === 'text' && isAudioRecording) stopAudioRecord();
+}
+
+/* ── ENREGISTREMENT AUDIO ── */
+let audioRecorder = null, audioChunks = [], audioBlob = null;
+let isAudioRecording = false, audioTimerInterval = null, audioSeconds = 0;
+
+function toggleAudioRecord() {
+  if (isAudioRecording) { stopAudioRecord(); return; }
+  startAudioRecord();
+}
+
+function startAudioRecord() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    // Fallback maquette : simule un enregistrement
+    simulateFakeRecord(); return;
+  }
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      audioChunks = [];
+      audioRecorder = new MediaRecorder(stream);
+      audioRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+      audioRecorder.onstop = () => {
+        stream.getTracks().forEach(t => t.stop());
+        audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        const url = URL.createObjectURL(audioBlob);
+        document.getElementById('audio-playback').src = url;
+        showAudioState('preview');
+      };
+      audioRecorder.start();
+      isAudioRecording = true;
+      startAudioTimer();
+      showAudioState('recording');
+    })
+    .catch(() => simulateFakeRecord());
+}
+
+function stopAudioRecord() {
+  if (!isAudioRecording) return;
+  isAudioRecording = false;
+  clearInterval(audioTimerInterval);
+  if (audioRecorder && audioRecorder.state !== 'inactive') audioRecorder.stop();
+}
+
+function simulateFakeRecord() {
+  // Pas d'accès micro (maquette) → simule 3 secondes puis affiche un player fictif
+  isAudioRecording = true;
+  audioBlob = null;
+  startAudioTimer();
+  showAudioState('recording');
+  setTimeout(() => {
+    if (!isAudioRecording) return;
+    isAudioRecording = false;
+    clearInterval(audioTimerInterval);
+    // Pas de vrai blob — on affiche juste le preview visuel sans src
+    document.getElementById('audio-playback').removeAttribute('src');
+    document.getElementById('audio-playback').style.display = 'none';
+    // Remplace le player par un badge "audio simulé"
+    const preview = document.getElementById('audio-preview');
+    const badge = document.createElement('div');
+    badge.id = 'audio-fake-badge';
+    badge.style.cssText = 'font-size:13px;color:var(--primary);font-weight:600;margin-top:4px;';
+    badge.textContent = '✓ Message audio de ' + audioSeconds + ' sec enregistré (maquette)';
+    const existing = document.getElementById('audio-fake-badge');
+    if (existing) existing.remove();
+    preview.querySelector('.audio-preview-card').appendChild(badge);
+    showAudioState('preview');
+  }, 3000);
+}
+
+function clearAudioRecord() {
+  if (isAudioRecording) stopAudioRecord();
+  audioBlob = null; audioSeconds = 0;
+  const badge = document.getElementById('audio-fake-badge');
+  if (badge) badge.remove();
+  document.getElementById('audio-playback').removeAttribute('src');
+  document.getElementById('audio-playback').style.display = '';
+  showAudioState('idle');
+}
+
+function showAudioState(state) {
+  document.getElementById('audio-idle').style.display      = state === 'idle'      ? '' : 'none';
+  document.getElementById('audio-recording').style.display = state === 'recording' ? '' : 'none';
+  document.getElementById('audio-preview').style.display   = state === 'preview'   ? '' : 'none';
+}
+
+function startAudioTimer() {
+  audioSeconds = 0;
+  document.getElementById('audio-timer').textContent = '0:00';
+  audioTimerInterval = setInterval(() => {
+    audioSeconds++;
+    const m = Math.floor(audioSeconds / 60);
+    const s = audioSeconds % 60;
+    document.getElementById('audio-timer').textContent = m + ':' + String(s).padStart(2,'0');
+    if (audioSeconds >= 60) stopAudioRecord(); // limite 60s
+  }, 1000);
+}
+
+/* ── MODE DE RENCONTRE ── */
+let meetMode = 'place';
+
+function selectMeetMode(mode, labelEl) {
+  meetMode = mode;
+  // Reset toutes les options
+  document.querySelectorAll('.meet-option-inner').forEach(el => {
+    el.classList.remove('meet-selected');
+    el.querySelector('.meet-check').style.opacity = '0';
+  });
+  // Active celle cliquée
+  const inner = labelEl.querySelector('.meet-option-inner');
+  inner.classList.add('meet-selected');
+  inner.querySelector('.meet-check').style.opacity = '1';
+  // Affiche/masque le champ adresse RDV
+  const rdvField = document.getElementById('rdv-address-field');
+  if (rdvField) rdvField.style.display = mode === 'rdv' ? 'block' : 'none';
+}
+
+/* ── PHOTOS DE LOCALISATION ── */
+const locationPhotos = { 1: null, 2: null, 3: null };
+// Fausses photos simulées pour la maquette
+const fakePhotoUrls = [
+  'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=200&q=60',
+  'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=200&q=60',
+  'https://images.unsplash.com/photo-1534430480872-3498386e7856?w=200&q=60',
+];
+
+function addLocationPhoto(slot) {
+  // Maquette : on simule une photo prise avec un placeholder coloré
+  const fakeUrl = fakePhotoUrls[(slot - 1) % fakePhotoUrls.length];
+  locationPhotos[slot] = fakeUrl;
+  renderPhotoSlot(slot, fakeUrl);
+  // Débloque le slot suivant
+  if (slot < 3 && !locationPhotos[slot + 1]) {
+    const next = document.getElementById('photo-slot-' + (slot + 1));
+    if (next) {
+      next.classList.remove('photo-slot-disabled');
+      next.onclick = () => addLocationPhoto(slot + 1);
+    }
+  }
+}
+
+function renderPhotoSlot(slot, url) {
+  const el = document.getElementById('photo-slot-' + slot);
+  if (!el) return;
+  el.classList.add('photo-slot-filled');
+  el.onclick = null;
+  el.innerHTML = `
+    <img src="${url}" alt="Photo lieu ${slot}">
+    <button class="photo-remove" onclick="removeLocationPhoto(${slot})" title="Supprimer">✕</button>`;
+}
+
+function removeLocationPhoto(slot) {
+  locationPhotos[slot] = null;
+  const el = document.getElementById('photo-slot-' + slot);
+  if (!el) return;
+  el.classList.remove('photo-slot-filled');
+  el.innerHTML = `<span style="font-size:24px;">📷</span><span style="font-size:11px;color:var(--text-muted);margin-top:4px;">Photo ${slot}</span>`;
+  el.onclick = () => addLocationPhoto(slot);
+  // Réinitialise et désactive les slots suivants
+  for (let i = slot + 1; i <= 3; i++) {
+    locationPhotos[i] = null;
+    const next = document.getElementById('photo-slot-' + i);
+    if (next) {
+      next.classList.remove('photo-slot-filled');
+      next.classList.add('photo-slot-disabled');
+      next.onclick = null;
+      next.innerHTML = `<span style="font-size:24px;opacity:.3;">📷</span><span style="font-size:11px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo ${i}</span>`;
+    }
+  }
+}
+
+/* ── ANCIENNE FONCTION SPEECH-TO-TEXT (conservée, non utilisée) ── */
 function toggleVoice() {
-  const btn = document.getElementById('voice-btn');
   const textarea = document.getElementById('desc-textarea');
   if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
     textarea.value = 'Homme ~40 ans, devant la pharmacie, seulement un t-shirt par ce froid.';
-    textarea.placeholder = '';
     return;
   }
-  if (isListening) {
-    recognition.stop(); return;
-  }
+  if (isListening) { recognition.stop(); return; }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SR();
   recognition.lang = 'fr-FR';
   recognition.interimResults = true;
-  recognition.onstart = () => { isListening = true; btn.classList.add('listening'); btn.textContent = '⏹️'; };
+  recognition.onstart = () => { isListening = true; };
   recognition.onresult = (e) => {
-    let transcript = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) transcript += e.results[i][0].transcript;
-    textarea.value = transcript;
+    let t = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) t += e.results[i][0].transcript;
+    textarea.value = t;
   };
-  recognition.onend = () => { isListening = false; btn.classList.remove('listening'); btn.textContent = '🎙️'; };
+  recognition.onend = () => { isListening = false; };
   recognition.start();
 }
 
@@ -2542,6 +3020,226 @@ function confirmDelivery() {
   goTo('screen-rating');
 }
 
+/* ══════════════════════════════════════
+   QUESTIONS & DROITS
+══════════════════════════════════════ */
+const droitsData = {
+  1: {
+    cat:'RSA', catBg:'#E3F2FD', catColor:'#1565C0', catEmoji:'💰',
+    question:'Homme ~50 ans sans domicile depuis 6 mois — a-t-il droit au RSA ?',
+    context:"Il n'a aucun revenu et dort dans la rue depuis au moins 6 mois. Il n'a jamais fait de demande car il pensait ne pas y avoir droit sans adresse fixe.",
+    asker:'Stéphane B.', askerAvatar:'S', askerColor:'av-orange', time:'Il y a 2h',
+    answers:[
+      {
+        expert:'Marie-Claire T.', role:'Travailleuse sociale — CCAS Paris 11e',
+        avatar:'M', color:'av-blue', verified:true, time:'Il y a 1h30', helpful:12,
+        text:`<p>Oui, <strong>il y a droit sous conditions</strong>. Le RSA est accessible aux personnes sans domicile fixe, mais il faut d'abord obtenir une <strong>domiciliation administrative</strong> auprès d'un CCAS ou d'une association agréée (Croix-Rouge, Secours Pop…)</p>
+<p><strong>Étapes concrètes :</strong></p>
+<ol style="padding-left:18px;margin:8px 0;line-height:1.8;">
+  <li>Se rendre au CCAS de la mairie la plus proche pour la domiciliation (gratuit, sur place)</li>
+  <li>Une fois domicilié, faire la demande de RSA sur <u>caf.fr</u> ou en personne à la CAF</li>
+  <li>Conditions : avoir +25 ans, ou avoir travaillé au moins 2 ans dans les 3 dernières années</li>
+</ol>
+<p style="margin-top:8px;">Pour Paris : appelez le <strong>3975</strong> (Solidarité Paris), ils orientent vers le bon CCAS.</p>`
+      },
+      {
+        expert:'Julien R.', role:'Juriste bénévole — Accès au Droit',
+        avatar:'J', color:'av-green', verified:true, time:'Il y a 45 min', helpful:8,
+        text:`<p>Pour compléter : si la personne a plus de 50 ans et n'a pas travaillé depuis longtemps, vérifiez aussi :</p>
+<ul style="padding-left:18px;margin:8px 0;line-height:1.8;">
+  <li><strong>ASS</strong> (Allocation de Solidarité Spécifique) si elle a des droits chômage épuisés</li>
+  <li><strong>AAH</strong> en cas de handicap reconnu (MDPH)</li>
+</ul>
+<p>Le livret <em>"Mes droits, mes démarches"</em> est disponible dans tous les CCAS — demandez-en un pour lui.</p>`
+      }
+    ]
+  },
+  2: {
+    cat:'Santé', catBg:'#FCE4EC', catColor:'#C62828', catEmoji:'🏥',
+    question:'Personne sans papiers — comment accéder aux soins médicaux ?',
+    context:"Elle refuse d'aller à l'hôpital par peur d'être expulsée. Elle a une infection visible qui empire depuis 2 semaines. Elle ne parle pas français.",
+    asker:'Camille D.', askerAvatar:'C', askerColor:'av-purple', time:'Il y a 4h',
+    answers:[
+      {
+        expert:'Dr. Sophie M.', role:'Médecin bénévole — Médecins du Monde',
+        avatar:'S', color:'av-blue', verified:true, time:'Il y a 3h', helpful:15,
+        text:`<p><strong>Rassurez-la absolument</strong> : les hôpitaux n'ont <strong>aucune obligation de signalement</strong> aux autorités. Le secret médical s'applique à tout le monde, sans papiers ou non.</p>
+<p style="margin-top:10px;"><strong>L'AME (Aide Médicale d'État)</strong> est faite pour elle :</p>
+<ul style="padding-left:18px;margin:8px 0;line-height:1.8;">
+  <li>Accessible après 3 mois de résidence en France (même sans titre de séjour)</li>
+  <li>Couvre les soins à 100% comme la Sécu</li>
+  <li>Demande à la CPAM avec une simple attestation d'hébergement</li>
+</ul>
+<p style="margin-top:10px;"><strong>En attendant l'AME :</strong> les <strong>PASS (Permanences d'Accès aux Soins de Santé)</strong> dans les hôpitaux publics soignent gratuitement, sans conditions et avec interprètes disponibles.</p>
+<p style="margin-top:8px;">Pour Paris, toutes les PASS : <u>aphp.fr/pass</u></p>`
+      }
+    ]
+  },
+  3: {
+    cat:'Logement', catBg:'#E8F5E9', catColor:'#2E7D32', catEmoji:'🏠',
+    question:'Famille expulsée avec 3 enfants — quelles démarches en urgence ?',
+    context:"Expulsion hier soir, ils dorment dans leur voiture. Les enfants ont 4, 7 et 12 ans. Ils n'ont aucun réseau local et ne savent pas vers qui se tourner.",
+    asker:'Thomas R.', askerAvatar:'T', askerColor:'av-green', time:'Il y a 1h',
+    answers:[]
+  },
+  4: {
+    cat:'RSA', catBg:'#E3F2FD', catColor:'#1565C0', catEmoji:'💰',
+    question:'Jeune de 24 ans sans emploi — peut-il toucher le RSA ?',
+    context:"Il pensait ne pas y avoir droit avant 25 ans et n'a jamais fait de demande. Il est sans emploi depuis 8 mois, vit dans la rue depuis 3 mois.",
+    asker:'Élodie V.', askerAvatar:'É', askerColor:'av-purple', time:'Hier',
+    answers:[
+      {
+        expert:'Marie-Claire T.', role:'Travailleuse sociale — CCAS Paris 11e',
+        avatar:'M', color:'av-blue', verified:true, time:'Hier', helpful:9,
+        text:`<p><strong>Non, à 24 ans le RSA classique n'est pas accessible</strong> (sauf s'il a un enfant à charge ou est enceinte).</p>
+<p style="margin-top:10px;">Mais il peut avoir droit à :</p>
+<ul style="padding-left:18px;margin:8px 0;line-height:1.8;">
+  <li><strong>Contrat d'Engagement Jeune (CEJ)</strong> : pour les 16-25 ans, ~500€/mois pendant un parcours d'insertion. À demander à la <strong>Mission Locale</strong> du quartier — c'est la première étape.</li>
+  <li><strong>Fonds d'Aide aux Jeunes (FAJ)</strong> : aide ponctuelle accordée par le département, sans condition de revenu minimum</li>
+</ul>`
+      },
+      {
+        expert:'Julien R.', role:'Juriste bénévole — Accès au Droit',
+        avatar:'J', color:'av-green', verified:true, time:'Hier', helpful:6,
+        text:`<p>Exception : il peut toucher le RSA avant 25 ans <strong>s'il a un enfant à charge ou est en état de grossesse</strong>. Dans ce cas, pas de condition d'âge.</p>`
+      },
+      {
+        expert:'Amandine C.', role:'Conseillère CAF — Paris',
+        avatar:'A', color:'av-orange', verified:true, time:'Hier', helpful:11,
+        text:`<p>Le plus simple : l'orienter vers la <strong>Mission Locale la plus proche</strong> (gratuit, sans RDV obligatoire). Ils font un bilan complet de ses droits en une séance et l'accompagnent dans toutes les démarches.</p>
+<p style="margin-top:8px;">Paris : <u>missionlocaleparis.fr</u> — 19 antennes dans toute la ville.</p>`
+      }
+    ]
+  },
+  5: {
+    cat:'Documents', catBg:'#F3E5F5', catColor:'#6A1B9A', catEmoji:'📄',
+    question:'Sans pièce d\'identité ni adresse — comment refaire ses papiers ?',
+    context:"A tout perdu dans un incendie il y a 4 mois. Sans adresse depuis. Ne sait pas par où commencer, très découragé par la complexité administrative.",
+    asker:'Nina K.', askerAvatar:'N', askerColor:'av-green', time:'Hier',
+    answers:[
+      {
+        expert:'Marie-Claire T.', role:'Travailleuse sociale — CCAS Paris 11e',
+        avatar:'M', color:'av-blue', verified:true, time:'Hier', helpful:14,
+        text:`<p><strong>La domiciliation est la priorité absolue</strong>. Sans adresse, rien n'est possible.</p>
+<ol style="padding-left:18px;margin:8px 0;line-height:1.8;">
+  <li><strong>Domiciliation</strong> : CCAS de la mairie la plus proche (gratuit, sur place, sans RDV)</li>
+  <li><strong>Déclaration de perte</strong> : en ligne sur <u>service-public.fr</u> ou au commissariat</li>
+  <li><strong>Acte de naissance</strong> : copie intégrale gratuite sur <u>acte-etat-civil.fr</u> (nés en France)</li>
+  <li><strong>Carte d'identité</strong> : avec l'acte de naissance + domiciliation, demande en mairie (gratuit, ~3 semaines)</li>
+</ol>
+<p style="margin-top:8px;">Si né à l'étranger, revenez vers moi, la procédure est différente.</p>`
+      },
+      {
+        expert:'Julien R.', role:'Juriste bénévole — Accès au Droit',
+        avatar:'J', color:'av-green', verified:true, time:'Hier', helpful:7,
+        text:`<p>La <strong>Permanence d'Accès au Droit</strong> (gratuite) accompagne la personne dans toutes ces démarches avec un professionnel.</p>
+<p style="margin-top:8px;">À Paris : 4 boulevard du Palais — accessible sans RDV certains jours. Renseignements : <u>justice.fr</u></p>`
+      }
+    ]
+  }
+};
+
+let currentDroitsId = null;
+
+function openDroitsQuestion(id) {
+  currentDroitsId = id;
+  const d = droitsData[id];
+  if (!d) return;
+
+  document.getElementById('droits-detail-cat').textContent = d.catEmoji + ' ' + d.cat;
+  document.getElementById('droits-detail-catbadge').textContent = d.catEmoji + ' ' + d.cat;
+  document.getElementById('droits-detail-catbadge').style.cssText = `background:${d.catBg};color:${d.catColor};`;
+  document.getElementById('droits-detail-question').textContent = d.question;
+  document.getElementById('droits-detail-context').textContent = d.context;
+
+  const avatarEl = document.getElementById('droits-detail-avatar');
+  avatarEl.textContent = d.askerAvatar;
+  avatarEl.className = 'avatar ' + d.askerColor;
+  document.getElementById('droits-detail-meta').textContent = d.asker + ' • ' + d.time;
+
+  const container = document.getElementById('droits-answers-container');
+  if (!d.answers.length) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:32px 16px;color:var(--text-muted);">
+        <div style="font-size:40px;margin-bottom:12px;">⏳</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:6px;">En attente d'une réponse</div>
+        <div style="font-size:13px;">Un expert bénévole va répondre sous 24h.</div>
+      </div>`;
+  } else {
+    container.innerHTML = `<div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">${d.answers.length} réponse${d.answers.length>1?'s':''} d'experts</div>`
+      + d.answers.map(a => `
+        <div class="card" style="margin-bottom:12px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;">
+            <div class="avatar ${a.color}" style="width:38px;height:38px;font-size:15px;flex-shrink:0;">${a.avatar}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span style="font-weight:700;font-size:14px;">${a.expert}</span>
+                ${a.verified ? '<span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:1px 7px;font-size:10px;font-weight:700;">✔ Expert vérifié</span>' : ''}
+              </div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${a.role}</div>
+            </div>
+            <span style="font-size:11px;color:var(--text-muted);white-space:nowrap;flex-shrink:0;">${a.time}</span>
+          </div>
+          <div style="font-size:14px;line-height:1.7;color:var(--text);">${a.text}</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+            <button onclick="this.innerHTML='👍 '+( parseInt(this.dataset.n||${a.helpful})+1);this.dataset.n=parseInt(this.dataset.n||${a.helpful})+1;this.style.color='var(--success)';this.style.borderColor='var(--success)';"
+              style="display:flex;align-items:center;gap:5px;padding:5px 12px;border:1.5px solid var(--border);border-radius:8px;background:transparent;font-size:13px;cursor:pointer;">
+              👍 ${a.helpful}
+            </button>
+            <span style="font-size:12px;color:var(--text-muted);">Utile ?</span>
+          </div>
+        </div>`).join('');
+  }
+  goTo('screen-droits-detail');
+}
+
+function toggleDroitsChip(el, filter) {
+  document.querySelectorAll('#screen-droits .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#screen-droits [data-droits]').forEach(card => {
+    card.style.display = (filter === 'all' || card.dataset.droits === filter) ? '' : 'none';
+  });
+}
+
+function submitDroitsQuestion() {
+  const cat  = document.getElementById('droits-ask-cat').value;
+  const q    = document.getElementById('droits-ask-question').value.trim();
+  const ctx  = document.getElementById('droits-ask-context').value.trim();
+  const anon = document.getElementById('droits-ask-anon').checked;
+  if (!cat) { showToast('⚠️ Choisissez un thème'); return; }
+  if (!q)   { showToast('⚠️ Saisissez votre question'); return; }
+
+  const catLabels = { rsa:'💰 RSA', logement:'🏠 Logement', sante:'🏥 Santé', documents:'📄 Documents', aah:'♿ AAH', immigration:'🌍 Immigration', famille:'👨‍👩‍👧 Famille', autre:'❓ Autre' };
+  const newId = 90 + Object.keys(droitsData).length;
+  droitsData[newId] = {
+    cat: catLabels[cat] || cat, catBg:'#E3F2FD', catColor:'#1565C0', catEmoji: catLabels[cat]?.split(' ')[0] || '❓',
+    question: q, context: ctx || 'Aucun contexte supplémentaire.',
+    asker: anon ? 'Anonyme' : 'Stéphane B.', askerAvatar: anon ? '?' : 'S', askerColor:'av-orange',
+    time:'À l\'instant', answers:[],
+  };
+
+  /* Ajouter la carte dans le feed */
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.droits = cat;
+  card.style.cssText = 'cursor:pointer;margin-bottom:12px;';
+  card.onclick = () => openDroitsQuestion(newId);
+  card.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+      <span style="background:#E3F2FD;color:#1565C0;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;">${catLabels[cat]}</span>
+      <div style="font-size:15px;font-weight:700;line-height:1.4;">${q}</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:12px;color:var(--text-muted);">${anon ? 'Anonyme' : 'Stéphane B.'} • À l'instant</span>
+      <span style="background:var(--warning-light);color:var(--warning);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;">⏳ En attente</span>
+    </div>`;
+  const body = document.querySelector('#screen-droits .screen-body');
+  if (body) body.prepend(card);
+
+  goTo('screen-droits');
+  setTimeout(() => showToast('✅ Question publiée ! Réponse sous 24h'), 400);
+}
+
 /* ── PROFIL AUTRE UTILISATEUR ── */
 /* ── TOAST ── */
 function showToast(msg, duration) {
@@ -2606,7 +3304,22 @@ function openPrivateChat(chatId) {
 }
 
 /* ── CRÉER UN SIGNALEMENT → FEED ── */
-const newAlertDraft = { category: 'clothing', urgency: 'high' };
+const newAlertDraft = { categories: ['clothing'], urgency: 'high' };
+
+function resetCreateForm() {
+  // Remet les catégories à zéro (vêtements par défaut)
+  newAlertDraft.categories = ['clothing'];
+  newAlertDraft.urgency = 'high';
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
+  const defaultCard = document.querySelector('.cat-card[data-cat="clothing"]');
+  if (defaultCard) defaultCard.classList.add('selected');
+  updateCatCounter();
+  // Reset description
+  const ta = document.getElementById('desc-textarea');
+  if (ta) ta.value = '';
+  switchDescMode('text');
+  clearAudioRecord();
+}
 
 function publishAndGoHome() {
   addNewAlertToFeed();
@@ -2615,38 +3328,56 @@ function publishAndGoHome() {
 }
 
 function addNewAlertToFeed() {
-  const catIcons  = { clothing:'👕', food:'🍞', hygiene:'🧴', medical:'💊', shelter:'🏠', transport:'🚌', support:'🤝', other:'❓' };
-  const catLabels = { clothing:'Vêtements', food:'Nourriture', hygiene:'Hygiène', medical:'Médical', shelter:'Abri', transport:'Transport', support:'Accompagnement', other:'Autre' };
+  const catIcons  = { clothing:'👕', food:'🍞', hygiene:'🧴', medical:'💊', shelter:'🏠', transport:'🚌', support:'🤝', other:'❓', juridique:'⚖️', consult:'🩺', psy:'🧠' };
+  const catLabels = { clothing:'Vêtements', food:'Nourriture', hygiene:'Hygiène', medical:'Médical', shelter:'Abri', transport:'Transport', support:'Accompagnement', other:'Autre', juridique:'Conseil juridique', consult:'Consultation médicale', psy:'Soutien psychologique' };
   const urgBadge  = { high:'<span class="badge badge-high">🔴 Urgent</span>', medium:'<span class="badge badge-medium">🟡 Modéré</span>', low:'<span class="badge badge-low">🟢 Faible</span>' };
-  const cat  = newAlertDraft.category || 'clothing';
-  const urg  = newAlertDraft.urgency  || 'high';
-  const items = (document.getElementById('input-items') || {}).value || '';
-  const desc  = (document.getElementById('desc-textarea') || {}).value || 'Signalement créé à l\'instant.';
-  const addr  = (document.querySelector('#screen-create-3 input[type="text"]') || {}).value || 'Votre position actuelle';
+  const cats = newAlertDraft.categories.length > 0 ? newAlertDraft.categories : ['clothing'];
+  const primaryCat = cats[0];
+  const urg = newAlertDraft.urgency || 'high';
+  // Récupère la valeur du premier champ "items" parmi les sections
+  const firstItemsEl = document.querySelector(`[data-cat="${primaryCat}"][data-field="items"]`);
+  const itemsVal = firstItemsEl ? firstItemsEl.value : '';
+  const hasAudio = descMode === 'audio' && (audioBlob || audioSeconds > 0);
+  const desc = hasAudio
+    ? '🎙️ Message audio (' + audioSeconds + ' sec)'
+    : ((document.getElementById('desc-textarea') || {}).value || 'Signalement créé à l\'instant.');
+  const addr = (document.querySelector('#screen-create-3 input[type="text"]') || {}).value || 'Votre position actuelle';
   const newId = 'alert-new-' + Date.now();
+  // Titre : catégorie principale + extras si multi
+  const extraCount = cats.length - 1;
+  const title = catLabels[primaryCat] + (itemsVal ? ' — ' + itemsVal : '')
+    + (extraCount > 0 ? ` + ${extraCount} autre${extraCount > 1 ? 's' : ''} besoin${extraCount > 1 ? 's' : ''}` : '');
+  // Icône : jusqu'à 2 emojis côte à côte si multi
+  const iconDisplay = cats.slice(0,2).map(c => catIcons[c]||'❓').join('');
+  // Tags de catégories
+  const catTagsHtml = cats.length > 1
+    ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${cats.map(c=>`<span style="background:var(--primary-light);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;">${catIcons[c]} ${catLabels[c]}</span>`).join('')}</div>`
+    : '';
   alertsData[newId] = {
-    icon: catIcons[cat],
-    title: catLabels[cat] + (items ? ' — ' + items : ''),
+    icon: catIcons[primaryCat], title,
     desc: desc || 'Signalement publié à l\'instant.',
     location: addr || 'Votre position', distance: '< 100 m',
-    category: catLabels[cat], items: items || 'Non précisé', time: 'À l\'instant',
+    categories: cats, category: catLabels[primaryCat],
+    items: itemsVal || 'Non précisé', time: 'À l\'instant',
     signaler: 'Stéphane B.', signalerRating: '4.8', signalerAvatar: 'S', signalerColor: 'av-orange',
     urgency: urg, initialState: 'open',
   };
   const card = document.createElement('div');
   card.className = 'alert-card';
   card.dataset.alertId = newId;
-  card.dataset.category = cat;
+  card.dataset.category = primaryCat;
+  card.dataset.categories = cats.join(' ');
   card.onclick = () => openAlert(newId);
   card.innerHTML = `
     <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
-      <div class="alert-cat-icon">${catIcons[cat]}</div>
+      <div class="alert-cat-icon" style="font-size:${cats.length > 1 ? '16px' : '22px'};letter-spacing:-2px;">${iconDisplay}</div>
       <div style="flex:1;">
-        <div style="font-size:16px;font-weight:700;margin-bottom:3px;">${alertsData[newId].title}</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:3px;">${title}</div>
         <div style="font-size:14px;color:var(--text-muted);">${desc}</div>
       </div>
       ${urgBadge[urg]}
     </div>
+    ${catTagsHtml}
     <div class="alert-card-meta">
       <span>📍 ${addr}</span><span>⏱ À l'instant</span>
       <span class="badge badge-open">Ouvert</span>
@@ -2749,10 +3480,12 @@ function submitRating() {
   }, 300);
 }
 
-// init step 2 form + compteurs chips
+// init step 1 sélection + compteurs chips
 document.addEventListener('DOMContentLoaded', () => {
+  // Vêtements sélectionné par défaut (déjà dans newAlertDraft.categories)
   const defaultCard = document.querySelector('.cat-card[data-cat="clothing"]');
-  if (defaultCard) selectCat(defaultCard);
+  if (defaultCard) defaultCard.classList.add('selected');
+  updateCatCounter();
   updateChipCounts();
   enhanceFeedCards();
 });
