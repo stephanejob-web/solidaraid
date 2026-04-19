@@ -153,6 +153,16 @@ body {
 .btn-primary:active { box-shadow: 0 2px 8px rgba(240,90,26,.2); }
 .btn-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
 .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+
+/* Meet mode cards (sheet-help) */
+.meet-mode-card { display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:14px;border:2px solid var(--border);cursor:pointer;text-align:center;transition:all .15s;background:var(--white); }
+.meet-mode-card.selected { border-color:var(--primary);background:var(--primary-light); }
+.meet-mode-card .mode-icon { font-size:26px; }
+.meet-mode-card .mode-label { font-size:12px;font-weight:700;color:var(--text);line-height:1.3; }
+
+/* Creator toggle (screen-create-2) */
+.creator-toggle-card { display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border-radius:12px;border:2px solid var(--border);cursor:pointer;flex:1;text-align:center;transition:all .15s;background:var(--white); }
+.creator-toggle-card.selected { border-color:var(--primary);background:var(--primary-light); }
 .btn-danger { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; box-shadow: 0 4px 16px rgba(220,38,38,.25); }
 .btn-success { background: linear-gradient(135deg, #22C55E, #15803D); color: white; box-shadow: 0 4px 16px rgba(21,128,61,.25); }
 .btn-sm { padding: 9px 16px; font-size: 13px; width: auto; border-radius: 10px; }
@@ -1122,6 +1132,35 @@ body {
       <div id="map-mini"></div>
     </div>
 
+    <!-- Qui crée ce signalement ? -->
+    <div class="input-group" style="margin-bottom:16px;">
+      <label style="margin-bottom:10px;">Qui crée ce signalement ?</label>
+      <div style="display:flex;gap:8px;">
+        <div class="creator-toggle-card selected" id="creator-helper" onclick="setCreatorMode('helper')">
+          <span style="font-size:22px;">👁️</span>
+          <div style="font-size:12px;font-weight:700;">Un aidant</div>
+          <div style="font-size:11px;color:var(--text-muted);">Je vois quelqu'un</div>
+        </div>
+        <div class="creator-toggle-card" id="creator-self" onclick="setCreatorMode('self')">
+          <span style="font-size:22px;">🙋</span>
+          <div style="font-size:12px;font-weight:700;">Moi-même</div>
+          <div style="font-size:11px;color:var(--text-muted);">Ma propre situation</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Téléphone de la personne (optionnel) -->
+    <div class="input-group" style="margin-bottom:4px;">
+      <label>Téléphone de la personne <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel)</span></label>
+      <input type="tel" id="person-phone" placeholder="ex : 06 12 34 56 78">
+      <div style="font-size:12px;color:var(--text-muted);margin-top:5px;">Visible uniquement par l'aidant accepté</div>
+    </div>
+
+    <!-- Note si pas de téléphone -->
+    <div style="background:var(--primary-light);border-radius:10px;padding:12px;margin-bottom:16px;font-size:13px;color:var(--primary);">
+      💡 Si la personne n'a pas de téléphone, l'aidant pourra préciser un lieu de rendez-vous au moment de son engagement.
+    </div>
+
     <!-- Photos de l'endroit (optionnel) -->
     <div class="input-group">
       <label style="margin-bottom:4px;">Photo de l'endroit <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel)</span></label>
@@ -1228,6 +1267,19 @@ body {
       <div class="profile-stat"><div class="stat-val">8</div><div class="stat-lbl">Dons</div></div>
       <div class="profile-stat"><div class="stat-val">23</div><div class="stat-lbl">Aides</div></div>
     </div>
+
+    <!-- Mise à jour rapide de position -->
+    <div style="padding:0 16px 4px;">
+      <div style="background:var(--primary-light);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:4px;" onclick="openSheet('sheet-update-position')">
+        <span style="font-size:28px;">📍</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:15px;color:var(--primary);">Ce soir je suis ailleurs</div>
+          <div style="font-size:13px;color:var(--text-muted);">Mettre à jour ma position rapidement</div>
+        </div>
+        <span style="font-size:20px;color:var(--primary);">›</span>
+      </div>
+    </div>
+
     <div style="padding:16px;">
       <div class="section-title" style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;">
         Mes signalements
@@ -1859,23 +1911,97 @@ body {
   </div>
 </div>
 
-<!-- SHEET — Je peux aider -->
+<!-- SHEET — Je peux aider (choix du mode de rencontre) -->
 <div id="sheet-overlay-help" class="sheet-overlay" onclick="closeSheet('sheet-help')">
   <div id="sheet-help" class="bottom-sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
+
+    <!-- Étape 1 : Mode de rencontre -->
+    <div id="help-step-1">
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="font-size:36px;margin-bottom:8px;">🙋</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:4px;">Comment souhaitez-vous aider ?</div>
+        <div style="font-size:13px;color:var(--text-muted);" id="sheet-help-subtitle">👕 Manteau + pantalon — Rue de la Paix</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div class="meet-mode-card" id="mode-onsite" onclick="selectMeetMode('onsite')">
+          <div class="mode-icon">🚶</div>
+          <div class="mode-label">Je me déplace<br>sur place</div>
+        </div>
+        <div class="meet-mode-card" id="mode-public" onclick="selectMeetMode('public')">
+          <div class="mode-icon">☕</div>
+          <div class="mode-label">Rendez-vous<br>en lieu public</div>
+        </div>
+        <div class="meet-mode-card" id="mode-home" onclick="selectMeetMode('home')">
+          <div class="mode-icon">🏠</div>
+          <div class="mode-label">La personne<br>vient chez moi</div>
+        </div>
+        <div class="meet-mode-card" id="mode-biz" onclick="selectMeetMode('biz')">
+          <div class="mode-icon">🏪</div>
+          <div class="mode-label">Mon établissement<br>propose</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="help-mode-next-btn" onclick="goToHelpStep2()" style="opacity:.4;pointer-events:none;">Continuer →</button>
+      <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-help')">Annuler</button>
+    </div>
+
+    <!-- Étape 2 : Détails + message -->
+    <div id="help-step-2" style="display:none;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <button onclick="backToHelpStep1()" style="background:none;border:none;font-size:22px;cursor:pointer;padding:0;line-height:1;">←</button>
+        <div style="font-size:16px;font-weight:800;" id="help-step2-title"></div>
+      </div>
+
+      <!-- Adresse rendez-vous (public ou domicile) -->
+      <div id="help-address-section" style="display:none;" class="input-group">
+        <label id="help-address-label">Adresse du rendez-vous</label>
+        <input type="text" id="help-address-input" placeholder="">
+        <div id="help-address-note" style="font-size:12px;color:var(--text-muted);margin-top:5px;"></div>
+      </div>
+
+      <!-- Offre établissement -->
+      <div id="help-biz-section" style="display:none;">
+        <div class="input-group">
+          <label>Nom de votre établissement</label>
+          <input type="text" id="help-biz-name" placeholder="ex : Restaurant Le Soleil">
+        </div>
+        <div class="input-group">
+          <label>Ce que vous proposez</label>
+          <input type="text" id="help-biz-offer" placeholder="ex : Repas chaud, à venir chercher sur place">
+        </div>
+      </div>
+
+      <div class="input-group" style="margin-bottom:16px;">
+        <label>Message <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel)</span></label>
+        <textarea id="help-message" placeholder="ex : J'arrive dans 20 min, j'ai ce qu'il faut…" style="height:72px;"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="submitHelp()" style="font-size:16px;">✅ Confirmer mon aide</button>
+      <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-help')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHEET — Mise à jour de position -->
+<div id="sheet-overlay-update-position" class="sheet-overlay" onclick="closeSheet('sheet-update-position')">
+  <div id="sheet-update-position" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
     <div style="text-align:center;margin-bottom:20px;">
-      <div style="font-size:40px;margin-bottom:10px;">🙋</div>
-      <div style="font-size:20px;font-weight:800;margin-bottom:6px;">Je peux aider !</div>
-      <div style="font-size:14px;color:var(--text-muted);" id="sheet-help-subtitle">👕 Manteau + pantalon homme — Rue de la Paix</div>
+      <div style="font-size:36px;margin-bottom:8px;">📍</div>
+      <div style="font-size:18px;font-weight:800;">Ce soir je suis ailleurs</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Mettez à jour votre position pour que les aidants vous trouvent</div>
     </div>
-    <div class="input-group" style="margin-bottom:20px;">
-      <label>Message (optionnel)</label>
-      <textarea id="help-message" placeholder="ex : J'arrive dans 20 min, j'ai ce qu'il faut…" style="height:80px;"></textarea>
-    </div>
-    <button class="btn btn-primary" onclick="submitHelp()" style="font-size:17px;">
-      ✅ Je confirme mon aide
+    <button class="btn btn-primary" style="margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="useCurrentLocationUpdate()">
+      <span>📡</span> Utiliser ma position actuelle
     </button>
-    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-help')">Annuler</button>
+    <div class="input-group" style="margin-bottom:12px;">
+      <label>Ou indiquer une adresse / lieu</label>
+      <input type="text" id="update-position-input" placeholder="ex : Square de la République, 75011…">
+    </div>
+    <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:16px;font-size:13px;color:var(--text-muted);">
+      ℹ️ Cette mise à jour sera visible sur vos signalements actifs. Elle expire automatiquement le lendemain matin.
+    </div>
+    <button class="btn btn-success" onclick="confirmPositionUpdate()">✅ Mettre à jour ma position</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-update-position')">Annuler</button>
   </div>
 </div>
 
@@ -1955,6 +2081,13 @@ function openSheet(id) {
     const a = alertsData[currentAlertId];
     const sub = document.getElementById('sheet-help-subtitle');
     if (sub) sub.textContent = `${a.icon} ${a.title} — ${a.location}`;
+    // Reset to step 1
+    selectedMeetMode = null;
+    document.getElementById('help-step-1').style.display = 'block';
+    document.getElementById('help-step-2').style.display = 'none';
+    ['onsite','public','home','biz'].forEach(m => document.getElementById('mode-'+m).classList.remove('selected'));
+    const nb = document.getElementById('help-mode-next-btn');
+    if (nb) { nb.style.opacity = '.4'; nb.style.pointerEvents = 'none'; }
   }
 }
 function closeSheet(id) {
@@ -2621,11 +2754,14 @@ function renderParticipants() {
   const a = currentAlertId ? alertsData[currentAlertId] : null;
   const list = (a && a.participants) ? [...a.participants] : [];
   if (!list.length) { section.innerHTML = ''; return; }
-  const rows = list.map(p => `
+  const rows = list.map((p, idx) => `
     <div style="display:flex;align-items:flex-start;gap:10px;">
       <div class="avatar ${p.color}" style="width:36px;height:36px;font-size:14px;flex-shrink:0;">${p.avatar}</div>
       <div style="flex:1;min-width:0;">
-        <div style="font-size:14px;font-weight:600;">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+          <span style="font-size:14px;font-weight:600;">${p.name}</span>
+          <button onclick="openHelpChatFromAlert('${currentAlertId}',${idx})" style="font-size:12px;padding:3px 10px;background:var(--primary-light);color:var(--primary);border:1.5px solid var(--primary-mid);border-radius:20px;cursor:pointer;font-weight:600;white-space:nowrap;">💬 Chat</button>
+        </div>
         <div style="font-size:12px;color:var(--text-muted);">${escapeHtml(p.status || '')}</div>
         ${p.message ? `<div style="font-size:13px;color:var(--text);font-style:italic;margin-top:4px;background:var(--bg);border-radius:8px;padding:6px 10px;">« ${escapeHtml(p.message)} »</div>` : ''}
       </div>
@@ -2805,6 +2941,64 @@ function renderHelpBar() {
 }
 
 
+let selectedMeetMode = null;
+let creatorMode = 'helper';
+
+function setCreatorMode(mode) {
+  creatorMode = mode;
+  document.getElementById('creator-helper').classList.toggle('selected', mode === 'helper');
+  document.getElementById('creator-self').classList.toggle('selected', mode === 'self');
+}
+
+function selectMeetMode(mode) {
+  selectedMeetMode = mode;
+  ['onsite','public','home','biz'].forEach(m => document.getElementById('mode-'+m).classList.toggle('selected', m === mode));
+  const btn = document.getElementById('help-mode-next-btn');
+  if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+}
+
+function goToHelpStep2() {
+  if (!selectedMeetMode) return;
+  document.getElementById('help-step-1').style.display = 'none';
+  document.getElementById('help-step-2').style.display = 'block';
+  const titles = { onsite:'🚶 Je me déplace sur place', public:'☕ Rendez-vous en lieu public', home:'🏠 La personne vient chez moi', biz:'🏪 Mon établissement propose' };
+  document.getElementById('help-step2-title').textContent = titles[selectedMeetMode];
+  const addrSec = document.getElementById('help-address-section');
+  const bizSec = document.getElementById('help-biz-section');
+  addrSec.style.display = 'none';
+  bizSec.style.display = 'none';
+  if (selectedMeetMode === 'public') {
+    addrSec.style.display = 'block';
+    document.getElementById('help-address-label').textContent = 'Lieu de rendez-vous';
+    document.getElementById('help-address-input').placeholder = 'ex : Café de la Mairie, 3 place du Marché…';
+    document.getElementById('help-address-note').textContent = 'Un lieu public neutre et accessible.';
+  } else if (selectedMeetMode === 'home') {
+    addrSec.style.display = 'block';
+    document.getElementById('help-address-label').textContent = 'Votre adresse';
+    document.getElementById('help-address-input').placeholder = 'ex : 12 rue des Lilas, Paris 11e…';
+    document.getElementById('help-address-note').textContent = 'Partagée uniquement avec la personne aidée.';
+  } else if (selectedMeetMode === 'biz') {
+    bizSec.style.display = 'block';
+  }
+}
+
+function backToHelpStep1() {
+  document.getElementById('help-step-1').style.display = 'block';
+  document.getElementById('help-step-2').style.display = 'none';
+}
+
+function useCurrentLocationUpdate() {
+  document.getElementById('update-position-input').value = 'Position GPS détectée — Paris';
+  showToast('📡 Position GPS détectée');
+}
+
+function confirmPositionUpdate() {
+  const val = document.getElementById('update-position-input').value.trim();
+  if (!val) { showToast('⚠️ Veuillez indiquer un lieu'); return; }
+  closeSheet('sheet-update-position');
+  showToast('📍 Position mise à jour — les aidants verront votre nouvelle adresse');
+}
+
 function submitHelp() {
   const msgEl = document.getElementById('help-message');
   const message = msgEl ? msgEl.value.trim() : '';
@@ -2822,13 +3016,15 @@ function submitHelp() {
       existing.status = status;
       existing.message = message;
     } else {
-      a.participants.unshift({ name: currentUser.name, avatar: currentUser.avatar, color: 'av-orange', status, message });
+      a.participants.unshift({ name: currentUser.name, avatar: currentUser.avatar, color: 'av-orange', status, message, meetMode: selectedMeetMode });
     }
     renderParticipants();
   }
   renderHelpBar();
   if (msgEl) msgEl.value = '';
   updateFeedCard(currentAlertId, 'me');
+  const _aid = currentAlertId, _msg = message, _mode = selectedMeetMode;
+  setTimeout(() => openHelpChat(_aid, currentUser.name, currentUser.avatar, 'av-orange', _msg, _mode), 350);
   // Refrapper le badge statut dans la fiche
   const fiche = document.getElementById('alert-fiche');
   if (fiche) {
@@ -2967,7 +3163,6 @@ function startAudioTimer() {
 /* ── STUB : fonctions supprimées mais conservées pour éviter erreurs de liaisons résiduelles ── */
 function selectSituation() {}
 function buildMeetOptions() {}
-function selectMeetMode() {}
 
 /* ── PHOTOS DE LOCALISATION ── */
 const locationPhotos = { 1: null, 2: null, 3: null };
@@ -3395,6 +3590,53 @@ const privateChatData = {
     ]
   }
 };
+
+function openHelpChat(alertId, helperName, helperAvatar, helperColor, helperMessage, meetMode) {
+  const a = alertsData[alertId];
+  if (!a) return;
+  const modeLabels = { onsite:'🚶 Se déplace sur place', public:'☕ Rendez-vous en lieu public', home:'🏠 La personne vient chez moi', biz:'🏪 Via mon établissement' };
+  const modeLabel = modeLabels[meetMode] || '';
+  const now = new Date();
+  const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  const signalerName = a.signaler || 'Julien M.';
+  const signalerAvatar = a.signalerAvatar || 'J';
+  const signalerColor = a.signalerColor || 'av-orange';
+
+  const msgs = [];
+  msgs.push({ type:'system', text: helperName + ' propose son aide' });
+  if (modeLabel) msgs.push({ type:'system', text: 'Mode : ' + modeLabel });
+  if (helperMessage) msgs.push({ from: helperName, avatar: helperAvatar, color: helperColor, text: helperMessage, time });
+  msgs.push({ from: signalerName, avatar: signalerAvatar, color: signalerColor, text: 'Merci ! Il est encore sur place. Comment on fait pour se retrouver ?', time });
+
+  document.getElementById('chat-title').textContent = helperName === currentUser.name ? signalerName : helperName;
+  document.getElementById('chat-subtitle').textContent = 'Chat privé';
+  const avatarEl = document.getElementById('chat-avatars');
+  const otherColor = helperName === currentUser.name ? signalerColor : helperColor;
+  const otherAvatar = helperName === currentUser.name ? signalerAvatar : helperAvatar;
+  avatarEl.innerHTML = `<div class="avatar ${otherColor}" style="width:30px;height:30px;font-size:12px;border:2px solid var(--white);">${otherAvatar}</div>`;
+  document.getElementById('chat-context').innerHTML = `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${a.icon} <strong>${a.title}</strong>${modeLabel ? ` <span style="background:var(--primary);color:white;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;flex-shrink:0;">${modeLabel}</span>` : ''}</div>`;
+
+  const wrap = document.getElementById('chat-messages');
+  wrap.innerHTML = msgs.map(m => {
+    if (m.type === 'system') return `<div style="text-align:center;padding:8px 0;"><span style="font-size:12px;color:var(--text-muted);background:var(--bg);padding:4px 14px;border-radius:20px;">${m.text}</span></div>`;
+    const mine = m.from === currentUser.name;
+    return `<div class="msg ${mine ? 'msg-out' : 'msg-in'}">
+      ${!mine ? `<div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;padding-left:4px;">${m.from}</div>` : ''}
+      <div class="msg-bubble">${escapeHtml(m.text)}</div>
+      <div class="msg-time">${m.time}</div>
+    </div>`;
+  }).join('');
+  wrap.scrollTop = wrap.scrollHeight;
+  goTo('screen-chat');
+}
+
+function openHelpChatFromAlert(alertId, participantIdx) {
+  const a = alertsData[alertId];
+  if (!a || !a.participants) return;
+  const p = a.participants[participantIdx];
+  if (!p) return;
+  openHelpChat(alertId, p.name, p.avatar, p.color, p.message || '', p.meetMode || null);
+}
 
 function openPrivateChat(chatId) {
   const data = privateChatData[chatId];
