@@ -99,22 +99,22 @@ body {
   background: var(--white);
   border-top: 1px solid var(--border-light);
   box-shadow: 0 -4px 20px rgba(28,23,20,.06);
-  display: none; align-items: center; justify-content: space-around;
-  z-index: 100; padding-bottom: 6px;
+  display: none; align-items: center; justify-content: space-evenly;
+  z-index: 100; padding-bottom: 6px; padding-top: 4px;
 }
 #bottom-nav.visible { display: flex; }
-.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 8px 4px; color: var(--text-muted); transition: color .2s; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; padding: 4px 2px; color: var(--text-muted); transition: color .2s; }
 .nav-item.active { color: var(--primary); }
 .nav-item.active .nav-icon-wrap { background: var(--primary-light); }
-.nav-icon-wrap { width: 44px; height: 28px; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
-.nav-icon { font-size: 21px; line-height: 1; }
-.nav-label { font-size: 10px; font-weight: 600; letter-spacing: .2px; }
+.nav-icon-wrap { width: 44px; height: 28px; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: background .2s; flex-shrink: 0; }
+.nav-icon { font-size: 20px; line-height: 1; }
+.nav-label { font-size: 10px; font-weight: 600; letter-spacing: .2px; text-align: center; }
 .nav-fab {
-  width: 56px; height: 56px;
+  width: 52px; height: 52px; flex-shrink: 0;
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   border-radius: 50%; border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 28px; color: white; margin-top: -24px;
+  font-size: 26px; color: white; margin-top: -20px;
   box-shadow: var(--shadow-primary);
   transition: transform .15s, box-shadow .15s;
 }
@@ -483,6 +483,64 @@ body {
 .situation-card.selected .situation-icon { background:var(--primary-mid); }
 .situation-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px; }
 .situation-sub { font-size:12px; color:var(--text-muted); line-height:1.4; }
+
+/* ── Challenges / Podium ── */
+.challenges-tabs { display:flex; background:var(--white); border-bottom:1px solid var(--border-light); padding:0 16px; gap:4px; }
+.challenges-tab { flex:1; padding:14px 8px; text-align:center; font-size:14px; font-weight:700; color:var(--text-muted); cursor:pointer; border-bottom:3px solid transparent; transition:all .2s; }
+.challenges-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
+
+.podium-section { background:linear-gradient(160deg,#1C1714 0%,#2D1B10 100%); padding:28px 16px 20px; }
+.podium-title { text-align:center; font-size:13px; font-weight:700; color:rgba(255,255,255,.5); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.podium-period { text-align:center; font-size:17px; font-weight:800; color:white; margin-bottom:24px; }
+.podium-row { display:flex; align-items:flex-end; justify-content:center; gap:8px; }
+.podium-item { display:flex; flex-direction:column; align-items:center; flex:1; max-width:110px; }
+.podium-item-avatar { width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; color:white; margin-bottom:6px; border:3px solid transparent; position:relative; }
+.podium-item-avatar.gold   { border-color:#F5C518; box-shadow:0 0 0 3px rgba(245,197,24,.25); }
+.podium-item-avatar.silver { border-color:#C0C0C0; box-shadow:0 0 0 3px rgba(192,192,192,.2); }
+.podium-item-avatar.bronze { border-color:#CD7F32; box-shadow:0 0 0 3px rgba(205,127,50,.2); }
+.podium-crown { position:absolute; top:-14px; font-size:18px; }
+.podium-item-name { font-size:12px; font-weight:700; color:white; margin-bottom:2px; text-align:center; }
+.podium-item-score { font-size:11px; color:rgba(255,255,255,.6); margin-bottom:8px; }
+.podium-block { width:100%; border-radius:10px 10px 0 0; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:900; color:white; }
+.podium-block.gold   { height:72px; background:linear-gradient(135deg,#F5C518,#D4A017); }
+.podium-block.silver { height:52px; background:linear-gradient(135deg,#C0C0C0,#909090); }
+.podium-block.bronze { height:38px; background:linear-gradient(135deg,#CD7F32,#9A5F25); }
+
+.ranking-list { padding:0 16px; margin-top:0; }
+.ranking-item { display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid var(--border-light); }
+.ranking-item:last-child { border-bottom:none; }
+.ranking-pos { width:28px; text-align:center; font-size:14px; font-weight:800; color:var(--text-muted); flex-shrink:0; }
+.ranking-avatar { width:38px; height:38px; border-radius:50%; background:var(--primary-light); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:var(--primary); flex-shrink:0; }
+.ranking-info { flex:1; }
+.ranking-name { font-size:14px; font-weight:700; color:var(--text); }
+.ranking-sub { font-size:12px; color:var(--text-muted); margin-top:1px; }
+.ranking-score { font-size:15px; font-weight:800; color:var(--primary); }
+.ranking-item.me { background:var(--primary-light); margin:0 -16px; padding:13px 16px; border-radius:0; border-color:var(--primary-mid); }
+.ranking-item.me .ranking-name { color:var(--primary); }
+
+.my-rank-bar { background:var(--white); border-top:1px solid var(--border-light); padding:12px 16px; display:flex; align-items:center; gap:12px; }
+.my-rank-label { font-size:13px; color:var(--text-muted); }
+.my-rank-val { font-size:15px; font-weight:800; color:var(--primary); }
+.my-rank-trophy { font-size:22px; }
+
+.challenge-card { background:var(--white); border-radius:var(--radius); padding:18px; margin-bottom:12px; box-shadow:var(--shadow-sm); border:1px solid var(--border-light); }
+.challenge-card.community { border-color:var(--secondary); background:linear-gradient(135deg,#EFF6FF,#DBEAFE); }
+.challenge-header { display:flex; align-items:flex-start; gap:14px; margin-bottom:14px; }
+.challenge-icon { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.challenge-icon.week { background:var(--primary-light); }
+.challenge-icon.month { background:#FEF9C3; }
+.challenge-icon.community { background:#DBEAFE; }
+.challenge-icon.badge { background:#F3F4F6; }
+.challenge-meta { flex:1; }
+.challenge-tag { font-size:10px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:var(--text-muted); margin-bottom:3px; }
+.challenge-title { font-size:15px; font-weight:800; color:var(--text); line-height:1.3; }
+.challenge-desc { font-size:13px; color:var(--text-muted); margin-top:3px; line-height:1.4; }
+.challenge-reward { display:inline-flex; align-items:center; gap:5px; background:var(--warning-light); color:var(--warning); font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; margin-top:8px; }
+.progress-bar-wrap { background:var(--bg); border-radius:999px; height:8px; overflow:hidden; margin-bottom:6px; }
+.progress-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--primary),var(--primary-dark)); transition:width .4s ease; }
+.progress-bar-fill.blue { background:linear-gradient(90deg,#3B82F6,#2563EB); }
+.challenge-progress-row { display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); font-weight:600; }
+.challenge-deadline { font-size:12px; color:var(--text-muted); margin-top:10px; display:flex; align-items:center; gap:4px; }
 </style>
 </head>
 <body>
@@ -596,7 +654,45 @@ body {
     <span style="font-size:12px;color:var(--primary);font-weight:700;">Modifier le rayon ›</span>
   </button>
 
-  <div class="screen-body" style="padding:8px 16px 80px;">
+  <!-- Toggle Liste / Carte -->
+  <div style="display:flex;align-items:center;justify-content:center;padding:8px 16px;background:var(--white);border-bottom:1px solid var(--border-light);flex-shrink:0;">
+    <div style="display:flex;background:var(--bg);border-radius:12px;padding:3px;gap:2px;">
+      <button id="toggle-list" onclick="switchFeedView('list')"
+        style="padding:7px 20px;border-radius:9px;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;background:var(--white);color:var(--primary);box-shadow:var(--shadow-sm);">
+        📋 Liste
+      </button>
+      <button id="toggle-map" onclick="switchFeedView('map')"
+        style="padding:7px 20px;border-radius:9px;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;background:transparent;color:var(--text-muted);box-shadow:none;">
+        🗺 Carte
+      </button>
+    </div>
+  </div>
+
+  <!-- Bannière aides en cours -->
+  <div id="active-helps-bar" style="display:none;background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:10px 16px;cursor:pointer;flex-shrink:0;" onclick="openSheet('sheet-active-helps')">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:20px;">🙋</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:800;color:white;" id="active-helps-label">1 aide en cours</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.75);">Appuie pour voir et accéder rapidement</div>
+      </div>
+      <div id="active-helps-avatars" style="display:flex;gap:-4px;"></div>
+      <span style="color:white;font-size:18px;font-weight:700;">›</span>
+    </div>
+  </div>
+
+  <!-- Vue carte inline -->
+  <div id="home-map-view" style="display:none;flex:1;position:relative;">
+    <div id="map-leaflet-home" style="position:absolute;inset:0;"></div>
+    <!-- Légende -->
+    <div style="position:absolute;bottom:90px;left:12px;z-index:500;background:white;border-radius:12px;padding:10px 14px;box-shadow:0 2px 12px rgba(0,0,0,.15);font-size:12px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#C62828;display:inline-block;"></span> Urgent</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#F57F17;display:inline-block;"></span> Modéré</div>
+      <div style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#2E7D32;display:inline-block;"></span> Résolu</div>
+    </div>
+  </div>
+
+  <div id="home-list-view" class="screen-body" style="padding:8px 16px 80px;">
 
     <!-- Cartes signalements -->
     <div id="feed-empty-state">
@@ -1132,23 +1228,6 @@ body {
       <div id="map-mini"></div>
     </div>
 
-    <!-- Qui crée ce signalement ? -->
-    <div class="input-group" style="margin-bottom:16px;">
-      <label style="margin-bottom:10px;">Qui crée ce signalement ?</label>
-      <div style="display:flex;gap:8px;">
-        <div class="creator-toggle-card selected" id="creator-helper" onclick="setCreatorMode('helper')">
-          <span style="font-size:22px;">👁️</span>
-          <div style="font-size:12px;font-weight:700;">Un aidant</div>
-          <div style="font-size:11px;color:var(--text-muted);">Je vois quelqu'un</div>
-        </div>
-        <div class="creator-toggle-card" id="creator-self" onclick="setCreatorMode('self')">
-          <span style="font-size:22px;">🙋</span>
-          <div style="font-size:12px;font-weight:700;">Moi-même</div>
-          <div style="font-size:11px;color:var(--text-muted);">Ma propre situation</div>
-        </div>
-      </div>
-    </div>
-
     <!-- Téléphone de la personne (optionnel) -->
     <div class="input-group" style="margin-bottom:4px;">
       <label>Téléphone de la personne <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel)</span></label>
@@ -1255,44 +1334,105 @@ body {
 
 <!-- PROFILE -->
 <div id="screen-profile" class="screen">
-  <div class="profile-header">
+
+  <!-- Header gradient -->
+  <div class="profile-header" style="position:relative;">
+    <button onclick="goTo('screen-settings')" style="position:absolute;top:54px;right:16px;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;">⚙️</button>
     <div class="profile-avatar">S</div>
     <div class="profile-name">Stéphane B.</div>
-    <div class="profile-sub">Paris • ✔️ Compte vérifié • ⭐ 4.8/5</div>
-    <div style="margin-top:10px;font-size:13px;opacity:.7;">Membre depuis avril 2026</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;flex-wrap:wrap;">
+      <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">✔️ Vérifié</span>
+      <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">⭐ 4.8 / 5</span>
+      <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">📍 Paris</span>
+    </div>
+    <div style="margin-top:8px;font-size:12px;opacity:.6;">Membre depuis avril 2026</div>
   </div>
+
   <div class="screen-body" style="padding-top:0;">
+
+    <!-- Stats flottantes -->
     <div class="profile-stats">
       <div class="profile-stat"><div class="stat-val">12</div><div class="stat-lbl">Signalements</div></div>
       <div class="profile-stat"><div class="stat-val">8</div><div class="stat-lbl">Dons</div></div>
       <div class="profile-stat"><div class="stat-val">23</div><div class="stat-lbl">Aides</div></div>
     </div>
 
-    <!-- Mise à jour rapide de position -->
-    <div style="padding:0 16px 4px;">
-      <div style="background:var(--primary-light);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:4px;" onclick="openSheet('sheet-update-position')">
-        <span style="font-size:28px;">📍</span>
-        <div style="flex:1;">
-          <div style="font-weight:700;font-size:15px;color:var(--primary);">Ce soir je suis ailleurs</div>
-          <div style="font-size:13px;color:var(--text-muted);">Mettre à jour ma position rapidement</div>
-        </div>
-        <span style="font-size:20px;color:var(--primary);">›</span>
-      </div>
-    </div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:14px;">
 
-    <div style="padding:16px;">
-      <div class="section-title" style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;">
-        Mes signalements
-        <span style="font-size:13px;color:var(--primary);font-weight:600;cursor:pointer;" onclick="goTo('screen-my-alerts')">Voir tout ›</span>
+      <!-- Niveau -->
+      <div style="background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#FEF9C3,#FDE68A);display:flex;align-items:center;justify-content:center;font-size:22px;">🌟</div>
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;">Niveau actuel</div>
+            <div style="font-size:16px;font-weight:800;color:var(--text);">Aidant de quartier</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:var(--text-muted);">Prochain niveau</div>
+            <div style="font-size:13px;font-weight:700;color:var(--primary);">Champion →</div>
+          </div>
+        </div>
+        <div style="background:var(--bg);border-radius:999px;height:8px;overflow:hidden;margin-bottom:5px;">
+          <div style="width:62%;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--primary-dark));"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);font-weight:600;">
+          <span>23 aides</span><span>37 aides pour Champion</span>
+        </div>
+
+        <!-- Badges -->
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+          <span style="background:#FFF4ED;color:var(--primary);font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;">🔥 Premier froid</span>
+          <span style="background:#F0FDF4;color:#15803D;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;">🤝 Tandem</span>
+          <span style="background:#EFF6FF;color:#2563EB;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;">⭐ Top noté</span>
+        </div>
       </div>
-      <div class="card" style="cursor:pointer;" onclick="goTo('screen-my-alerts')"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">👕</span><div><div style="font-weight:600;font-size:15px;">Manteau homme</div><div style="font-size:13px;color:var(--text-muted);">Il y a 12 min</div></div></div><span class="badge badge-open">En cours</span></div></div>
-      <div class="card" style="cursor:pointer;" onclick="goTo('screen-my-alerts')"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;"><span style="font-size:24px;">🍞</span><div><div style="font-weight:600;font-size:15px;">Nourriture famille</div><div style="font-size:13px;color:var(--text-muted);">Hier</div></div></div><span class="badge badge-done">Résolu ✓</span></div></div>
-      <div class="section-title" style="margin-top:8px;">Actions</div>
-      <div class="settings-item" onclick="goTo('screen-droits')"><span class="settings-item-icon">⚖️</span><div class="settings-item-text"><strong>Questions & Droits</strong><span>Droits sociaux, aides, démarches</span></div><span class="settings-arrow">›</span></div>
-      <div class="settings-item" onclick="goTo('screen-donate-form')"><span class="settings-item-icon">🎁</span><div class="settings-item-text"><strong>Proposer un don</strong><span>Publier un objet disponible</span></div><span class="settings-arrow">›</span></div>
-      <div class="settings-item" onclick="goTo('screen-emergency')"><span class="settings-item-icon">🆘</span><div class="settings-item-text"><strong>Services d'urgence</strong><span>115, 119, ressources locales</span></div><span class="settings-arrow">›</span></div>
-      <div class="settings-item" onclick="goTo('screen-settings')"><span class="settings-item-icon">⚙️</span><div class="settings-item-text"><strong>Paramètres</strong><span>Compte, notifications, accessibilité</span></div><span class="settings-arrow">›</span></div>
-      <div class="settings-item" onclick="goTo('screen-login')"><span class="settings-item-icon">🚪</span><div class="settings-item-text"><strong style="color:var(--danger);">Se déconnecter</strong></div><span class="settings-arrow">›</span></div>
+
+      <!-- Mes signalements -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="font-size:15px;font-weight:800;color:var(--text);">Mes signalements</div>
+          <span style="font-size:13px;color:var(--primary);font-weight:600;cursor:pointer;" onclick="goTo('screen-my-alerts')">Voir tout ›</span>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:8px;" onclick="goTo('screen-my-alerts')">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;gap:10px;align-items:center;">
+              <span style="font-size:24px;">👕</span>
+              <div><div style="font-weight:700;font-size:14px;">Manteau homme</div><div style="font-size:12px;color:var(--text-muted);">Il y a 12 min</div></div>
+            </div>
+            <span class="badge badge-open">En cours</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer;" onclick="goTo('screen-my-alerts')">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;gap:10px;align-items:center;">
+              <span style="font-size:24px;">🍞</span>
+              <div><div style="font-weight:700;font-size:14px;">Nourriture famille</div><div style="font-size:12px;color:var(--text-muted);">Hier</div></div>
+            </div>
+            <span class="badge badge-done">Résolu ✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions rapides -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);cursor:pointer;text-align:center;" onclick="goTo('screen-donate-form')">
+          <div style="font-size:28px;margin-bottom:6px;">🎁</div>
+          <div style="font-size:13px;font-weight:800;color:var(--text);">Proposer un don</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Publier un objet</div>
+        </div>
+        <div style="background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);cursor:pointer;text-align:center;" onclick="goToChallenges()">
+          <div style="font-size:28px;margin-bottom:6px;">🏆</div>
+          <div style="font-size:13px;font-weight:800;color:var(--text);">Classement</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Tu es #8 ce mois</div>
+        </div>
+      </div>
+
+      <!-- Compte -->
+      <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);border:1px solid var(--border-light);overflow:hidden;">
+        <div class="settings-item" onclick="goTo('screen-settings')"><span class="settings-item-icon">⚙️</span><div class="settings-item-text"><strong>Paramètres</strong><span>Compte, notifications, accessibilité</span></div><span class="settings-arrow">›</span></div>
+        <div class="settings-item" style="border-bottom:none;" onclick="goTo('screen-login')"><span class="settings-item-icon">🚪</span><div class="settings-item-text"><strong style="color:var(--danger);">Se déconnecter</strong></div><span class="settings-arrow">›</span></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1751,10 +1891,132 @@ body {
   </div>
 </div>
 
+<!-- CHALLENGES / PODIUM -->
+<div id="screen-challenges" class="screen">
+  <div class="topbar" style="padding:46px 16px 0;background:var(--white);border-bottom:none;box-shadow:none;">
+    <div style="flex:1;">
+      <div style="font-size:18px;font-weight:800;color:var(--text);line-height:1.2;">🏆 Classement</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:1px;">Avril 2026</div>
+    </div>
+    <button class="icon-btn" onclick="openSheet('sheet-period')">📅</button>
+  </div>
+  <div class="screen-body" style="padding-bottom:calc(var(--nav-h) + 56px);">
+
+    <div id="tab-panel-ranking">
+      <!-- Podium visuel -->
+      <div class="podium-section">
+        <div class="podium-title">Ce mois-ci</div>
+        <div class="podium-period">Les plus grands aidants 💛</div>
+        <div class="podium-row">
+          <!-- 2e -->
+          <div class="podium-item">
+            <div class="podium-item-avatar silver">M</div>
+            <div class="podium-item-name">Marie D.</div>
+            <div class="podium-item-score">31 aides</div>
+            <div class="podium-block silver">2</div>
+          </div>
+          <!-- 1er -->
+          <div class="podium-item">
+            <div class="podium-item-avatar gold">
+              <span class="podium-crown">👑</span>
+              T
+            </div>
+            <div class="podium-item-name">Thomas R.</div>
+            <div class="podium-item-score">47 aides</div>
+            <div class="podium-block gold">1</div>
+          </div>
+          <!-- 3e -->
+          <div class="podium-item">
+            <div class="podium-item-avatar bronze">L</div>
+            <div class="podium-item-name">Lucie M.</div>
+            <div class="podium-item-score">24 aides</div>
+            <div class="podium-block bronze">3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Classement complet -->
+      <div style="padding:16px 16px 8px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:15px;font-weight:800;color:var(--text);">Suite du classement</div>
+        <div style="font-size:12px;color:var(--text-muted);">Top 10 — Avril 2026</div>
+      </div>
+      <div class="ranking-list">
+        <div class="ranking-item" onclick="openOtherProfile('Karim B.','4.9','K','av-blue')">
+          <div class="ranking-pos">4</div>
+          <div class="ranking-avatar" style="background:#EFF6FF;color:#2563EB;">K</div>
+          <div class="ranking-info"><div class="ranking-name">Karim B.</div><div class="ranking-sub">Paris 11e · ⭐ 4.9</div></div>
+          <div class="ranking-score">19 aides</div>
+        </div>
+        <div class="ranking-item" onclick="openOtherProfile('Sophie L.','4.7','S','av-green')">
+          <div class="ranking-pos">5</div>
+          <div class="ranking-avatar" style="background:#F0FDF4;color:#15803D;">S</div>
+          <div class="ranking-info"><div class="ranking-name">Sophie L.</div><div class="ranking-sub">Paris 3e · ⭐ 4.7</div></div>
+          <div class="ranking-score">16 aides</div>
+        </div>
+        <div class="ranking-item" onclick="openOtherProfile('Ahmed N.','4.6','A','av-orange')">
+          <div class="ranking-pos">6</div>
+          <div class="ranking-avatar" style="background:#FFF4ED;color:#F05A1A;">A</div>
+          <div class="ranking-info"><div class="ranking-name">Ahmed N.</div><div class="ranking-sub">Paris 18e · ⭐ 4.6</div></div>
+          <div class="ranking-score">14 aides</div>
+        </div>
+        <div class="ranking-item" onclick="openOtherProfile('Nadia F.','4.8','N','av-purple')">
+          <div class="ranking-pos">7</div>
+          <div class="ranking-avatar" style="background:#F5F3FF;color:#7C3AED;">N</div>
+          <div class="ranking-info"><div class="ranking-name">Nadia F.</div><div class="ranking-sub">Paris 20e · ⭐ 4.8</div></div>
+          <div class="ranking-score">12 aides</div>
+        </div>
+        <!-- MOI -->
+        <div class="ranking-item me">
+          <div class="ranking-pos" style="color:var(--primary);">8</div>
+          <div class="ranking-avatar" style="background:var(--primary);color:white;">S</div>
+          <div class="ranking-info"><div class="ranking-name">Stéphane B. · Moi</div><div class="ranking-sub">Paris · ⭐ 4.8</div></div>
+          <div class="ranking-score">10 aides</div>
+        </div>
+        <div class="ranking-item">
+          <div class="ranking-pos">9</div>
+          <div class="ranking-avatar" style="background:#F0FDF4;color:#15803D;">P</div>
+          <div class="ranking-info"><div class="ranking-name">Paul V.</div><div class="ranking-sub">Paris 9e · ⭐ 4.5</div></div>
+          <div class="ranking-score">9 aides</div>
+        </div>
+        <div class="ranking-item">
+          <div class="ranking-pos">10</div>
+          <div class="ranking-avatar" style="background:#FFF4ED;color:#F05A1A;">C</div>
+          <div class="ranking-info"><div class="ranking-name">Clara T.</div><div class="ranking-sub">Paris 6e · ⭐ 4.4</div></div>
+          <div class="ranking-score">7 aides</div>
+        </div>
+      </div>
+
+      <!-- Bar "Ma position" fixée en bas -->
+      <div style="margin:16px 16px 0;">
+        <div style="background:var(--primary-light);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:12px;">
+          <span style="font-size:26px;">🔥</span>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;color:var(--primary);">Tu es 8ème ce mois-ci !</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Encore 2 aides pour passer 7ème</div>
+          </div>
+          <div style="font-size:22px;font-weight:900;color:var(--primary);">#8</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SHEET — Période classement -->
+<div id="sheet-overlay-period" class="sheet-overlay" onclick="closeSheet('sheet-period')">
+  <div id="sheet-period" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="font-size:17px;font-weight:800;margin-bottom:16px;">📅 Période du classement</div>
+    <div class="situation-card selected" onclick="setPeriod('month',this)"><div class="situation-icon">📅</div><div><div class="situation-title">Ce mois-ci</div><div class="situation-sub">Avril 2026</div></div></div>
+    <div class="situation-card" onclick="setPeriod('week',this)"><div class="situation-icon">⚡</div><div><div class="situation-title">Cette semaine</div><div class="situation-sub">14 – 20 avril</div></div></div>
+    <div class="situation-card" onclick="setPeriod('alltime',this)"><div class="situation-icon">🏆</div><div><div class="situation-title">Depuis toujours</div><div class="situation-sub">Classement global</div></div></div>
+  </div>
+</div>
+
 <!-- BOTTOM NAV -->
 <nav id="bottom-nav">
   <div class="nav-item active" id="nav-home" onclick="goToApp()"><div class="nav-icon-wrap"><span class="nav-icon">🏠</span></div><span class="nav-label">Accueil</span></div>
-  <div class="nav-item" id="nav-map" onclick="goToMap()"><div class="nav-icon-wrap"><span class="nav-icon">🗺</span></div><span class="nav-label">Carte</span></div>
+  <div class="nav-item" id="nav-challenges" onclick="goToChallenges()"><div class="nav-icon-wrap"><span class="nav-icon">🏆</span></div><span class="nav-label">Podium</span></div>
   <button class="nav-fab" onclick="navHistory=[];resetCreateForm();goTo('screen-create-1')">＋</button>
   <div class="nav-item" id="nav-msg" onclick="goTo('screen-messages');setNav('nav-msg')"><div class="nav-icon-wrap"><span class="nav-icon">💬</span></div><span class="nav-label">Messages</span></div>
   <div class="nav-item" id="nav-profile" onclick="goTo('screen-profile');setNav('nav-profile')"><div class="nav-icon-wrap"><span class="nav-icon">👤</span></div><span class="nav-label">Profil</span></div>
@@ -1981,6 +2243,16 @@ body {
   </div>
 </div>
 
+<!-- SHEET — Mes aides en cours -->
+<div id="sheet-overlay-active-helps" class="sheet-overlay" onclick="closeSheet('sheet-active-helps')">
+  <div id="sheet-active-helps" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="font-size:17px;font-weight:800;margin-bottom:4px;">🙋 Mes aides en cours</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Accède directement à chaque signalement</div>
+    <div id="active-helps-list"></div>
+  </div>
+</div>
+
 <!-- SHEET — Mise à jour de position -->
 <div id="sheet-overlay-update-position" class="sheet-overlay" onclick="closeSheet('sheet-update-position')">
   <div id="sheet-update-position" class="bottom-sheet" onclick="event.stopPropagation()">
@@ -2047,7 +2319,7 @@ function goTo(id) {
 
 function goBack() { if (navHistory.length) goTo(navHistory.pop()); }
 
-function goToApp() { navHistory = []; goTo('screen-home'); setNav('nav-home'); }
+function goToApp() { navHistory = []; goTo('screen-home'); setNav('nav-home'); switchFeedView('list'); }
 function goToMap() { goTo('screen-map'); setNav('nav-map'); }
 
 function setNav(activeId) {
@@ -2089,6 +2361,7 @@ function openSheet(id) {
     const nb = document.getElementById('help-mode-next-btn');
     if (nb) { nb.style.opacity = '.4'; nb.style.pointerEvents = 'none'; }
   }
+  if (id === 'sheet-active-helps') renderActiveHelpsList();
 }
 function closeSheet(id) {
   const sheet   = document.getElementById(id);
@@ -3037,6 +3310,7 @@ function submitHelp() {
       badges.forEach(b => { if (b.textContent.includes('Ouvert') || b.textContent.includes('cours')) b.outerHTML = `<span class="badge" style="background:#E3F2FD;color:var(--secondary);">En cours — vous</span>`; });
     }
   }
+  updateActiveHelpsBar();
 }
 
 function cancelTaken() {
@@ -3889,10 +4163,114 @@ function submitRating() {
   }, 300);
 }
 
+/* ── TOGGLE LISTE / CARTE ── */
+let homeMapInit = false;
+let _homeMap = null;
+
+function switchFeedView(view) {
+  const listView  = document.getElementById('home-list-view');
+  const mapView   = document.getElementById('home-map-view');
+  const btnList   = document.getElementById('toggle-list');
+  const btnMap    = document.getElementById('toggle-map');
+  const activeStyle   = { background:'var(--white)', color:'var(--primary)', boxShadow:'0 1px 4px rgba(28,23,20,.10)' };
+  const inactiveStyle = { background:'transparent',  color:'var(--text-muted)', boxShadow:'none' };
+
+  if (view === 'map') {
+    listView.style.display = 'none';
+    mapView.style.display  = 'flex';
+    Object.assign(btnMap.style,  activeStyle);
+    Object.assign(btnList.style, inactiveStyle);
+    initHomeMap();
+  } else {
+    listView.style.display = '';
+    mapView.style.display  = 'none';
+    Object.assign(btnList.style, activeStyle);
+    Object.assign(btnMap.style,  inactiveStyle);
+  }
+}
+
+function initHomeMap() {
+  if (homeMapInit) { if (_homeMap) setTimeout(() => _homeMap.invalidateSize(), 100); return; }
+  homeMapInit = true;
+  const map = L.map('map-leaflet-home', { zoomControl:false, attributionControl:false }).setView([48.8566, 2.3522], 14);
+  _homeMap = map;
+  setTimeout(() => map.invalidateSize(), 250);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(map);
+  const pins = [
+    { pos:[48.8596,2.3477], color:'#C62828', id:'alert-1',  e:'👕', l:'Manteau homme' },
+    { pos:[48.8546,2.3572], color:'#C62828', id:'alert-2',  e:'🍞', l:'Nourriture famille' },
+    { pos:[48.8576,2.3422], color:'#F57F17', id:'alert-3',  e:'🧴', l:'Kit hygiène' },
+    { pos:[48.8516,2.3622], color:'#2E7D32', id:null,        e:'✓',  l:'Résolu' },
+    { pos:[48.8606,2.3502], color:'#C62828', id:'alert-6',  e:'💊', l:'Médicaments' },
+    { pos:[48.8536,2.3542], color:'#C62828', id:'alert-8',  e:'🍼', l:'Lait infantile' },
+    { pos:[48.8556,2.3462], color:'#F57F17', id:'alert-4',  e:'🏠', l:'Couverture' },
+    { pos:[48.8586,2.3562], color:'#C62828', id:'alert-10', e:'🧥', l:'Manteau femme' },
+    { pos:[48.8526,2.3482], color:'#F57F17', id:'alert-7',  e:'🥣', l:'Soupe chaude' },
+    { pos:[48.8566,2.3612], color:'#C62828', id:'alert-9',  e:'👟', l:'Chaussures' },
+  ];
+  pins.forEach(a => {
+    const icon = L.divIcon({ className:'', iconSize:[38,38], iconAnchor:[19,19],
+      html:`<div style="width:38px;height:38px;border-radius:50%;background:${a.color};border:3px solid white;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 2px 10px rgba(0,0,0,.3);cursor:pointer;">${a.e}</div>` });
+    const m = L.marker(a.pos, { icon }).addTo(map);
+    m.bindTooltip(a.l, { direction:'top', offset:[0,-22] });
+    if (a.id) m.on('click', () => { switchFeedView('list'); openAlert(a.id); });
+  });
+}
+
+/* ── AIDES EN COURS ── */
+function getActiveHelps() {
+  return Object.entries(alertsData).filter(([, a]) => a.initialState === 'me');
+}
+
+function updateActiveHelpsBar() {
+  const helps = getActiveHelps();
+  const bar = document.getElementById('active-helps-bar');
+  if (!bar) return;
+  if (helps.length === 0) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  const lbl = document.getElementById('active-helps-label');
+  if (lbl) lbl.textContent = helps.length === 1 ? '1 aide en cours' : `${helps.length} aides en cours`;
+}
+
+function renderActiveHelpsList() {
+  const list = document.getElementById('active-helps-list');
+  if (!list) return;
+  const helps = getActiveHelps();
+  if (helps.length === 0) { list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-muted);font-size:14px;">Aucune aide en cours.</div>'; return; }
+  list.innerHTML = helps.map(([id, a]) => `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-light);cursor:pointer;" onclick="closeSheet('sheet-active-helps');openAlert('${id}');setNav('nav-home')">
+      <div style="width:44px;height:44px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${a.icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.title}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">📍 ${a.location}</div>
+        <div style="font-size:11px;color:var(--primary);font-weight:600;margin-top:3px;">🙋 Tu aides · ${a.time}</div>
+      </div>
+      <span style="font-size:20px;color:var(--primary);font-weight:700;flex-shrink:0;">›</span>
+    </div>
+  `).join('');
+}
+
+/* ── CHALLENGES ── */
+function goToChallenges() {
+  goTo('screen-challenges');
+  setNav('nav-challenges');
+}
+
+
+function setPeriod(period, el) {
+  el.closest('.bottom-sheet').querySelectorAll('.situation-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const labels = { month: 'Avril 2026', week: 'Semaine du 14 avril', alltime: 'Tous les temps' };
+  document.querySelector('#screen-challenges .topbar div div:last-child').textContent = labels[period];
+  closeSheet('sheet-period');
+  showToast('📊 Classement mis à jour');
+}
+
 // init step 1 sélection + compteurs chips
 document.addEventListener('DOMContentLoaded', () => {
   updateChipCounts();
   enhanceFeedCards();
+  updateActiveHelpsBar();
 });
 </script>
 </body>
