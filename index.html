@@ -681,7 +681,7 @@ body {
     <span style="width:32px;height:32px;border-radius:10px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;" aria-hidden="true">📍</span>
     <span style="flex:1;min-width:0;">
       <span style="display:block;font-size:14px;font-weight:700;color:var(--text);line-height:1.3;"><span id="hero-count">17 personnes</span> ont besoin d'aide</span>
-      <span style="display:block;font-size:12px;color:var(--text-muted);margin-top:1px;">dans un rayon de <span id="radius-pill-val">3 km</span> · ajuster</span>
+      <span style="display:block;font-size:12px;color:var(--text-muted);margin-top:1px;">dans un rayon de <span id="radius-pill-val">3 km</span> · <span style="color:var(--primary);font-weight:600;">Modifier le rayon ›</span></span>
     </span>
     <span style="font-size:18px;color:var(--text-muted);flex-shrink:0;" aria-hidden="true">›</span>
   </button>
@@ -719,7 +719,7 @@ body {
     <div id="feed-list" style="margin-top:4px;">
 
       <!-- FOOD 1 — Urgent / Ouvert -->
-      <div class="alert-card" data-alert-id="alert-2" data-category="food" onclick="openAlert('alert-2')">
+      <div class="alert-card" data-alert-id="alert-2" data-category="food" data-urgency="high" onclick="openAlert('alert-2')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🍞</div>
           <div style="flex:1;">
@@ -735,7 +735,7 @@ body {
       </div>
 
       <!-- FOOD 2 — Urgent / Ouvert -->
-      <div class="alert-card" data-alert-id="alert-8" data-category="food" onclick="openAlert('alert-8')">
+      <div class="alert-card" data-alert-id="alert-8" data-category="food" data-urgency="high" onclick="openAlert('alert-8')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🍼</div>
           <div style="flex:1;">
@@ -751,7 +751,7 @@ body {
       </div>
 
       <!-- CLOTHING 1 — Urgent / Pris par Sophie -->
-      <div class="alert-card" data-alert-id="alert-1" data-category="clothing" onclick="openAlert('alert-1')">
+      <div class="alert-card" data-alert-id="alert-1" data-category="clothing" data-urgency="high" onclick="openAlert('alert-1')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">👕</div>
           <div style="flex:1;">
@@ -770,7 +770,7 @@ body {
       </div>
 
       <!-- CLOTHING 2 — Urgent / Ouvert -->
-      <div class="alert-card" data-alert-id="alert-10" data-category="clothing" onclick="openAlert('alert-10')">
+      <div class="alert-card" data-alert-id="alert-10" data-category="clothing" data-urgency="high" onclick="openAlert('alert-10')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🧥</div>
           <div style="flex:1;">
@@ -786,7 +786,7 @@ body {
       </div>
 
       <!-- MEDICAL 1 — Urgent / Ouvert -->
-      <div class="alert-card" data-alert-id="alert-12" data-category="medical" onclick="openAlert('alert-12')">
+      <div class="alert-card" data-alert-id="alert-12" data-category="medical" data-urgency="high" onclick="openAlert('alert-12')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🩹</div>
           <div style="flex:1;">
@@ -802,7 +802,7 @@ body {
       </div>
 
       <!-- FOOD 3 — Modéré / Ouvert -->
-      <div class="alert-card" data-alert-id="alert-7" data-category="food" onclick="openAlert('alert-7')">
+      <div class="alert-card" data-alert-id="alert-7" data-category="food" data-urgency="medium" onclick="openAlert('alert-7')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🥣</div>
           <div style="flex:1;">
@@ -818,7 +818,7 @@ body {
       </div>
 
       <!-- CLOTHING 3 — Modéré / Sans réponse -->
-      <div class="alert-card" data-alert-id="alert-9" data-category="clothing" onclick="openAlert('alert-9')">
+      <div class="alert-card" data-alert-id="alert-9" data-category="clothing" data-urgency="medium" onclick="openAlert('alert-9')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">👟</div>
           <div style="flex:1;">
@@ -837,7 +837,7 @@ body {
       </div>
 
       <!-- HYGIENE 1 — Modéré / Sans réponse -->
-      <div class="alert-card" data-alert-id="alert-3" data-category="hygiene" onclick="openAlert('alert-3')">
+      <div class="alert-card" data-alert-id="alert-3" data-category="hygiene" data-urgency="medium" onclick="openAlert('alert-3')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🧴</div>
           <div style="flex:1;">
@@ -856,7 +856,7 @@ body {
       </div>
 
       <!-- HYGIENE 2 — Modéré / Pris par Lucie -->
-      <div class="alert-card" data-alert-id="alert-11" data-category="hygiene" onclick="openAlert('alert-11')">
+      <div class="alert-card" data-alert-id="alert-11" data-category="hygiene" data-urgency="medium" onclick="openAlert('alert-11')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🌸</div>
           <div style="flex:1;">
@@ -875,7 +875,7 @@ body {
       </div>
 
       <!-- SHELTER 1 — Modéré / Pris par moi -->
-      <div class="alert-card" data-alert-id="alert-4" data-category="shelter" onclick="openAlert('alert-4')">
+      <div class="alert-card" data-alert-id="alert-4" data-category="shelter" data-urgency="medium" onclick="openAlert('alert-4')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🏠</div>
           <div style="flex:1;">
@@ -894,7 +894,7 @@ body {
       </div>
 
       <!-- SHELTER 2 — Modéré / Ouvert -->
-      <div class="alert-card" data-alert-id="alert-13" data-category="shelter" onclick="openAlert('alert-13')">
+      <div class="alert-card" data-alert-id="alert-13" data-category="shelter" data-urgency="medium" onclick="openAlert('alert-13')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🏕️</div>
           <div style="flex:1;">
@@ -910,7 +910,7 @@ body {
       </div>
 
       <!-- MEDICAL 2 — Urgent / Ouvert -->
-      <div class="alert-card" data-alert-id="alert-6" data-category="medical" onclick="openAlert('alert-6')">
+      <div class="alert-card" data-alert-id="alert-6" data-category="medical" data-urgency="high" onclick="openAlert('alert-6')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">💊</div>
           <div style="flex:1;">
@@ -926,7 +926,7 @@ body {
       </div>
 
       <!-- JURIDIQUE — Ouvert -->
-      <div class="alert-card" data-alert-id="alert-14" data-category="juridique" onclick="openAlert('alert-14')">
+      <div class="alert-card" data-alert-id="alert-14" data-category="juridique" data-urgency="high" onclick="openAlert('alert-14')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">⚖️</div>
           <div style="flex:1;">
@@ -942,7 +942,7 @@ body {
       </div>
 
       <!-- CONSULT — Ouvert -->
-      <div class="alert-card" data-alert-id="alert-15" data-category="consult" onclick="openAlert('alert-15')">
+      <div class="alert-card" data-alert-id="alert-15" data-category="consult" data-urgency="high" onclick="openAlert('alert-15')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🩺</div>
           <div style="flex:1;">
@@ -958,7 +958,7 @@ body {
       </div>
 
       <!-- PSY — Ouvert -->
-      <div class="alert-card" data-alert-id="alert-16" data-category="psy" onclick="openAlert('alert-16')">
+      <div class="alert-card" data-alert-id="alert-16" data-category="psy" data-urgency="high" onclick="openAlert('alert-16')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🧠</div>
           <div style="flex:1;">
@@ -973,7 +973,7 @@ body {
         </div>
       </div>
 
-      <div class="alert-card" data-alert-id="alert-17" data-category="transport" onclick="openAlert('alert-17')">
+      <div class="alert-card" data-alert-id="alert-17" data-category="transport" data-urgency="medium" onclick="openAlert('alert-17')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🚌</div>
           <div style="flex:1;">
@@ -988,7 +988,7 @@ body {
         </div>
       </div>
 
-      <div class="alert-card" data-alert-id="alert-18" data-category="support" onclick="openAlert('alert-18')">
+      <div class="alert-card" data-alert-id="alert-18" data-category="support" data-urgency="medium" onclick="openAlert('alert-18')">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
           <div class="alert-cat-icon">🤝</div>
           <div style="flex:1;">
