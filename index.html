@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SolidarAid — Maquette</title>
+<title>Humeo — Maquette</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -335,8 +335,9 @@ body {
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .alert-card.filtered-out { display: none; }
-.alert-card[data-urgency="high"]   { border-top: 3px solid var(--danger); }
-.alert-card[data-urgency="medium"] { border-top: 3px solid var(--warning); }
+.alert-card[data-urgency="high"]   { border-top: 3px solid #DC2626; }
+.alert-card[data-urgency="medium"] { border-top: 3px solid #EAB308; }
+.alert-card[data-urgency="low"]    { border-top: 3px solid #22C55E; }
 
 /* ── Participants strip ── */
 .participants-strip { display: flex; align-items: center; gap: 4px; margin-left: auto; }
@@ -611,7 +612,7 @@ body {
 <!-- SPLASH -->
 <div id="screen-splash" class="screen active">
   <div class="splash-logo">🤝</div>
-  <div class="splash-name">SolidarAid</div>
+  <div class="splash-name">Humeo</div>
   <div class="splash-tagline">Ensemble, aidons ceux<br>qui en ont besoin</div>
   <div class="splash-loader">
     <div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div>
@@ -619,50 +620,6 @@ body {
 </div>
 
 <!-- ONBOARDING — Choix du rôle -->
-<div id="screen-onboarding" class="screen" style="background:var(--bg);">
-  <div class="screen-body" style="padding:64px 24px 24px;">
-    <div style="text-align:center;margin-bottom:32px;">
-      <div style="font-size:56px;margin-bottom:12px;" aria-hidden="true">🤝</div>
-      <h1 style="font-size:26px;font-weight:800;color:var(--text);margin-bottom:10px;letter-spacing:-.5px;">Bienvenue sur SolidarAid</h1>
-      <p style="font-size:15px;color:var(--text-muted);line-height:1.5;">Comment allez-vous utiliser l'application aujourd'hui ?</p>
-    </div>
-
-    <!-- Rôle 1 : Aider -->
-    <button class="role-card" onclick="selectRole('helper')" aria-label="Je veux aider">
-      <div class="role-icon" style="background:var(--primary-light);color:var(--primary);" aria-hidden="true">🙋</div>
-      <div class="role-body">
-        <div class="role-title">J'ai envie d'aider</div>
-        <div class="role-desc">Je répondrai aux signalements près de chez moi et apporterai ce qui manque.</div>
-      </div>
-      <span class="role-arrow" aria-hidden="true">›</span>
-    </button>
-
-    <!-- Rôle 2 : Signaler -->
-    <button class="role-card" onclick="selectRole('witness')" aria-label="Je signale une personne">
-      <div class="role-icon" style="background:#EFF6FF;color:#2563EB;" aria-hidden="true">👀</div>
-      <div class="role-body">
-        <div class="role-title">J'ai vu quelqu'un dans la rue</div>
-        <div class="role-desc">Je signale rapidement ce dont cette personne a besoin, la communauté prend le relais.</div>
-      </div>
-      <span class="role-arrow" aria-hidden="true">›</span>
-    </button>
-
-    <!-- Rôle 3 : Demander de l'aide (self-help) -->
-    <button class="role-card" onclick="selectRole('need')" aria-label="Je demande de l'aide pour moi-même">
-      <div class="role-icon" style="background:var(--success-light);color:var(--success);" aria-hidden="true">💚</div>
-      <div class="role-body">
-        <div class="role-title">J'ai besoin d'aide moi-même</div>
-        <div class="role-desc">Je formule une demande — nourriture, abri, écoute, conseil sur mes droits. Je peux rester anonyme.</div>
-      </div>
-      <span class="role-arrow" aria-hidden="true">›</span>
-    </button>
-
-    <div style="text-align:center;margin-top:24px;padding-bottom:16px;">
-      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;">Plusieurs rôles possibles — tu pourras changer plus tard.</div>
-      <div style="font-size:14px;color:var(--text-muted);">Déjà un compte ? <span style="color:var(--primary);font-weight:600;cursor:pointer;" onclick="goTo('screen-login')">Se connecter</span></div>
-    </div>
-  </div>
-</div>
 
 <!-- LOGIN -->
 <div id="screen-login" class="screen" style="background:var(--white);">
@@ -708,10 +665,14 @@ body {
 <div id="screen-home" class="screen">
   <div class="topbar" style="padding:46px 16px 12px;gap:8px;">
     <div style="flex:1;min-width:0;">
-      <div style="font-size:18px;font-weight:800;color:var(--primary);line-height:1.2;">SolidarAid</div>
+      <div style="font-size:18px;font-weight:800;color:var(--primary);line-height:1.2;">Humeo</div>
       <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">Bonjour, Stéphane</div>
     </div>
-    <button class="icon-btn" id="home-view-toggle" onclick="switchFeedView(window._feedView==='list'?'map':'list')" aria-label="Basculer liste/carte" title="Basculer liste/carte">🗺</button>
+    <div style="display:flex;background:var(--bg);border-radius:999px;padding:3px;border:1px solid var(--border-light);gap:2px;">
+      <button id="view-btn-list" onclick="switchFeedView('list')" style="padding:5px 12px;border:none;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;background:var(--white);color:var(--text);box-shadow:var(--shadow-sm);transition:all .2s;">☰ Liste</button>
+      <button id="view-btn-map"  onclick="switchFeedView('map')"  style="padding:5px 12px;border:none;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--text-muted);transition:all .2s;">🗺 Carte</button>
+    </div>
+    <button class="icon-btn" id="home-theme-btn" onclick="toggleDarkMode()" aria-label="Changer de thème">🌙</button>
     <button class="icon-btn" onclick="goTo('screen-notif')" style="position:relative;" aria-label="Notifications">🔔<span style="position:absolute;width:8px;height:8px;background:var(--danger);border-radius:50%;top:0;right:0;" aria-hidden="true"></span></button>
   </div>
 
@@ -735,18 +696,6 @@ body {
     <div class="chip" data-filter="shelter" onclick="toggleChip(this)">🏠 Abri <span class="chip-count">2</span></div>
   </div>
 
-  <!-- Bannière aides en cours -->
-  <div id="active-helps-bar" style="display:none;background:var(--primary);padding:10px 16px;cursor:pointer;flex-shrink:0;" onclick="openSheet('sheet-active-helps')">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-size:20px;">🙋</span>
-      <div style="flex:1;">
-        <div style="font-size:13px;font-weight:800;color:white;" id="active-helps-label">1 aide en cours</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.75);">Appuie pour voir et accéder rapidement</div>
-      </div>
-      <div id="active-helps-avatars" style="display:flex;gap:-4px;"></div>
-      <span style="color:white;font-size:18px;font-weight:700;">›</span>
-    </div>
-  </div>
 
   <!-- Vue carte inline -->
   <div id="home-map-view" style="display:none;flex:1;position:relative;">
@@ -1182,6 +1131,18 @@ body {
           </div>
         </div>
       </div>
+
+      <!-- Boutons de contact -->
+      <div style="display:flex;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border-light);">
+        <a href="tel:0612345678" onclick="if(requireAccount('appeler')) return false;"
+          style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:14px;background:var(--success-light);color:var(--success);font-size:14px;font-weight:700;text-decoration:none;border:1.5px solid var(--success);">
+          📞 Appeler
+        </a>
+        <button onclick="if(requireAccount('accéder au chat')) return; openSheet('sheet-help')"
+          style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:14px;background:var(--primary-light);color:var(--primary);font-size:14px;font-weight:700;border:1.5px solid var(--primary);cursor:pointer;">
+          💬 Chat
+        </button>
+      </div>
     </div>
 
 
@@ -1192,7 +1153,7 @@ body {
 
   <!-- Barre d'action fixe en bas -->
   <div id="help-bar" style="position:absolute;bottom:var(--nav-h);left:0;right:0;padding:12px 16px 12px;background:var(--white);border-top:1px solid var(--border);z-index:50;">
-    <button class="btn btn-primary" style="font-size:17px;border-radius:14px;" onclick="openSheet('sheet-help')">
+    <button class="btn btn-primary" style="font-size:17px;border-radius:14px;" onclick="if(requireAccount('aider')) return; openSheet('sheet-help')">
       🙋 Je peux aider !
     </button>
   </div>
@@ -1254,32 +1215,23 @@ body {
       <div id="map-mini"></div>
     </div>
 
-    <!-- Bloc optionnel repliable : photo + téléphone -->
-    <details style="background:var(--bg);border-radius:12px;padding:0;margin-bottom:8px;">
-      <summary style="list-style:none;cursor:pointer;padding:14px 16px;font-size:14px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
-        <span>＋ Ajouter photo ou téléphone <span style="font-weight:400;color:var(--text-muted);">(optionnel)</span></span>
-        <span style="font-size:18px;color:var(--text-muted);">›</span>
-      </summary>
-      <div style="padding:0 16px 16px;">
-        <!-- Photos de l'endroit -->
-        <div class="input-group" style="margin-bottom:16px;">
-          <label style="margin-bottom:4px;">Photo de l'endroit</label>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Aide les bénévoles à localiser — <strong>pas de photo de la personne</strong></div>
-          <div id="location-photos-grid" style="display:flex;gap:10px;">
-            <div id="photo-slot-1" class="photo-slot" onclick="addLocationPhoto(1)"><span style="font-size:24px;">📷</span><span style="font-size:12px;color:var(--text-muted);margin-top:4px;">Photo 1</span></div>
-            <div id="photo-slot-2" class="photo-slot photo-slot-disabled"><span style="font-size:24px;opacity:.3;">📷</span><span style="font-size:12px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 2</span></div>
-            <div id="photo-slot-3" class="photo-slot photo-slot-disabled"><span style="font-size:24px;opacity:.3;">📷</span><span style="font-size:12px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 3</span></div>
-          </div>
-        </div>
+    <!-- Téléphone visible directement -->
+    <div class="input-group">
+      <label>📞 Téléphone de la personne <span style="font-weight:400;color:var(--text-muted);">(optionnel)</span></label>
+      <input type="tel" id="person-phone" placeholder="ex : 06 12 34 56 78">
+      <div style="font-size:12px;color:var(--text-muted);margin-top:5px;">Visible uniquement par l'aidant qui accepte. Sinon, le chat permet d'organiser le rendez-vous.</div>
+    </div>
 
-        <!-- Téléphone de la personne -->
-        <div class="input-group" style="margin-bottom:0;">
-          <label>Téléphone de la personne</label>
-          <input type="tel" id="person-phone" placeholder="ex : 06 12 34 56 78">
-          <div style="font-size:12px;color:var(--text-muted);margin-top:5px;">Visible uniquement par l'aidant accepté. Sinon, rendez-vous convenu dans le chat.</div>
-        </div>
+    <!-- Photos de l'endroit -->
+    <div class="input-group">
+      <label>📷 Photo de l'endroit <span style="font-weight:400;color:var(--text-muted);">(optionnel)</span></label>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Aide les bénévoles à localiser — <strong>pas de photo de la personne</strong></div>
+      <div id="location-photos-grid" style="display:flex;gap:10px;">
+        <div id="photo-slot-1" class="photo-slot" onclick="addLocationPhoto(1)"><span style="font-size:24px;">📷</span><span style="font-size:12px;color:var(--text-muted);margin-top:4px;">Photo 1</span></div>
+        <div id="photo-slot-2" class="photo-slot photo-slot-disabled"><span style="font-size:24px;opacity:.3;">📷</span><span style="font-size:12px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 2</span></div>
+        <div id="photo-slot-3" class="photo-slot photo-slot-disabled"><span style="font-size:24px;opacity:.3;">📷</span><span style="font-size:12px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 3</span></div>
       </div>
-    </details>
+    </div>
   </div>
   <div style="padding:16px 16px 32px;background:var(--white);">
     <button class="btn btn-primary" onclick="goToStep3()">Suivant →</button>
@@ -1411,96 +1363,61 @@ body {
 <!-- PROFILE -->
 <div id="screen-profile" class="screen">
 
-  <!-- Header gradient -->
-  <div class="profile-header" style="position:relative;">
+  <!-- Header -->
+  <div class="profile-header" style="position:relative;padding-bottom:56px;">
     <button id="theme-quick-btn" onclick="toggleDarkMode()" aria-label="Changer de thème" style="position:absolute;top:54px;right:62px;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;">🌙</button>
-    <button onclick="goTo('screen-settings')" style="position:absolute;top:54px;right:16px;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;">⚙️</button>
+    <button onclick="goTo('screen-settings')" aria-label="Paramètres" style="position:absolute;top:54px;right:16px;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;">⚙️</button>
     <div class="profile-avatar">S</div>
     <div class="profile-name">Stéphane B.</div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;flex-wrap:wrap;">
-      <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">✔️ Vérifié</span>
-      <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">⭐ 4.8 / 5</span>
-      <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">📍 Paris</span>
+    <div style="font-size:13px;opacity:.75;margin-top:2px;">📍 Paris · Membre depuis avril 2026</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;">
+      <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;">✔️ Vérifié</span>
+      <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;">⭐ 4.8</span>
     </div>
-    <div style="margin-top:8px;font-size:12px;opacity:.6;">Membre depuis avril 2026</div>
   </div>
 
   <div class="screen-body" style="padding-top:0;">
 
     <!-- Stats flottantes -->
-    <div class="profile-stats">
+    <div class="profile-stats" style="margin:0 16px;margin-top:-28px;">
+      <div class="profile-stat"><div class="stat-val">23</div><div class="stat-lbl">Aides</div></div>
       <div class="profile-stat"><div class="stat-val">12</div><div class="stat-lbl">Signalements</div></div>
       <div class="profile-stat"><div class="stat-val">8</div><div class="stat-lbl">Dons</div></div>
-      <div class="profile-stat"><div class="stat-val">23</div><div class="stat-lbl">Aides</div></div>
     </div>
 
-    <div style="padding:16px;display:flex;flex-direction:column;gap:14px;">
+    <div style="padding:20px 16px;display:flex;flex-direction:column;gap:12px;">
 
-      <!-- Niveau -->
-      <div style="background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-          <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#FEF9C3,#FDE68A);display:flex;align-items:center;justify-content:center;font-size:22px;">🌟</div>
-          <div style="flex:1;">
-            <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;">Niveau actuel</div>
+      <!-- Progression -->
+      <div style="background:var(--white);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+          <div style="width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#FEF9C3,#FDE68A);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">🌟</div>
+          <div style="flex:1;min-width:0;">
             <div style="font-size:16px;font-weight:800;color:var(--text);">Aidant de quartier</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">14 aides avant le niveau Champion</div>
           </div>
-          <div style="text-align:right;">
-            <div style="font-size:12px;color:var(--text-muted);">Prochain niveau</div>
-            <div style="font-size:13px;font-weight:700;color:var(--primary);">Champion →</div>
-          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--primary);flex-shrink:0;">62%</div>
         </div>
-        <div style="background:var(--bg);border-radius:999px;height:8px;overflow:hidden;margin-bottom:5px;">
-          <div style="width:62%;height:100%;border-radius:999px;background:var(--primary);"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);font-weight:600;">
-          <span>23 aides</span><span>37 aides pour Champion</span>
-        </div>
-
-        <!-- Badges -->
-        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-          <span style="background:#FFF4ED;color:var(--primary);font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;">🔥 Premier froid</span>
-          <span style="background:#F0FDF4;color:#15803D;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;">🤝 Tandem</span>
-          <span style="background:#EFF6FF;color:#2563EB;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;">⭐ Top noté</span>
+        <div style="background:var(--bg);border-radius:999px;height:6px;overflow:hidden;">
+          <div style="width:62%;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--primary-dark));"></div>
         </div>
       </div>
 
-      <!-- Mes signalements -->
-      <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-          <div style="font-size:15px;font-weight:800;color:var(--text);">Mes signalements</div>
-          <span style="font-size:13px;color:var(--primary);font-weight:600;cursor:pointer;" onclick="goTo('screen-my-alerts')">Voir tout ›</span>
-        </div>
-        <div class="card" style="cursor:pointer;margin-bottom:8px;" onclick="goTo('screen-my-alerts')">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;gap:10px;align-items:center;">
-              <span style="font-size:24px;">👕</span>
-              <div><div style="font-weight:700;font-size:14px;">Manteau homme</div><div style="font-size:12px;color:var(--text-muted);">Il y a 12 min</div></div>
-            </div>
-            <span class="badge badge-open">En cours</span>
+      <!-- Badges -->
+      <div style="background:var(--white);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);">
+        <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Badges obtenus</div>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;background:var(--bg);border-radius:14px;padding:14px 10px;text-align:center;">
+            <div style="font-size:28px;margin-bottom:6px;">🔥</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);">Premier froid</div>
           </div>
-        </div>
-        <div class="card" style="cursor:pointer;" onclick="goTo('screen-my-alerts')">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;gap:10px;align-items:center;">
-              <span style="font-size:24px;">🍞</span>
-              <div><div style="font-weight:700;font-size:14px;">Nourriture famille</div><div style="font-size:12px;color:var(--text-muted);">Hier</div></div>
-            </div>
-            <span class="badge badge-done">Résolu ✓</span>
+          <div style="flex:1;background:var(--bg);border-radius:14px;padding:14px 10px;text-align:center;">
+            <div style="font-size:28px;margin-bottom:6px;">🤝</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);">Tandem</div>
           </div>
-        </div>
-      </div>
-
-      <!-- Actions rapides -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div style="background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);cursor:pointer;text-align:center;" onclick="goTo('screen-donate-form')">
-          <div style="font-size:28px;margin-bottom:6px;">🎁</div>
-          <div style="font-size:13px;font-weight:800;color:var(--text);">Proposer un don</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Publier un objet</div>
-        </div>
-        <div style="background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);cursor:pointer;text-align:center;" onclick="goToChallenges()">
-          <div style="font-size:28px;margin-bottom:6px;">🏆</div>
-          <div style="font-size:13px;font-weight:800;color:var(--text);">Classement</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Tu es #8 ce mois</div>
+          <div style="flex:1;background:var(--bg);border-radius:14px;padding:14px 10px;text-align:center;">
+            <div style="font-size:28px;margin-bottom:6px;">⭐</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);">Top noté</div>
+          </div>
         </div>
       </div>
 
@@ -1654,7 +1571,7 @@ body {
     <div class="settings-item"><span class="settings-item-icon">🔤</span><div class="settings-item-text"><strong>Grande police</strong></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
     <div class="settings-item"><span class="settings-item-icon">🌍</span><div class="settings-item-text"><strong>Langue</strong><span>Français</span></div><span class="settings-arrow">›</span></div>
     <div style="padding:12px 16px;font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:8px;">Légal</div>
-    <div class="settings-item" onclick="showToast('📄 CGU disponibles sur solidaraid.fr/cgu')"><span class="settings-item-icon">📄</span><div class="settings-item-text"><strong>CGU & Confidentialité</strong></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="showToast('📄 CGU disponibles sur humeo.fr/cgu')"><span class="settings-item-icon">📄</span><div class="settings-item-text"><strong>CGU & Confidentialité</strong></div><span class="settings-arrow">›</span></div>
     <div class="settings-item" onclick="if(confirm('Supprimer votre compte ? Toutes vos données seront effacées (RGPD).'))goTo('screen-login')"><span class="settings-item-icon">🗑</span><div class="settings-item-text"><strong style="color:var(--destructive);">Supprimer mon compte</strong><span>Efface toutes vos données (RGPD)</span></div><span class="settings-arrow" style="color:var(--destructive);">›</span></div>
   </div>
 </div>
@@ -1826,192 +1743,109 @@ body {
 </div>
 
 <!-- ══════════════════════════════════════
-     QUESTIONS & DROITS
+     MES AIDES
 ══════════════════════════════════════ -->
-
-<!-- DROITS — FEED -->
-<div id="screen-droits" class="screen">
-  <div class="topbar">
-    <button class="back-btn" onclick="goBack()">←</button>
-    <h1>⚖️ Questions & Droits</h1>
-    <button class="icon-btn" style="font-size:22px;" onclick="goTo('screen-droits-ask')">✏️</button>
+<div id="screen-mes-aides" class="screen">
+  <div class="topbar" style="padding-top:46px;">
+    <h1>🤝 Mes aides</h1>
   </div>
 
-  <div class="chips-scroll" style="padding:8px 16px;background:var(--white);border-bottom:1px solid var(--border);">
-    <div class="chip active" onclick="toggleDroitsChip(this,'all')">Tous <span class="chip-count">5</span></div>
-    <div class="chip" onclick="toggleDroitsChip(this,'rsa')">💰 RSA <span class="chip-count">2</span></div>
-    <div class="chip" onclick="toggleDroitsChip(this,'logement')">🏠 Logement <span class="chip-count">1</span></div>
-    <div class="chip" onclick="toggleDroitsChip(this,'sante')">🏥 Santé <span class="chip-count">1</span></div>
-    <div class="chip" onclick="toggleDroitsChip(this,'documents')">📄 Documents <span class="chip-count">1</span></div>
-  </div>
+  <div class="screen-body" style="padding:16px 16px 90px;">
 
-  <div class="screen-body" style="padding:12px 16px 90px;">
-    <div style="background:#E3F2FD;border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
-      <span style="font-size:20px;flex-shrink:0;">💡</span>
-      <div style="font-size:13px;line-height:1.5;color:var(--secondary);"><strong>Travailleurs sociaux et juristes bénévoles</strong> répondent à vos questions sur les droits sociaux. Réponse sous 24h en général.</div>
-    </div>
+    <!-- Aides en cours -->
+    <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">En cours</div>
 
-    <!-- Q1 — RSA, répondu -->
-    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="rsa" onclick="openDroitsQuestion(1)">
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-        <span style="background:#E3F2FD;color:#1565C0;border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;">💰 RSA</span>
-        <div style="font-size:15px;font-weight:700;line-height:1.4;">Homme ~50 ans sans domicile depuis 6 mois — a-t-il droit au RSA ?</div>
-      </div>
-      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Il n'a aucun revenu et dort dans la rue. Il n'a jamais fait de demande car il ne savait pas s'il y avait droit sans adresse.</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:7px;">
-          <div class="avatar av-orange" style="width:22px;height:22px;font-size:12px;">S</div>
-          <span style="font-size:12px;color:var(--text-muted);">Stéphane B. • Il y a 2h</span>
+    <div class="card" style="cursor:pointer;margin-bottom:10px;" onclick="openAlert('alert-1')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:26px;">👕</span>
+          <div>
+            <div style="font-weight:700;font-size:14px;">Manteau homme — Rue de la Paix</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Rendez-vous prévu aujourd'hui 18h</div>
+          </div>
         </div>
-        <span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">✓ 2 réponses</span>
+        <span class="badge badge-open">En cours</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border-light);">
+        <div class="avatar av-blue" style="width:24px;height:24px;font-size:11px;">S</div>
+        <span style="font-size:12px;color:var(--text-muted);">Sophie L. · Il y a 12 min</span>
       </div>
     </div>
 
-    <!-- Q2 — Santé, répondu -->
-    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="sante" onclick="openDroitsQuestion(2)">
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-        <span style="background:#FCE4EC;color:#C62828;border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;">🏥 Santé</span>
-        <div style="font-size:15px;font-weight:700;line-height:1.4;">Personne sans papiers — comment accéder aux soins médicaux ?</div>
-      </div>
-      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Elle refuse d'aller à l'hôpital par peur d'être expulsée. Elle a une infection qui empire depuis 2 semaines.</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:7px;">
-          <div class="avatar av-purple" style="width:22px;height:22px;font-size:12px;">C</div>
-          <span style="font-size:12px;color:var(--text-muted);">Camille D. • Il y a 4h</span>
+    <div class="card" style="cursor:pointer;margin-bottom:10px;" onclick="openAlert('alert-3')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:26px;">💊</span>
+          <div>
+            <div style="font-weight:700;font-size:14px;">Médicaments — Bd Voltaire</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">En attente de confirmation</div>
+          </div>
         </div>
-        <span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">✓ 1 réponse</span>
+        <span class="badge badge-open">En cours</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border-light);">
+        <div class="avatar av-purple" style="width:24px;height:24px;font-size:11px;">M</div>
+        <span style="font-size:12px;color:var(--text-muted);">Marc D. · Il y a 2h</span>
       </div>
     </div>
 
-    <!-- Q3 — Logement, en attente -->
-    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="logement" onclick="openDroitsQuestion(3)">
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-        <span style="background:#E8F5E9;color:#2E7D32;border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;">🏠 Logement</span>
-        <div style="font-size:15px;font-weight:700;line-height:1.4;">Famille expulsée avec 3 enfants — quelles démarches en urgence ?</div>
-      </div>
-      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Expulsion hier soir, ils dorment dans leur voiture. Enfants de 4, 7 et 12 ans. Aucun réseau local.</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:7px;">
-          <div class="avatar av-green" style="width:22px;height:22px;font-size:12px;">T</div>
-          <span style="font-size:12px;color:var(--text-muted);">Thomas R. • Il y a 1h</span>
+    <!-- Aides effectuées -->
+    <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-top:24px;margin-bottom:10px;">Effectuées · 21</div>
+
+    <div class="card" style="cursor:pointer;margin-bottom:10px;opacity:.85;" onclick="openAlert('alert-2')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:26px;">🍞</span>
+          <div>
+            <div style="font-weight:700;font-size:14px;">Nourriture famille</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Hier · Paris 11e</div>
+          </div>
         </div>
-        <span style="background:var(--warning-light);color:var(--warning);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">⏳ En attente</span>
+        <span class="badge badge-done">Résolu ✓</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px solid var(--border-light);">
+        <span style="font-size:13px;">⭐⭐⭐⭐⭐</span>
+        <span style="font-size:12px;color:var(--text-muted);">« Très réactif, merci ! »</span>
       </div>
     </div>
 
-    <!-- Q4 — RSA jeune, répondu -->
-    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="rsa" onclick="openDroitsQuestion(4)">
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-        <span style="background:#E3F2FD;color:#1565C0;border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;">💰 RSA</span>
-        <div style="font-size:15px;font-weight:700;line-height:1.4;">Jeune de 24 ans sans emploi — peut-il toucher le RSA ?</div>
-      </div>
-      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">Il pensait ne pas y avoir droit avant 25 ans et n'a jamais fait de demande.</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:7px;">
-          <div class="avatar av-purple" style="width:22px;height:22px;font-size:12px;">É</div>
-          <span style="font-size:12px;color:var(--text-muted);">Élodie V. • Hier</span>
+    <div class="card" style="cursor:pointer;margin-bottom:10px;opacity:.85;" onclick="openAlert('alert-11')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:26px;">🧴</span>
+          <div>
+            <div style="font-weight:700;font-size:14px;">Kit hygiène</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Il y a 3 jours · Paris 20e</div>
+          </div>
         </div>
-        <span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">✓ 3 réponses</span>
+        <span class="badge badge-done">Résolu ✓</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px solid var(--border-light);">
+        <span style="font-size:13px;">⭐⭐⭐⭐⭐</span>
+        <span style="font-size:12px;color:var(--text-muted);">« Ponctuel et bienveillant »</span>
       </div>
     </div>
 
-    <!-- Q5 — Documents, répondu -->
-    <div class="card" style="cursor:pointer;margin-bottom:12px;" data-droits="documents" onclick="openDroitsQuestion(5)">
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-        <span style="background:#F3E5F5;color:#6A1B9A;border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;">📄 Documents</span>
-        <div style="font-size:15px;font-weight:700;line-height:1.4;">Sans pièce d'identité ni adresse — comment refaire ses papiers ?</div>
-      </div>
-      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">A tout perdu dans un incendie. Sans adresse depuis, ne sait pas par où commencer.</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:7px;">
-          <div class="avatar av-green" style="width:22px;height:22px;font-size:12px;">N</div>
-          <span style="font-size:12px;color:var(--text-muted);">Nina K. • Hier</span>
+    <div class="card" style="cursor:pointer;margin-bottom:10px;opacity:.85;" onclick="openAlert('alert-4')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:26px;">🏠</span>
+          <div>
+            <div style="font-weight:700;font-size:14px;">Orientation hébergement</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Il y a 5 jours · Paris 18e</div>
+          </div>
         </div>
-        <span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">✓ 2 réponses</span>
+        <span class="badge badge-done">Résolu ✓</span>
       </div>
-    </div>
-  </div>
-
-  <button onclick="goTo('screen-droits-ask')" style="position:absolute;bottom:80px;right:16px;z-index:100;
-    width:56px;height:56px;border-radius:50%;border:none;background:var(--secondary);color:white;
-    font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(21,101,192,.5);">✏️</button>
-</div>
-
-<!-- DROITS — DÉTAIL QUESTION -->
-<div id="screen-droits-detail" class="screen">
-  <div class="topbar">
-    <button class="back-btn" onclick="goBack()">←</button>
-    <h1 id="droits-detail-cat" style="font-size:15px;">Question</h1>
-  </div>
-  <div class="screen-body" style="padding:16px 16px 80px;">
-
-    <!-- La question -->
-    <div class="card" style="margin-bottom:16px;">
-      <div id="droits-detail-catbadge" style="display:inline-block;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:700;margin-bottom:10px;"></div>
-      <div id="droits-detail-question" style="font-size:17px;font-weight:800;line-height:1.4;margin-bottom:10px;"></div>
-      <div id="droits-detail-context" style="font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:12px;padding:12px;background:var(--bg);border-radius:10px;border-left:3px solid var(--border);"></div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div id="droits-detail-avatar" class="avatar" style="width:26px;height:26px;font-size:12px;"></div>
-        <span id="droits-detail-meta" style="font-size:12px;color:var(--text-muted);"></span>
+      <div style="display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px solid var(--border-light);">
+        <span style="font-size:13px;">⭐⭐⭐⭐</span>
+        <span style="font-size:12px;color:var(--text-muted);">« Très utile »</span>
       </div>
     </div>
 
-    <!-- Réponses -->
-    <div id="droits-answers-container"></div>
-
-    <!-- Bouton répondre -->
-    <button class="btn btn-outline" style="margin-top:8px;" onclick="showToast('💬 Fonctionnalité réservée aux experts vérifiés')">
-      ✍️ Apporter une réponse
-    </button>
   </div>
 </div>
 
-<!-- DROITS — POSER UNE QUESTION -->
-<div id="screen-droits-ask" class="screen" style="background:var(--white);">
-  <div class="topbar">
-    <button class="back-btn" onclick="goBack()">←</button>
-    <h1>Poser une question</h1>
-  </div>
-  <div class="screen-body" style="padding:20px 16px 40px;">
-    <div style="background:#E3F2FD;border-radius:var(--radius);padding:14px;margin-bottom:20px;font-size:13px;color:var(--secondary);line-height:1.5;">
-      💡 Des travailleurs sociaux et juristes bénévoles répondent. Plus vous donnez de contexte, plus la réponse sera utile.
-    </div>
-
-    <div class="input-group">
-      <label>Thème</label>
-      <select id="droits-ask-cat">
-        <option value="">— Choisir un thème —</option>
-        <option value="rsa">💰 RSA / Revenus de solidarité</option>
-        <option value="logement">🏠 Logement / Hébergement</option>
-        <option value="sante">🏥 Santé / Accès aux soins</option>
-        <option value="documents">📄 Documents / Papiers d'identité</option>
-        <option value="aah">♿ AAH / Handicap</option>
-        <option value="immigration">🌍 Immigration / Droits des étrangers</option>
-        <option value="famille">👨‍👩‍👧 Famille / Enfants / Protection</option>
-        <option value="autre">❓ Autre</option>
-      </select>
-    </div>
-
-    <div class="input-group">
-      <label>Votre question</label>
-      <textarea id="droits-ask-question" placeholder="Ex : Homme ~50 ans, sans domicile depuis 6 mois — a-t-il droit au RSA ?" style="height:90px;"></textarea>
-    </div>
-
-    <div class="input-group">
-      <label>Contexte de la situation <span style="font-weight:400;text-transform:none;">(optionnel mais utile)</span></label>
-      <textarea id="droits-ask-context" placeholder="Décrivez la situation : âge approximatif, historique, ce que vous savez déjà, ce que vous avez essayé…" style="height:110px;"></textarea>
-    </div>
-
-    <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:20px;padding:12px;background:var(--bg);border-radius:10px;">
-      <input type="checkbox" id="droits-ask-anon" style="width:auto;margin-top:2px;">
-      <label for="droits-ask-anon" style="font-size:14px;color:var(--text-muted);cursor:pointer;">Publier de façon anonyme (votre nom ne sera pas affiché)</label>
-    </div>
-
-    <button class="btn btn-primary" style="font-size:16px;" onclick="submitDroitsQuestion()">
-      Publier ma question →
-    </button>
-  </div>
-</div>
 
 <!-- SHEET — Modifier le profil -->
 <div id="sheet-overlay-edit-profile" class="sheet-overlay" onclick="closeSheet('sheet-edit-profile')">
@@ -2060,10 +1894,6 @@ body {
       <div style="background:var(--white);border-radius:var(--radius);padding:16px;border:1px solid var(--border-light);">
         <div style="font-size:24px;font-weight:800;color:var(--text);">156</div>
         <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">Vêtements chauds</div>
-      </div>
-      <div style="background:var(--white);border-radius:var(--radius);padding:16px;border:1px solid var(--border-light);">
-        <div style="font-size:24px;font-weight:800;color:var(--text);">91</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">Questions droits résolues</div>
       </div>
     </div>
 
@@ -2127,8 +1957,8 @@ body {
 <!-- BOTTOM NAV -->
 <nav id="bottom-nav">
   <div class="nav-item active" id="nav-home" onclick="goToApp()" aria-label="Accueil"><div class="nav-icon-wrap"><span class="nav-icon" aria-hidden="true">🏠</span></div><span class="nav-label">Accueil</span></div>
-  <div class="nav-item" id="nav-droits" onclick="goTo('screen-droits');setNav('nav-droits')" aria-label="Questions et droits sociaux"><div class="nav-icon-wrap"><span class="nav-icon" aria-hidden="true">⚖️</span></div><span class="nav-label">Droits</span></div>
-  <button class="nav-fab" onclick="navHistory=[];resetCreateForm();goTo('screen-create-1')" aria-label="Créer un signalement">＋</button>
+  <div class="nav-item" id="nav-mes-aides" onclick="goTo('screen-mes-aides');setNav('nav-mes-aides')" aria-label="Mes aides" style="position:relative;"><div class="nav-icon-wrap" style="position:relative;"><span class="nav-icon" aria-hidden="true">🤝</span><span id="nav-aides-badge" style="position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;background:var(--danger);border-radius:999px;color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--white);">2</span></div><span class="nav-label">Mes aides</span></div>
+  <button class="nav-fab" onclick="if(requireAccount('créer un signalement')) return; navHistory=[];resetCreateForm();goTo('screen-create-1')" aria-label="Créer un signalement">＋</button>
   <div class="nav-item" id="nav-msg" onclick="goTo('screen-messages');setNav('nav-msg')" aria-label="Messages"><div class="nav-icon-wrap"><span class="nav-icon" aria-hidden="true">💬</span></div><span class="nav-label">Messages</span></div>
   <div class="nav-item" id="nav-profile" onclick="goTo('screen-profile');setNav('nav-profile')" aria-label="Mon profil"><div class="nav-icon-wrap"><span class="nav-icon" aria-hidden="true">👤</span></div><span class="nav-label">Profil</span></div>
 </nav>
@@ -2205,12 +2035,30 @@ body {
       <div><div style="font-size:17px;font-weight:700;">Réponse acceptée — Sophie L.</div><div style="font-size:13px;color:var(--text-muted);">⭐ 4.9 • Compte vérifié</div></div>
     </div>
     <div style="background:var(--success-light);border-radius:var(--radius);padding:12px;margin-bottom:16px;font-size:14px;color:var(--success);">✅ Sophie a été notifiée que vous avez accepté son aide</div>
-    <button class="btn btn-primary" onclick="closeSheet('sheet-chat-prompt');goTo('screen-chat')">💬 Ouvrir la conversation</button>
+    <button class="btn btn-primary" onclick="if(requireAccount('accéder au chat')) return; closeSheet('sheet-chat-prompt');goTo('screen-chat')">💬 Ouvrir la conversation</button>
     <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-chat-prompt')">Plus tard</button>
   </div>
 </div>
 
 <!-- SHEET — Backup (déjà pris en charge) -->
+<!-- SHEET — Signaler un retard -->
+<div id="sheet-overlay-late" class="sheet-overlay" onclick="closeSheet('sheet-late')">
+  <div id="sheet-late" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:6px;">⏰ Je serai en retard</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:18px;">De combien de minutes ?</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+      <div class="chip" onclick="selectLateDelay(this,10)" style="cursor:pointer;font-size:15px;padding:10px 18px;">10 min</div>
+      <div class="chip" onclick="selectLateDelay(this,20)" style="cursor:pointer;font-size:15px;padding:10px 18px;">20 min</div>
+      <div class="chip" onclick="selectLateDelay(this,30)" style="cursor:pointer;font-size:15px;padding:10px 18px;">30 min</div>
+      <div class="chip" onclick="selectLateDelay(this,45)" style="cursor:pointer;font-size:15px;padding:10px 18px;">45 min</div>
+      <div class="chip" onclick="selectLateDelay(this,60)" style="cursor:pointer;font-size:15px;padding:10px 18px;">1h</div>
+    </div>
+    <button class="btn btn-primary" id="late-confirm-btn" onclick="confirmLate()" style="opacity:.4;pointer-events:none;">Confirmer le retard</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-late')">Annuler</button>
+  </div>
+</div>
+
 <div id="sheet-overlay-help-backup" class="sheet-overlay" onclick="closeSheet('sheet-help-backup')">
   <div id="sheet-help-backup" class="bottom-sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
@@ -2344,6 +2192,16 @@ body {
         </div>
       </div>
 
+      <!-- Date et heure du rendez-vous -->
+      <div class="input-group" style="margin-bottom:16px;">
+        <label>📅 Date et heure du rendez-vous</label>
+        <div style="display:flex;gap:8px;">
+          <input type="date" id="help-deadline-date" style="flex:1;font-size:15px;font-weight:600;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);color:var(--text);background:var(--white);">
+          <input type="time" id="help-deadline-time" style="flex:1;font-size:15px;font-weight:600;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);color:var(--text);background:var(--white);">
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">Un rappel sera envoyé si la remise n'est pas confirmée à cette heure.</div>
+      </div>
+
       <div class="input-group" style="margin-bottom:16px;">
         <label>Message <span style="font-weight:400;font-size:13px;color:var(--text-muted);">(optionnel)</span></label>
         <textarea id="help-message" placeholder="ex : J'arrive dans 20 min, j'ai ce qu'il faut…" style="height:72px;"></textarea>
@@ -2446,6 +2304,10 @@ function closeAllSheets() {
 }
 
 function goTo(id) {
+  if (isGuest && guestBlockedScreens.includes(id)) {
+    requireAccount('accéder à cette section');
+    return;
+  }
   closeAllSheets();
   const prev = document.querySelector('.screen.active');
   if (prev) { prev.classList.remove('active'); navHistory.push(prev.id); }
@@ -2462,7 +2324,12 @@ function goTo(id) {
   if (id === 'screen-alert-detail') resetHelpBar();
 }
 
-function goBack() { if (navHistory.length) goTo(navHistory.pop()); }
+function goBack() {
+  if (!navHistory.length) return;
+  const target = navHistory.pop();
+  goTo(target);
+  if (target === 'screen-home') switchFeedView(window._feedView || 'list');
+}
 
 function goToApp() { navHistory = []; goTo('screen-home'); setNav('nav-home'); switchFeedView('list'); }
 function goToMap() { goTo('screen-map'); setNav('nav-map'); }
@@ -2487,9 +2354,11 @@ function showGuestBanner() {
   b.onclick = () => goTo('screen-register');
   document.getElementById('phone').appendChild(b);
 }
+const guestBlockedScreens = ['screen-create-1','screen-create-2','screen-create-3','screen-messages','screen-chat','screen-profile','screen-mes-aides','screen-donate-form'];
+
 function requireAccount(action) {
   if (!isGuest) return false;
-  if (confirm(`Pour ${action}, vous devez créer un compte. Continuer ?`)) goTo('screen-register');
+  showToast('👁️ Créez un compte pour ' + action);
   return true;
 }
 
@@ -2879,7 +2748,7 @@ function initMapMini() {
   window._miniMarker = L.marker([48.8566,2.3522]).addTo(map);
 }
 
-setTimeout(() => goTo('screen-onboarding'), 2200);
+setTimeout(() => goTo('screen-login'), 2200);
 
 /* ── RADIUS SLIDER ── */
 const radiusLabels  = ['500 m', '1 km', '3 km', '5 km', '10 km'];
@@ -3218,7 +3087,7 @@ function renderParticipants() {
       <div style="flex:1;min-width:0;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
           <span style="font-size:14px;font-weight:600;">${p.name}</span>
-          <button onclick="openHelpChatFromAlert('${currentAlertId}',${idx})" style="font-size:12px;padding:3px 10px;background:var(--primary-light);color:var(--primary);border:1.5px solid var(--primary-mid);border-radius:20px;cursor:pointer;font-weight:600;white-space:nowrap;">💬 Chat</button>
+          <button onclick="if(requireAccount('accéder au chat')) return; openHelpChatFromAlert('${currentAlertId}',${idx})" style="font-size:12px;padding:3px 10px;background:var(--primary-light);color:var(--primary);border:1.5px solid var(--primary-mid);border-radius:20px;cursor:pointer;font-weight:600;white-space:nowrap;">💬 Chat</button>
         </div>
         <div style="font-size:12px;color:var(--text-muted);">${escapeHtml(p.status || '')}</div>
         ${p.message ? `<div style="font-size:13px;color:var(--text);font-style:italic;margin-top:4px;background:var(--bg);border-radius:8px;padding:6px 10px;">« ${escapeHtml(p.message)} »</div>` : ''}
@@ -3340,7 +3209,7 @@ function renderHelpBar() {
 
   if (!alertTakenBy) {
     /* Libre — bouton principal */
-    bar.innerHTML = `<button class="btn btn-primary" style="font-size:17px;border-radius:14px;" onclick="openSheet('sheet-help')">🙋 Je peux aider</button>`;
+    bar.innerHTML = `<button class="btn btn-primary" style="font-size:17px;border-radius:14px;" onclick="if(requireAccount('aider')) return; openSheet('sheet-help')">🙋 Je peux aider</button>`;
 
   } else if (alertTakenBy === 'me') {
     /* Pris par moi */
@@ -3357,10 +3226,11 @@ function renderHelpBar() {
         <button class="btn btn-sm btn-secondary" style="white-space:nowrap;font-size:12px;flex-shrink:0;" onclick="cancelTaken()">Annuler</button>
       </div>
       <div style="display:flex;gap:8px;margin-top:10px;">
-        <button class="btn btn-secondary" style="flex:1;font-size:13px;" onclick="openSheet('sheet-help')">✏️ Modifier mon message</button>
         <button class="btn btn-success" style="flex:1;font-size:14px;" onclick="openSheet('sheet-deliver')">📦 Remis</button>
+        <button class="btn btn-secondary" style="font-size:14px;" onclick="openSheet('sheet-late')">⏰ Retard</button>
         <button class="btn btn-secondary" style="font-size:14px;" onclick="openPrivateChat('sophie');setNav('nav-msg')">💬</button>
-      </div>`;
+      </div>
+      <button class="btn" style="margin-top:8px;font-size:13px;background:var(--danger-light);color:var(--danger);border:1.5px solid var(--danger);" onclick="cancelTaken()">✕ Je ne peux plus venir</button>`;
 
   } else if (alertTakenBy === 'delivered') {
     /* Remis — en attente de confirmation du signalant */
@@ -3399,6 +3269,53 @@ function renderHelpBar() {
 }
 
 
+
+let deliveryReminderTimer = null;
+
+function initDeadlineInput() {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() + 30);
+  const dateInput = document.getElementById('help-deadline-date');
+  const timeInput = document.getElementById('help-deadline-time');
+  if (dateInput) dateInput.value = now.toISOString().slice(0,10);
+  if (timeInput) timeInput.value = now.toTimeString().slice(0,5);
+}
+
+function scheduleDeliveryReminder() {
+  if (deliveryReminderTimer) clearTimeout(deliveryReminderTimer);
+  const input = document.getElementById('help-deadline-time');
+  if (!input || !input.value) return;
+  const [h, m] = input.value.split(':').map(Number);
+  const deadline = new Date();
+  deadline.setHours(h, m, 0, 0);
+  const delay = deadline - Date.now();
+  if (delay <= 0) return;
+  deliveryReminderTimer = setTimeout(() => {
+    if (alertTakenBy === 'me') {
+      showToast('⏰ Il est l\'heure — avez-vous remis l\'aide ? Pensez à confirmer la remise.', 6000);
+    }
+  }, delay);
+}
+
+let selectedLateMinutes = null;
+function selectLateDelay(el, minutes) {
+  document.querySelectorAll('#sheet-late .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedLateMinutes = minutes;
+  const btn = document.getElementById('late-confirm-btn');
+  if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+}
+function confirmLate() {
+  if (!selectedLateMinutes) return;
+  closeSheet('sheet-late');
+  showToast(`⏰ Retard signalé — vous arriverez dans ${selectedLateMinutes} min`);
+  if (deliveryReminderTimer) clearTimeout(deliveryReminderTimer);
+  deliveryReminderTimer = setTimeout(() => {
+    if (alertTakenBy === 'me') showToast('⏰ C\'est l\'heure — avez-vous remis l\'aide ?', 6000);
+  }, selectedLateMinutes * 60 * 1000);
+  selectedLateMinutes = null;
+}
+
 let selectedMeetMode = null;
 let creatorMode = 'helper';
 
@@ -3419,6 +3336,7 @@ function goToHelpStep2() {
   if (!selectedMeetMode) return;
   document.getElementById('help-step-1').style.display = 'none';
   document.getElementById('help-step-2').style.display = 'block';
+  initDeadlineInput();
   const titles = { onsite:'🚶 Je me déplace sur place', public:'☕ Rendez-vous en lieu public', home:'🏠 La personne vient chez moi', biz:'🏪 Mon établissement propose' };
   document.getElementById('help-step2-title').textContent = titles[selectedMeetMode];
   const addrSec = document.getElementById('help-address-section');
@@ -3468,6 +3386,7 @@ function toggleHelpCommit() {
 function submitHelp() {
   const msgEl = document.getElementById('help-message');
   const message = msgEl ? msgEl.value.trim() : '';
+  scheduleDeliveryReminder();
   closeSheet('sheet-help');
   alertTakenBy = 'me';
   if (currentAlertId && alertsData[currentAlertId]) {
@@ -3776,178 +3695,6 @@ function confirmDelivery() {
   goTo('screen-rating');
 }
 
-/* ══════════════════════════════════════
-   QUESTIONS & DROITS
-══════════════════════════════════════ */
-const droitsData = {
-  1: {
-    cat:'RSA', catBg:'#E3F2FD', catColor:'#1565C0', catEmoji:'💰',
-    question:'Homme ~50 ans sans domicile depuis 6 mois — a-t-il droit au RSA ?',
-    context:"Il n'a aucun revenu et dort dans la rue depuis au moins 6 mois. Il n'a jamais fait de demande car il pensait ne pas y avoir droit sans adresse fixe.",
-    asker:'Stéphane B.', askerAvatar:'S', askerColor:'av-orange', time:'Il y a 2h',
-    answers:[
-      {
-        expert:'Marie-Claire T.', role:'Travailleuse sociale — CCAS Paris 11e',
-        avatar:'M', color:'av-blue', verified:true, time:'Il y a 1h30', helpful:12,
-        text:`<p>Oui, <strong>il y a droit sous conditions</strong>. Le RSA est accessible aux personnes sans domicile fixe, mais il faut d'abord obtenir une <strong>domiciliation administrative</strong> auprès d'un CCAS ou d'une association agréée (Croix-Rouge, Secours Pop…)</p>
-<p><strong>Étapes concrètes :</strong></p>
-<ol style="padding-left:18px;margin:8px 0;line-height:1.8;">
-  <li>Se rendre au CCAS de la mairie la plus proche pour la domiciliation (gratuit, sur place)</li>
-  <li>Une fois domicilié, faire la demande de RSA sur <u>caf.fr</u> ou en personne à la CAF</li>
-  <li>Conditions : avoir +25 ans, ou avoir travaillé au moins 2 ans dans les 3 dernières années</li>
-</ol>
-<p style="margin-top:8px;">Pour Paris : appelez le <strong>3975</strong> (Solidarité Paris), ils orientent vers le bon CCAS.</p>`
-      },
-      {
-        expert:'Julien R.', role:'Juriste bénévole — Accès au Droit',
-        avatar:'J', color:'av-green', verified:true, time:'Il y a 45 min', helpful:8,
-        text:`<p>Pour compléter : si la personne a plus de 50 ans et n'a pas travaillé depuis longtemps, vérifiez aussi :</p>
-<ul style="padding-left:18px;margin:8px 0;line-height:1.8;">
-  <li><strong>ASS</strong> (Allocation de Solidarité Spécifique) si elle a des droits chômage épuisés</li>
-  <li><strong>AAH</strong> en cas de handicap reconnu (MDPH)</li>
-</ul>
-<p>Le livret <em>"Mes droits, mes démarches"</em> est disponible dans tous les CCAS — demandez-en un pour lui.</p>`
-      }
-    ]
-  },
-  2: {
-    cat:'Santé', catBg:'#FCE4EC', catColor:'#C62828', catEmoji:'🏥',
-    question:'Personne sans papiers — comment accéder aux soins médicaux ?',
-    context:"Elle refuse d'aller à l'hôpital par peur d'être expulsée. Elle a une infection visible qui empire depuis 2 semaines. Elle ne parle pas français.",
-    asker:'Camille D.', askerAvatar:'C', askerColor:'av-purple', time:'Il y a 4h',
-    answers:[
-      {
-        expert:'Dr. Sophie M.', role:'Médecin bénévole — Médecins du Monde',
-        avatar:'S', color:'av-blue', verified:true, time:'Il y a 3h', helpful:15,
-        text:`<p><strong>Rassurez-la absolument</strong> : les hôpitaux n'ont <strong>aucune obligation de signalement</strong> aux autorités. Le secret médical s'applique à tout le monde, sans papiers ou non.</p>
-<p style="margin-top:10px;"><strong>L'AME (Aide Médicale d'État)</strong> est faite pour elle :</p>
-<ul style="padding-left:18px;margin:8px 0;line-height:1.8;">
-  <li>Accessible après 3 mois de résidence en France (même sans titre de séjour)</li>
-  <li>Couvre les soins à 100% comme la Sécu</li>
-  <li>Demande à la CPAM avec une simple attestation d'hébergement</li>
-</ul>
-<p style="margin-top:10px;"><strong>En attendant l'AME :</strong> les <strong>PASS (Permanences d'Accès aux Soins de Santé)</strong> dans les hôpitaux publics soignent gratuitement, sans conditions et avec interprètes disponibles.</p>
-<p style="margin-top:8px;">Pour Paris, toutes les PASS : <u>aphp.fr/pass</u></p>`
-      }
-    ]
-  },
-  3: {
-    cat:'Logement', catBg:'#E8F5E9', catColor:'#2E7D32', catEmoji:'🏠',
-    question:'Famille expulsée avec 3 enfants — quelles démarches en urgence ?',
-    context:"Expulsion hier soir, ils dorment dans leur voiture. Les enfants ont 4, 7 et 12 ans. Ils n'ont aucun réseau local et ne savent pas vers qui se tourner.",
-    asker:'Thomas R.', askerAvatar:'T', askerColor:'av-green', time:'Il y a 1h',
-    answers:[]
-  },
-  4: {
-    cat:'RSA', catBg:'#E3F2FD', catColor:'#1565C0', catEmoji:'💰',
-    question:'Jeune de 24 ans sans emploi — peut-il toucher le RSA ?',
-    context:"Il pensait ne pas y avoir droit avant 25 ans et n'a jamais fait de demande. Il est sans emploi depuis 8 mois, vit dans la rue depuis 3 mois.",
-    asker:'Élodie V.', askerAvatar:'É', askerColor:'av-purple', time:'Hier',
-    answers:[
-      {
-        expert:'Marie-Claire T.', role:'Travailleuse sociale — CCAS Paris 11e',
-        avatar:'M', color:'av-blue', verified:true, time:'Hier', helpful:9,
-        text:`<p><strong>Non, à 24 ans le RSA classique n'est pas accessible</strong> (sauf s'il a un enfant à charge ou est enceinte).</p>
-<p style="margin-top:10px;">Mais il peut avoir droit à :</p>
-<ul style="padding-left:18px;margin:8px 0;line-height:1.8;">
-  <li><strong>Contrat d'Engagement Jeune (CEJ)</strong> : pour les 16-25 ans, ~500€/mois pendant un parcours d'insertion. À demander à la <strong>Mission Locale</strong> du quartier — c'est la première étape.</li>
-  <li><strong>Fonds d'Aide aux Jeunes (FAJ)</strong> : aide ponctuelle accordée par le département, sans condition de revenu minimum</li>
-</ul>`
-      },
-      {
-        expert:'Julien R.', role:'Juriste bénévole — Accès au Droit',
-        avatar:'J', color:'av-green', verified:true, time:'Hier', helpful:6,
-        text:`<p>Exception : il peut toucher le RSA avant 25 ans <strong>s'il a un enfant à charge ou est en état de grossesse</strong>. Dans ce cas, pas de condition d'âge.</p>`
-      },
-      {
-        expert:'Amandine C.', role:'Conseillère CAF — Paris',
-        avatar:'A', color:'av-orange', verified:true, time:'Hier', helpful:11,
-        text:`<p>Le plus simple : l'orienter vers la <strong>Mission Locale la plus proche</strong> (gratuit, sans RDV obligatoire). Ils font un bilan complet de ses droits en une séance et l'accompagnent dans toutes les démarches.</p>
-<p style="margin-top:8px;">Paris : <u>missionlocaleparis.fr</u> — 19 antennes dans toute la ville.</p>`
-      }
-    ]
-  },
-  5: {
-    cat:'Documents', catBg:'#F3E5F5', catColor:'#6A1B9A', catEmoji:'📄',
-    question:'Sans pièce d\'identité ni adresse — comment refaire ses papiers ?',
-    context:"A tout perdu dans un incendie il y a 4 mois. Sans adresse depuis. Ne sait pas par où commencer, très découragé par la complexité administrative.",
-    asker:'Nina K.', askerAvatar:'N', askerColor:'av-green', time:'Hier',
-    answers:[
-      {
-        expert:'Marie-Claire T.', role:'Travailleuse sociale — CCAS Paris 11e',
-        avatar:'M', color:'av-blue', verified:true, time:'Hier', helpful:14,
-        text:`<p><strong>La domiciliation est la priorité absolue</strong>. Sans adresse, rien n'est possible.</p>
-<ol style="padding-left:18px;margin:8px 0;line-height:1.8;">
-  <li><strong>Domiciliation</strong> : CCAS de la mairie la plus proche (gratuit, sur place, sans RDV)</li>
-  <li><strong>Déclaration de perte</strong> : en ligne sur <u>service-public.fr</u> ou au commissariat</li>
-  <li><strong>Acte de naissance</strong> : copie intégrale gratuite sur <u>acte-etat-civil.fr</u> (nés en France)</li>
-  <li><strong>Carte d'identité</strong> : avec l'acte de naissance + domiciliation, demande en mairie (gratuit, ~3 semaines)</li>
-</ol>
-<p style="margin-top:8px;">Si né à l'étranger, revenez vers moi, la procédure est différente.</p>`
-      },
-      {
-        expert:'Julien R.', role:'Juriste bénévole — Accès au Droit',
-        avatar:'J', color:'av-green', verified:true, time:'Hier', helpful:7,
-        text:`<p>La <strong>Permanence d'Accès au Droit</strong> (gratuite) accompagne la personne dans toutes ces démarches avec un professionnel.</p>
-<p style="margin-top:8px;">À Paris : 4 boulevard du Palais — accessible sans RDV certains jours. Renseignements : <u>justice.fr</u></p>`
-      }
-    ]
-  }
-};
-
-let currentDroitsId = null;
-
-function openDroitsQuestion(id) {
-  currentDroitsId = id;
-  const d = droitsData[id];
-  if (!d) return;
-
-  document.getElementById('droits-detail-cat').textContent = d.catEmoji + ' ' + d.cat;
-  document.getElementById('droits-detail-catbadge').textContent = d.catEmoji + ' ' + d.cat;
-  document.getElementById('droits-detail-catbadge').style.cssText = `background:${d.catBg};color:${d.catColor};`;
-  document.getElementById('droits-detail-question').textContent = d.question;
-  document.getElementById('droits-detail-context').textContent = d.context;
-
-  const avatarEl = document.getElementById('droits-detail-avatar');
-  avatarEl.textContent = d.askerAvatar;
-  avatarEl.className = 'avatar ' + d.askerColor;
-  document.getElementById('droits-detail-meta').textContent = d.asker + ' • ' + d.time;
-
-  const container = document.getElementById('droits-answers-container');
-  if (!d.answers.length) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:32px 16px;color:var(--text-muted);">
-        <div style="font-size:40px;margin-bottom:12px;">⏳</div>
-        <div style="font-size:15px;font-weight:600;margin-bottom:6px;">En attente d'une réponse</div>
-        <div style="font-size:13px;">Un expert bénévole va répondre sous 24h.</div>
-      </div>`;
-  } else {
-    container.innerHTML = `<div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">${d.answers.length} réponse${d.answers.length>1?'s':''} d'experts</div>`
-      + d.answers.map(a => `
-        <div class="card" style="margin-bottom:12px;">
-          <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;">
-            <div class="avatar ${a.color}" style="width:38px;height:38px;font-size:15px;flex-shrink:0;">${a.avatar}</div>
-            <div style="flex:1;min-width:0;">
-              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <span style="font-weight:700;font-size:14px;">${a.expert}</span>
-                ${a.verified ? '<span style="background:var(--success-light);color:var(--success);border-radius:999px;padding:1px 7px;font-size:12px;font-weight:700;">✔ Expert vérifié</span>' : ''}
-              </div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${a.role}</div>
-            </div>
-            <span style="font-size:12px;color:var(--text-muted);white-space:nowrap;flex-shrink:0;">${a.time}</span>
-          </div>
-          <div style="font-size:14px;line-height:1.7;color:var(--text);">${a.text}</div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
-            <button onclick="this.innerHTML='👍 '+( parseInt(this.dataset.n||${a.helpful})+1);this.dataset.n=parseInt(this.dataset.n||${a.helpful})+1;this.style.color='var(--success)';this.style.borderColor='var(--success)';"
-              style="display:flex;align-items:center;gap:5px;padding:5px 12px;border:1.5px solid var(--border);border-radius:8px;background:transparent;font-size:13px;cursor:pointer;">
-              👍 ${a.helpful}
-            </button>
-            <span style="font-size:12px;color:var(--text-muted);">Utile ?</span>
-          </div>
-        </div>`).join('');
-  }
-  goTo('screen-droits-detail');
-}
 
 function toggleResolvedCards() {
   const container = document.getElementById('resolved-cards');
@@ -3969,52 +3716,6 @@ function markAllNotifsRead() {
   showToast('✅ Toutes les notifications marquées comme lues');
 }
 
-function toggleDroitsChip(el, filter) {
-  document.querySelectorAll('#screen-droits .chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('#screen-droits [data-droits]').forEach(card => {
-    card.style.display = (filter === 'all' || card.dataset.droits === filter) ? '' : 'none';
-  });
-}
-
-function submitDroitsQuestion() {
-  const cat  = document.getElementById('droits-ask-cat').value;
-  const q    = document.getElementById('droits-ask-question').value.trim();
-  const ctx  = document.getElementById('droits-ask-context').value.trim();
-  const anon = document.getElementById('droits-ask-anon').checked;
-  if (!cat) { showToast('⚠️ Choisissez un thème'); return; }
-  if (!q)   { showToast('⚠️ Saisissez votre question'); return; }
-
-  const catLabels = { rsa:'💰 RSA', logement:'🏠 Logement', sante:'🏥 Santé', documents:'📄 Documents', aah:'♿ AAH', immigration:'🌍 Immigration', famille:'👨‍👩‍👧 Famille', autre:'❓ Autre' };
-  const newId = 90 + Object.keys(droitsData).length;
-  droitsData[newId] = {
-    cat: catLabels[cat] || cat, catBg:'#E3F2FD', catColor:'#1565C0', catEmoji: catLabels[cat]?.split(' ')[0] || '❓',
-    question: q, context: ctx || 'Aucun contexte supplémentaire.',
-    asker: anon ? 'Anonyme' : 'Stéphane B.', askerAvatar: anon ? '?' : 'S', askerColor:'av-orange',
-    time:'À l\'instant', answers:[],
-  };
-
-  /* Ajouter la carte dans le feed */
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.dataset.droits = cat;
-  card.style.cssText = 'cursor:pointer;margin-bottom:12px;';
-  card.onclick = () => openDroitsQuestion(newId);
-  card.innerHTML = `
-    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-      <span style="background:#E3F2FD;color:#1565C0;border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;">${catLabels[cat]}</span>
-      <div style="font-size:15px;font-weight:700;line-height:1.4;">${q}</div>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-      <span style="font-size:12px;color:var(--text-muted);">${anon ? 'Anonyme' : 'Stéphane B.'} • À l'instant</span>
-      <span style="background:var(--warning-light);color:var(--warning);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">⏳ En attente</span>
-    </div>`;
-  const body = document.querySelector('#screen-droits .screen-body');
-  if (body) body.prepend(card);
-
-  goTo('screen-droits');
-  setTimeout(() => showToast('✅ Question publiée ! Réponse sous 24h'), 400);
-}
 
 /* ── PROFIL AUTRE UTILISATEUR ── */
 /* ── TOAST ── */
@@ -4059,6 +3760,7 @@ const privateChatData = {
 };
 
 function openHelpChat(alertId, helperName, helperAvatar, helperColor, helperMessage, meetMode) {
+  if (requireAccount('accéder au chat')) return;
   const a = alertsData[alertId];
   if (!a) return;
   const modeLabels = { onsite:'🚶 Se déplace sur place', public:'☕ Rendez-vous en lieu public', home:'🏠 La personne vient chez moi', biz:'🏪 Via mon établissement' };
@@ -4106,6 +3808,7 @@ function openHelpChatFromAlert(alertId, participantIdx) {
 }
 
 function openPrivateChat(chatId) {
+  if (requireAccount('accéder au chat')) return;
   const data = privateChatData[chatId];
   if (!data) return;
   document.getElementById('chat-title').textContent = data.name;
@@ -4366,15 +4069,19 @@ function switchFeedView(view) {
   const topToggle  = document.getElementById('home-view-toggle');
   window._feedView = view;
 
+  const btnList = document.getElementById('view-btn-list');
+  const btnMap  = document.getElementById('view-btn-map');
   if (view === 'map') {
     listView.style.display = 'none';
     mapView.style.display  = 'flex';
-    if (topToggle) { topToggle.textContent = '📋'; topToggle.setAttribute('aria-label','Afficher la liste'); }
+    if (btnList) { btnList.style.background = 'transparent'; btnList.style.color = '#999'; btnList.style.boxShadow = 'none'; }
+    if (btnMap)  { btnMap.style.background  = '#F05A1A';     btnMap.style.color  = 'white'; btnMap.style.boxShadow = '0 2px 8px rgba(240,90,26,.3)'; }
     initHomeMap();
   } else {
     listView.style.display = '';
     mapView.style.display  = 'none';
-    if (topToggle) { topToggle.textContent = '🗺'; topToggle.setAttribute('aria-label','Afficher la carte'); }
+    if (btnList) { btnList.style.background = '#F05A1A';     btnList.style.color = 'white'; btnList.style.boxShadow = '0 2px 8px rgba(240,90,26,.3)'; }
+    if (btnMap)  { btnMap.style.background  = 'transparent'; btnMap.style.color  = '#999';  btnMap.style.boxShadow = 'none'; }
   }
 }
 
@@ -4402,7 +4109,7 @@ function initHomeMap() {
       html:`<div style="width:38px;height:38px;border-radius:50%;background:${a.color};border:3px solid white;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 2px 10px rgba(0,0,0,.3);cursor:pointer;">${a.e}</div>` });
     const m = L.marker(a.pos, { icon }).addTo(map);
     m.bindTooltip(a.l, { direction:'top', offset:[0,-22] });
-    if (a.id) m.on('click', () => { switchFeedView('list'); openAlert(a.id); });
+    if (a.id) m.on('click', () => { openAlert(a.id); });
   });
 }
 
@@ -4462,7 +4169,9 @@ function applyTheme(theme) {
   if (toggle) toggle.classList.toggle('on', theme === 'dark');
   const quick = document.getElementById('theme-quick-btn');
   if (quick) quick.textContent = theme === 'dark' ? '☀️' : '🌙';
-  try { localStorage.setItem('solidaraid-theme', theme); } catch (e) {}
+  const homeBtn = document.getElementById('home-theme-btn');
+  if (homeBtn) homeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  try { localStorage.setItem('humeo-theme', theme); } catch (e) {}
 }
 function toggleDarkMode(el) {
   const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -4470,7 +4179,7 @@ function toggleDarkMode(el) {
 }
 function initTheme() {
   let stored = null;
-  try { stored = localStorage.getItem('solidaraid-theme'); } catch (e) {}
+  try { stored = localStorage.getItem('humeo-theme'); } catch (e) {}
   if (stored === 'dark' || stored === 'light') { applyTheme(stored); return; }
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   applyTheme(prefersDark ? 'dark' : 'light');
