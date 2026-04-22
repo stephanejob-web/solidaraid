@@ -664,6 +664,41 @@ body {
 .challenge-progress-row { display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); font-weight:600; }
 .challenge-deadline { font-size:12px; color:var(--text-muted); margin-top:10px; display:flex; align-items:center; gap:4px; }
 
+/* ── Onglets chat Groupe / Privé ── */
+.chat-tabs { display:flex; background:var(--white); border-bottom:1px solid var(--border-light); flex-shrink:0; }
+.chat-tab { flex:1; padding:12px 8px; text-align:center; font-size:13px; font-weight:700; color:var(--text-muted); cursor:pointer; border-bottom:2.5px solid transparent; transition:all .15s; }
+.chat-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
+.chat-tab.locked { color:var(--border); pointer-events:none; cursor:default; }
+.chat-tab.locked::after { content:' 🔒'; font-size:11px; }
+
+/* ── Bouton chat sur la carte ── */
+.card-chat-btn {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--secondary); color: white;
+  border: none; border-radius: 20px;
+  padding: 6px 12px; font-size: 12px; font-weight: 700;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  transition: background .15s, transform .12s;
+}
+.card-chat-btn:active { background: #1d4ed8; transform: scale(.95); }
+
+/* ── Choix téléphone (step 2) ── */
+.phone-choice-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .18s;
+  background: var(--white);
+}
+.phone-choice-card:active { transform: scale(.97); }
+.phone-choice-card.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
 /* ── Pulse dot (statut présence) ── */
 @keyframes pulse-dot {
   0%,100% { opacity:1; transform:scale(1); }
@@ -1233,9 +1268,14 @@ body {
 
   <!-- Barre d'action fixe en bas -->
   <div id="help-bar" style="position:absolute;bottom:var(--nav-h);left:0;right:0;padding:12px 16px 12px;background:var(--white);border-top:1px solid var(--border);z-index:50;">
-    <button class="btn btn-primary" style="font-size:17px;border-radius:14px;" onclick="if(requireAccount('aider')) return; openSheet('sheet-help')">
-      🙋 Je peux aider !
-    </button>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-secondary" style="flex-shrink:0;padding:13px 16px;" onclick="if(requireAccount('accéder au chat')) return; openGroupChatFromAlert()">
+        💬 Groupe
+      </button>
+      <button class="btn btn-primary" id="help-bar-main-btn" style="flex:1;font-size:16px;border-radius:14px;" onclick="if(requireAccount('aider')) return; openSheet('sheet-help')">
+        🙋 Je peux aider
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1298,11 +1338,42 @@ body {
       <div id="map-mini"></div>
     </div>
 
-    <!-- Téléphone visible directement -->
+    <!-- La personne a-t-elle un téléphone ? -->
     <div class="input-group">
-      <label>📞 Téléphone de la personne <span style="font-weight:400;color:var(--text-muted);">(optionnel)</span></label>
-      <input type="tel" id="person-phone" placeholder="ex : 06 12 34 56 78">
-      <div style="font-size:12px;color:var(--text-muted);margin-top:5px;">Visible uniquement par l'aidant qui accepte. Sinon, le chat permet d'organiser le rendez-vous.</div>
+      <label>📱 La personne a-t-elle un téléphone ?</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div id="phone-yes-card" class="phone-choice-card" onclick="selectPersonPhone('yes')">
+          <div style="font-size:26px;">📱</div>
+          <div style="font-size:14px;font-weight:700;margin-top:6px;">Oui</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.4;">Elle peut être contactée directement</div>
+        </div>
+        <div id="phone-no-card" class="phone-choice-card" onclick="selectPersonPhone('no')">
+          <div style="font-size:26px;">🙋</div>
+          <div style="font-size:14px;font-weight:700;margin-top:6px;">Non</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.4;">Je serai son contact</div>
+        </div>
+      </div>
+      <!-- Oui : options de contact -->
+      <div id="phone-yes-info" style="display:none;background:var(--primary-light);border-radius:12px;padding:14px;">
+        <!-- Chat toujours dispo -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-size:22px;">💬</span>
+          <div style="font-size:13px;color:var(--primary);line-height:1.5;">
+            <strong>Un chat privé en temps réel</strong> sera ouvert entre la personne et l'aidant.<br>
+            <span style="color:var(--text-muted);">Aucun numéro requis pour y accéder.</span>
+          </div>
+        </div>
+        <!-- Divider -->
+        <div style="border-top:1px solid var(--primary-mid);margin-bottom:12px;"></div>
+        <!-- Numéro optionnel -->
+        <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">📞 Numéro de téléphone <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optionnel)</span></div>
+        <input type="tel" id="person-phone" placeholder="ex : 06 12 34 56 78" style="background:var(--white);margin-bottom:6px;">
+        <div style="font-size:12px;color:var(--text-muted);">Si renseigné, la personne reçoit un SMS avec le lien du chat. Sinon, montre-lui l'écran pour qu'elle rejoigne.</div>
+      </div>
+      <!-- Non : signaleur = contact -->
+      <div id="phone-no-info" style="display:none;background:var(--primary-light);border-radius:12px;padding:12px;font-size:13px;color:var(--primary);line-height:1.5;">
+        👤 <strong>Tu seras le contact de l'aidant.</strong><br>C'est toi qui organiseras le rendez-vous et confirmeras que l'aide a été remise.
+      </div>
     </div>
 
     <!-- Photos de l'endroit -->
@@ -1432,6 +1503,11 @@ body {
       <div id="chat-subtitle" style="font-size:12px;color:var(--text-muted);">0 aidants</div>
     </div>
     <div id="chat-avatars" style="display:flex;gap:-6px;"></div>
+  </div>
+  <!-- Onglets Groupe / Privé -->
+  <div id="chat-tabs" class="chat-tabs" style="display:none;">
+    <div id="tab-group"   class="chat-tab active"  onclick="switchChatTab('group')">👥 Groupe</div>
+    <div id="tab-private" class="chat-tab"         onclick="switchChatTab('private')">🔒 Privé</div>
   </div>
   <div id="chat-context" style="background:var(--primary-light);padding:8px 16px;font-size:13px;color:var(--primary);flex-shrink:0;"></div>
   <!-- Barre statut présence (mode "La personne vient chez moi") -->
@@ -1858,7 +1934,8 @@ body {
       </div>
       <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border-light);">
         <div class="avatar av-blue" style="width:24px;height:24px;font-size:11px;">S</div>
-        <span style="font-size:12px;color:var(--text-muted);">Sophie L. · Il y a 12 min</span>
+        <span style="font-size:12px;color:var(--text-muted);flex:1;">Sophie L. · Il y a 12 min</span>
+        <button class="card-chat-btn" onclick="event.stopPropagation();openAlertChatFromCard('alert-1')">💬 Chat</button>
       </div>
     </div>
 
@@ -1875,7 +1952,8 @@ body {
       </div>
       <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border-light);">
         <div class="avatar av-purple" style="width:24px;height:24px;font-size:11px;">M</div>
-        <span style="font-size:12px;color:var(--text-muted);">Marc D. · Il y a 2h</span>
+        <span style="font-size:12px;color:var(--text-muted);flex:1;">Marc D. · Il y a 2h</span>
+        <button class="card-chat-btn" onclick="event.stopPropagation();openAlertChatFromCard('alert-3')">💬 Chat</button>
       </div>
     </div>
 
@@ -2179,27 +2257,12 @@ body {
       <div style="font-size:14px;color:var(--text-muted);margin-top:4px;">Confirmez que vous avez bien apporté l'aide à la personne</div>
     </div>
 
-    <!-- Vérification GPS -->
-    <div id="deliver-gps-check" style="background:var(--primary-light);border-radius:var(--radius);padding:14px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span id="deliver-gps-icon" style="font-size:22px;">📍</span>
-        <div style="flex:1;">
-          <div id="deliver-gps-title" style="font-weight:700;font-size:14px;color:var(--primary);">Vérification de votre position</div>
-          <div id="deliver-gps-sub" style="font-size:13px;color:var(--text-muted);">Pour confirmer la remise, vous devez être à proximité du lieu signalé</div>
-        </div>
-        <button onclick="simulateGpsCheck()" id="deliver-gps-btn"
-          style="padding:8px 14px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">
-          Vérifier
-        </button>
-      </div>
-    </div>
-
-    <!-- Contexte — bénéficiaire sans téléphone -->
-    <div style="background:var(--warning-light);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
-      <span style="font-size:18px;flex-shrink:0;">💡</span>
-      <div style="font-size:13px;color:var(--warning);line-height:1.5;">
-        <strong>La personne n'a peut-être pas de téléphone.</strong><br>
-        C'est pourquoi votre confirmation GPS suffit. Le signalant pourra valider de son côté sous 24h.
+    <!-- Confirmation simple -->
+    <div style="background:var(--success-light);border-radius:var(--radius);padding:14px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
+      <span style="font-size:20px;flex-shrink:0;">👤</span>
+      <div style="font-size:13px;color:var(--success);line-height:1.5;">
+        <strong>Le contact de la personne sera notifié.</strong><br>
+        Il confirmera de son côté que l'aide a bien été remise.
       </div>
     </div>
 
@@ -2215,7 +2278,7 @@ body {
       <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Photo de l'objet remis (optionnel)<br><strong style="color:var(--danger-light);color:var(--danger);">Pas de photo de la personne</strong></div>
     </div>
 
-    <button class="btn btn-success" id="deliver-confirm-btn" onclick="confirmDelivery()" disabled style="font-size:16px;">
+    <button class="btn btn-success" id="deliver-confirm-btn" onclick="confirmDelivery()" style="font-size:16px;">
       ✅ Confirmer la remise
     </button>
     <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-deliver')">Annuler</button>
@@ -2351,6 +2414,39 @@ body {
     </div>
     <button class="btn btn-success" onclick="confirmPositionUpdate()">✅ Mettre à jour ma position</button>
     <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-update-position')">Annuler</button>
+  </div>
+</div>
+
+<!-- SHEET — Inviter la personne au chat privé -->
+<div id="sheet-overlay-chat-invite" class="sheet-overlay" onclick="closeSheet('sheet-chat-invite')">
+  <div id="sheet-chat-invite" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:40px;margin-bottom:8px;">💬</div>
+      <div style="font-size:18px;font-weight:800;">Inviter la personne au chat</div>
+      <div style="font-size:14px;color:var(--text-muted);margin-top:6px;line-height:1.5;">Pas besoin de compte ni de numéro de téléphone.</div>
+    </div>
+
+    <!-- Option 1 : SMS si numéro -->
+    <div style="background:var(--bg);border-radius:14px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;">📲 Envoyer un SMS avec le lien</div>
+      <div style="display:flex;gap:8px;">
+        <input type="tel" placeholder="Numéro de la personne…" style="flex:1;font-size:14px;">
+        <button onclick="sendChatInviteSMS()" style="padding:10px 14px;background:var(--primary);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;">Envoyer</button>
+      </div>
+    </div>
+
+    <!-- Option 2 : Montrer l'écran -->
+    <div style="background:var(--bg);border-radius:14px;padding:14px;margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;">📱 Montrer ce lien à la personne</div>
+      <div style="background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+        <span style="font-size:13px;color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">humeo.app/chat/invite/a8f3k2</span>
+        <button onclick="copyChatLink()" style="background:var(--primary-light);color:var(--primary);border:none;border-radius:8px;font-size:12px;font-weight:700;padding:6px 10px;cursor:pointer;white-space:nowrap;">Copier</button>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">Le lien expire dans 24h. La personne rejoint sans créer de compte.</div>
+    </div>
+
+    <button class="btn btn-secondary" onclick="closeSheet('sheet-chat-invite')">Fermer</button>
   </div>
 </div>
 
@@ -2592,6 +2688,17 @@ function enhanceFeedCards() {
       else status = 'open';
     }
     card.dataset.status = status;
+    // inject chat button into meta row
+    if (id) {
+      const meta = card.querySelector('.alert-card-meta');
+      if (meta && !meta.querySelector('.card-chat-btn')) {
+        const btn = document.createElement('button');
+        btn.className = 'card-chat-btn';
+        btn.innerHTML = '💬 Chat';
+        btn.onclick = (e) => { e.stopPropagation(); openAlertChatFromCard(id); };
+        meta.appendChild(btn);
+      }
+    }
     // inject participants avatars into meta row
     if (data && Array.isArray(data.participants) && data.participants.length) {
       const meta = card.querySelector('.alert-card-meta');
@@ -3486,6 +3593,15 @@ function reportNoShow() {
   showToast('📩 Le signaleur a été notifié', 4000);
 }
 
+function sendChatInviteSMS() {
+  closeSheet('sheet-chat-invite');
+  showToast('📲 SMS envoyé avec le lien du chat', 3000);
+}
+
+function copyChatLink() {
+  showToast('🔗 Lien copié !', 2000);
+}
+
 function _addChatSystemMsg(html) {
   const msgs = document.getElementById('chat-messages');
   if (!msgs) return;
@@ -3586,7 +3702,6 @@ function submitHelp() {
   const msgEl = document.getElementById('help-message');
   const message = msgEl ? msgEl.value.trim() : '';
   scheduleDeliveryReminder();
-  schedulePresenceConfirm();
   closeSheet('sheet-help');
   alertTakenBy = 'me';
   if (currentAlertId && alertsData[currentAlertId]) {
@@ -3975,7 +4090,10 @@ function openHelpChat(alertId, helperName, helperAvatar, helperColor, helperMess
   msgs.push({ type:'system', text: helperName + ' propose son aide' });
   if (modeLabel) msgs.push({ type:'system', text: 'Mode : ' + modeLabel });
   if (helperMessage) msgs.push({ from: helperName, avatar: helperAvatar, color: helperColor, text: helperMessage, time });
-  msgs.push({ from: signalerName, avatar: signalerAvatar, color: signalerColor, text: 'Merci ! Il est encore sur place. Comment on fait pour se retrouver ?', time });
+  const signalerReply = a.personHasPhone === 'yes'
+    ? 'Super ! La personne est encore là, je lui transmets ton contact.'
+    : 'Merci ! Je suis le contact de la personne. Elle est encore sur place, on fait comment pour se retrouver ?';
+  msgs.push({ from: signalerName, avatar: signalerAvatar, color: signalerColor, text: signalerReply, time });
 
   document.getElementById('chat-title').textContent = helperName === currentUser.name ? signalerName : helperName;
   document.getElementById('chat-subtitle').textContent = 'Chat privé';
@@ -3985,24 +4103,58 @@ function openHelpChat(alertId, helperName, helperAvatar, helperColor, helperMess
   avatarEl.innerHTML = `<div class="avatar ${otherColor}" style="width:30px;height:30px;font-size:12px;border:2px solid var(--white);">${otherAvatar}</div>`;
   document.getElementById('chat-context').innerHTML = `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${a.icon} <strong>${a.title}</strong>${modeLabel ? ` <span style="background:var(--primary);color:white;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:600;flex-shrink:0;">${modeLabel}</span>` : ''}</div>`;
 
-  // Barre de statut présence — visible uniquement pour le mode "home"
+  // Bandeau "qui parle à qui" selon si la personne a un téléphone
   const homeBar    = document.getElementById('chat-home-actions');
   const homeStatus = document.getElementById('chat-presence-status');
   if (homeBar && homeStatus) {
-    if (meetMode === 'home') {
+    const hasPhone = a.personHasPhone;
+    if (hasPhone === 'yes') {
       homeBar.style.display = 'block';
-      const addrInput = document.getElementById('help-address-input');
-      const addr = (addrInput && addrInput.value.trim()) ? addrInput.value.trim() : 'adresse indiquée';
       homeStatus.innerHTML =
-        '<div style="display:flex;align-items:center;gap:8px;font-size:13px;">' +
-          '<span style="width:8px;height:8px;border-radius:50%;background:var(--warning);display:inline-block;flex-shrink:0;"></span>' +
-          '<span style="font-weight:700;color:var(--warning);">En attente de confirmation</span>' +
-          '<span style="color:var(--text-muted);font-size:12px;margin-left:2px;">— rappel dans 30 min</span>' +
+        '<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--secondary);">' +
+          '<span>💬</span> Chat privé en temps réel' +
+          '<button onclick="openSheet(\'sheet-chat-invite\')" style="margin-left:auto;background:var(--secondary);color:white;border:none;border-radius:20px;font-size:12px;font-weight:600;padding:4px 10px;cursor:pointer;white-space:nowrap;flex-shrink:0;">Inviter</button>' +
+        '</div>';
+    } else if (hasPhone === 'no') {
+      homeBar.style.display = 'block';
+      homeStatus.innerHTML =
+        '<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--primary);">' +
+          '<span>👤</span>' +
+          '<span><strong>' + signalerName + '</strong> · représente la personne — il confirmera l\'aide</span>' +
+          '<button onclick="openSheet(\'sheet-no-show\')" style="margin-left:auto;background:none;border:none;font-size:12px;color:var(--text-muted);cursor:pointer;text-decoration:underline;padding:0;white-space:nowrap;flex-shrink:0;">Absent ?</button>' +
         '</div>';
     } else {
       homeBar.style.display = 'none';
     }
   }
+
+  // Débloquer l'onglet privé + afficher les onglets
+  _chatAlertId = alertId;
+  _chatPrivateUnlocked = true;
+  const tabs = document.getElementById('chat-tabs');
+  if (tabs) tabs.style.display = 'flex';
+  const tabGroup   = document.getElementById('tab-group');
+  const tabPrivate = document.getElementById('tab-private');
+  if (tabGroup)   { tabGroup.classList.remove('active'); }
+  if (tabPrivate) { tabPrivate.classList.remove('locked'); tabPrivate.classList.add('active'); }
+
+  // Sauvegarder les messages groupe existants si dispo
+  const groupMsgsRaw = a.groupMessages || [];
+  const nowTime2 = new Date();
+  const t2 = nowTime2.getHours() + ':' + String(nowTime2.getMinutes()).padStart(2,'0');
+  _groupMsgsCache = groupMsgsRaw.length
+    ? groupMsgsRaw.map(m => {
+        const mine2 = m.from === currentUser.name;
+        return `<div class="msg ${mine2?'msg-out':'msg-in'}">
+          ${!mine2?`<div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:3px;padding-left:4px;">${m.name||m.from}</div>`:''}
+          <div class="msg-bubble">${escapeHtml(m.text)}</div>
+          <div class="msg-time">${m.time||t2}</div>
+        </div>`;
+      })
+    : [`<div style="text-align:center;padding:8px 0;"><span style="font-size:12px;color:var(--text-muted);background:var(--bg);padding:4px 14px;border-radius:20px;">Discussion de groupe</span></div>`];
+
+  const input = document.getElementById('chat-input');
+  if (input) input.placeholder = 'Message privé…';
 
   const wrap = document.getElementById('chat-messages');
   wrap.innerHTML = msgs.map(m => {
@@ -4014,6 +4166,142 @@ function openHelpChat(alertId, helperName, helperAvatar, helperColor, helperMess
       <div class="msg-time">${m.time}</div>
     </div>`;
   }).join('');
+  wrap.scrollTop = wrap.scrollHeight;
+  goTo('screen-chat');
+}
+
+/* ── CHAT : état courant ── */
+let _chatAlertId  = null;
+let _chatPrivateUnlocked = false;
+let _groupMsgsCache   = [];
+let _privateMsgsCache = [];
+
+function _renderChatMessages(msgs) {
+  const wrap = document.getElementById('chat-messages');
+  if (!wrap) return;
+  wrap.innerHTML = msgs.map(m => {
+    if (m.type === 'system') return `<div style="text-align:center;padding:8px 0;"><span style="font-size:12px;color:var(--text-muted);background:var(--bg);padding:4px 14px;border-radius:20px;">${m.text}</span></div>`;
+    const mine = m.from === currentUser.name;
+    return `<div class="msg ${mine ? 'msg-out' : 'msg-in'}">
+      ${!mine ? `<div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:3px;padding-left:4px;">${m.from}</div>` : ''}
+      <div class="msg-bubble">${escapeHtml(m.text)}</div>
+      <div class="msg-time">${m.time}</div>
+    </div>`;
+  }).join('');
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function switchChatTab(tab) {
+  const tabGroup   = document.getElementById('tab-group');
+  const tabPrivate = document.getElementById('tab-private');
+  if (!tabGroup || !tabPrivate) return;
+
+  if (tab === 'private' && !_chatPrivateUnlocked) {
+    showToast('Clique sur "Je peux aider" pour débloquer la conversation privée', 3000);
+    return;
+  }
+
+  // Sauvegarder les messages du tab courant
+  const wrap = document.getElementById('chat-messages');
+  const currentTab = tabGroup.classList.contains('active') ? 'group' : 'private';
+  if (currentTab === 'group')   _groupMsgsCache   = Array.from(wrap.children).map(el => el.outerHTML);
+  if (currentTab === 'private') _privateMsgsCache = Array.from(wrap.children).map(el => el.outerHTML);
+
+  tabGroup.classList.toggle('active', tab === 'group');
+  tabPrivate.classList.toggle('active', tab === 'private');
+
+  if (tab === 'group') {
+    wrap.innerHTML = _groupMsgsCache.join('');
+  } else {
+    wrap.innerHTML = _privateMsgsCache.join('');
+  }
+  wrap.scrollTop = wrap.scrollHeight;
+
+  // Mettre à jour le placeholder
+  const input = document.getElementById('chat-input');
+  if (input) input.placeholder = tab === 'private' ? 'Message privé…' : 'Message au groupe…';
+}
+
+function openGroupChatFromAlert() {
+  if (requireAccount('accéder au chat')) return;
+  const a = alertsData[currentAlertId];
+  if (!a) return;
+  _chatAlertId = currentAlertId;
+
+  // Header
+  document.getElementById('chat-title').textContent    = 'Groupe · ' + (a.title || 'Signalement');
+  document.getElementById('chat-subtitle').textContent = 'Discussion ouverte à tous';
+  document.getElementById('chat-avatars').innerHTML    = '';
+  document.getElementById('chat-context').innerHTML    =
+    `<div style="display:flex;align-items:center;gap:8px;">${a.icon || '🆘'} <strong>${a.title}</strong> · <span style="opacity:.8;">${a.location || ''}</span></div>`;
+
+  const homeBar = document.getElementById('chat-home-actions');
+  if (homeBar) homeBar.style.display = 'none';
+
+  // Onglets : groupe actif, privé verrouillé si pas encore engagé
+  const tabs = document.getElementById('chat-tabs');
+  if (tabs) tabs.style.display = 'flex';
+  const tabPrivate = document.getElementById('tab-private');
+  if (tabPrivate) {
+    tabPrivate.classList.toggle('locked', !_chatPrivateUnlocked);
+    tabPrivate.classList.toggle('active', false);
+  }
+  const tabGroup = document.getElementById('tab-group');
+  if (tabGroup) { tabGroup.classList.add('active'); }
+
+  // Messages groupe
+  const now  = new Date();
+  const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  const groupMsgs = (a.groupMessages || []).length
+    ? a.groupMessages
+    : [{ from: a.signaler || 'Signaleur', avatar: a.signalerAvatar || 'S', color: a.signalerColor || 'av-orange',
+         text: 'Bonjour à tous ! Cette personne a besoin d\'aide. Qui peut intervenir ?', time }];
+
+  _groupMsgsCache = [];
+  _renderChatMessages([{ type:'system', text:'Discussion ouverte — tout le monde peut participer' }, ...groupMsgs]);
+
+  const input = document.getElementById('chat-input');
+  if (input) input.placeholder = 'Message au groupe…';
+
+  goTo('screen-chat');
+}
+
+function openAlertChatFromCard(alertId) {
+  if (requireAccount('accéder au chat')) return;
+  const a = alertsData[alertId];
+  if (!a) return;
+  // Si l'utilisateur a déjà engagé sur cette alerte → son chat actif
+  if (alertTakenBy === 'me' && currentAlertId === alertId) {
+    openHelpChat(alertId, currentUser.name, currentUser.avatar, 'av-orange', '', selectedMeetMode);
+    return;
+  }
+  // Sinon → chat de contact avec le signaleur
+  const signalerName  = a.signaler      || 'Signaleur';
+  const signalerAvatar= a.signalerAvatar|| 'S';
+  const signalerColor = a.signalerColor || 'av-orange';
+  const now   = new Date();
+  const time  = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+
+  document.getElementById('chat-title').textContent    = signalerName;
+  document.getElementById('chat-subtitle').textContent = 'Signaleur · contact de la personne';
+  document.getElementById('chat-avatars').innerHTML    =
+    `<div class="avatar ${signalerColor}" style="width:30px;height:30px;font-size:12px;border:2px solid var(--white);">${signalerAvatar}</div>`;
+  document.getElementById('chat-context').innerHTML    =
+    `<div style="display:flex;align-items:center;gap:8px;">${a.icon} <strong>${a.title}</strong></div>`;
+
+  const homeBar = document.getElementById('chat-home-actions');
+  if (homeBar) homeBar.style.display = 'none';
+  const tabs2 = document.getElementById('chat-tabs');
+  if (tabs2) tabs2.style.display = 'none';
+
+  const wrap = document.getElementById('chat-messages');
+  wrap.innerHTML =
+    `<div style="text-align:center;padding:8px 0;"><span style="font-size:12px;color:var(--text-muted);background:var(--bg);padding:4px 14px;border-radius:20px;">Conversation avec le signaleur</span></div>` +
+    `<div class="msg msg-in">
+      <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:3px;padding-left:4px;">${signalerName}</div>
+      <div class="msg-bubble">Bonjour ! La personne est encore sur place. Comment puis-je vous aider ?</div>
+      <div class="msg-time">${time}</div>
+    </div>`;
   wrap.scrollTop = wrap.scrollHeight;
   goTo('screen-chat');
 }
@@ -4030,6 +4318,8 @@ function openPrivateChat(chatId) {
   if (requireAccount('accéder au chat')) return;
   const data = privateChatData[chatId];
   if (!data) return;
+  const tabs = document.getElementById('chat-tabs');
+  if (tabs) tabs.style.display = 'none';
   document.getElementById('chat-title').textContent = data.name;
   document.getElementById('chat-subtitle').textContent = data.subtitle;
   const avatarEl = document.getElementById('chat-avatars');
@@ -4049,11 +4339,27 @@ function openPrivateChat(chatId) {
 }
 
 /* ── CRÉER UN SIGNALEMENT → FEED ── */
-const newAlertDraft = { categories: [], urgency: 'high' };
+const newAlertDraft = { categories: [], urgency: 'high', personHasPhone: null };
+
+let _personHasPhone = null; // 'yes' | 'no'
+
+function selectPersonPhone(choice) {
+  _personHasPhone = choice;
+  newAlertDraft.personHasPhone = choice;
+  document.getElementById('phone-yes-card').classList.toggle('selected', choice === 'yes');
+  document.getElementById('phone-no-card').classList.toggle('selected', choice === 'no');
+  document.getElementById('phone-yes-info').style.display = choice === 'yes' ? 'block' : 'none';
+  document.getElementById('phone-no-info').style.display  = choice === 'no'  ? 'block' : 'none';
+}
 
 function resetCreateForm() {
   newAlertDraft.categories = [];
   newAlertDraft.urgency = 'high';
+  newAlertDraft.personHasPhone = null;
+  _personHasPhone = null;
+  ['phone-yes-card','phone-no-card'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('selected'); });
+  const pyi = document.getElementById('phone-yes-info'); if (pyi) pyi.style.display = 'none';
+  const pni = document.getElementById('phone-no-info');  if (pni) pni.style.display = 'none';
   newAlertDraft.size = null;
   document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
   const counter = document.getElementById('cat-selection-count');
@@ -4159,6 +4465,7 @@ function addNewAlertToFeed() {
     time: 'À l\'instant',
     signaler: 'Stéphane B.', signalerRating: '4.8', signalerAvatar: 'S', signalerColor: 'av-orange',
     urgency: urg, initialState: 'open',
+    personHasPhone: newAlertDraft.personHasPhone,
   };
   const card = document.createElement('div');
   card.className = 'alert-card';
@@ -4180,6 +4487,7 @@ function addNewAlertToFeed() {
       <span>📍 ${addr}</span><span>⏱ À l'instant</span>
       <span class="badge badge-open">Ouvert</span>
       <span style="font-size:12px;color:var(--primary);font-weight:700;">✨ Nouveau</span>
+      <button class="card-chat-btn" onclick="event.stopPropagation();openAlertChatFromCard('${newId}')">💬 Chat</button>
     </div>`;
   const feedList = document.getElementById('feed-list');
   if (feedList) feedList.prepend(card);
