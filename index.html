@@ -664,6 +664,19 @@ body {
 .challenge-progress-row { display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); font-weight:600; }
 .challenge-deadline { font-size:12px; color:var(--text-muted); margin-top:10px; display:flex; align-items:center; gap:4px; }
 
+/* ── Onboarding ── */
+.ob-screen { background: linear-gradient(160deg, var(--primary-dark) 0%, #1a0d1e 100%); display:flex; flex-direction:column; }
+#ob-slides { flex:1; overflow:hidden; position:relative; }
+.ob-slide { display:none; flex-direction:column; height:100%; padding:48px 24px 0; }
+.ob-slide.active { display:flex; }
+.ob-hero { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.ob-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.3); transition:all .2s; }
+.ob-dot.active { background:white; width:24px; border-radius:4px; }
+.ob-role-card { display:flex; align-items:center; gap:14px; background:var(--white); border:2px solid var(--border); border-radius:16px; padding:16px; cursor:pointer; transition:all .18s; }
+.ob-role-card.selected { border-color:var(--primary); background:var(--primary-light); }
+.ob-role-check { width:24px; height:24px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:transparent; flex-shrink:0; transition:all .18s; }
+.ob-role-card.selected .ob-role-check { background:var(--primary); border-color:var(--primary); color:white; }
+
 /* ── Onglets chat Groupe / Privé ── */
 .chat-tabs { display:flex; background:var(--white); border-bottom:1px solid var(--border-light); flex-shrink:0; }
 .chat-tab { flex:1; padding:12px 8px; text-align:center; font-size:13px; font-weight:700; color:var(--text-muted); cursor:pointer; border-bottom:2.5px solid transparent; transition:all .15s; }
@@ -734,7 +747,81 @@ body {
   </div>
 </div>
 
-<!-- ONBOARDING — Choix du rôle -->
+<!-- ONBOARDING -->
+<div id="screen-ob" class="screen ob-screen">
+  <!-- Slides container -->
+  <div id="ob-slides">
+
+    <!-- Slide 1 — Valeur -->
+    <div class="ob-slide active" id="ob-slide-1">
+      <div class="ob-hero">
+        <div style="font-size:72px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.2));margin-bottom:20px;">🤝</div>
+        <div style="font-size:30px;font-weight:800;color:white;letter-spacing:-1px;line-height:1.2;margin-bottom:14px;">La première plateforme<br>d'entraide humaine</div>
+        <div style="font-size:15px;color:rgba(255,255,255,.8);line-height:1.7;padding:0 8px;">Connecte les personnes en difficulté avec des aidants bénévoles — en quelques secondes, à quelques pas.</div>
+      </div>
+    </div>
+
+    <!-- Slide 2 — Comment ça marche -->
+    <div class="ob-slide" id="ob-slide-2">
+      <div class="ob-hero">
+        <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:24px;">Comment ça marche</div>
+        <div style="display:flex;flex-direction:column;gap:16px;width:100%;">
+          <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.1);border-radius:16px;padding:14px;">
+            <span style="font-size:28px;flex-shrink:0;">👁️</span>
+            <div><div style="font-size:15px;font-weight:700;color:white;">Quelqu'un signale</div><div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:3px;">Une personne en difficulté est repérée et signalée en 30 sec</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.1);border-radius:16px;padding:14px;">
+            <span style="font-size:28px;flex-shrink:0;">🔔</span>
+            <div><div style="font-size:15px;font-weight:700;color:white;">Les aidants proches sont notifiés</div><div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:3px;">Uniquement les personnes dans le rayon choisi</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.1);border-radius:16px;padding:14px;">
+            <span style="font-size:28px;flex-shrink:0;">🎉</span>
+            <div><div style="font-size:15px;font-weight:700;color:white;">L'aide arrive</div><div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:3px;">Chat, rendez-vous, remise — tout se passe dans l'app</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3 — Rôle -->
+    <div class="ob-slide" id="ob-slide-3">
+      <div class="ob-hero">
+        <div style="font-size:22px;font-weight:800;color:white;margin-bottom:8px;">Je suis ici pour…</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.7);margin-bottom:24px;">Tu pourras changer à tout moment</div>
+        <div style="display:flex;flex-direction:column;gap:12px;width:100%;">
+          <div class="ob-role-card" id="ob-role-helper" onclick="selectObRole('helper',this)">
+            <span style="font-size:28px;">🙋</span>
+            <div style="flex:1;"><div style="font-size:16px;font-weight:700;">Aider</div><div style="font-size:13px;color:var(--text-muted);margin-top:2px;">Je veux aider des personnes dans le besoin</div></div>
+            <div class="ob-role-check">✓</div>
+          </div>
+          <div class="ob-role-card" id="ob-role-need" onclick="selectObRole('need',this)">
+            <span style="font-size:28px;">🆘</span>
+            <div style="flex:1;"><div style="font-size:16px;font-weight:700;">Recevoir de l'aide</div><div style="font-size:13px;color:var(--text-muted);margin-top:2px;">J'ai besoin d'aide pour moi-même</div></div>
+            <div class="ob-role-check">✓</div>
+          </div>
+          <div class="ob-role-card" id="ob-role-witness" onclick="selectObRole('witness',this)">
+            <span style="font-size:28px;">👁️</span>
+            <div style="flex:1;"><div style="font-size:16px;font-weight:700;">Signaler</div><div style="font-size:13px;color:var(--text-muted);margin-top:2px;">J'ai vu quelqu'un qui a besoin d'aide</div></div>
+            <div class="ob-role-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /ob-slides -->
+
+  <!-- Dots de progression -->
+  <div id="ob-dots" style="display:flex;justify-content:center;gap:8px;padding:20px 0 12px;">
+    <div class="ob-dot active"></div>
+    <div class="ob-dot"></div>
+    <div class="ob-dot"></div>
+  </div>
+
+  <!-- Boutons navigation -->
+  <div style="padding:0 24px 40px;display:flex;flex-direction:column;gap:10px;">
+    <button id="ob-next-btn" class="btn btn-primary" onclick="obNext()" style="font-size:17px;">Suivant →</button>
+    <button class="btn" onclick="enterAsGuest()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:14px;padding:8px;">Explorer sans compte</button>
+  </div>
+</div>
 
 <!-- LOGIN -->
 <div id="screen-login" class="screen" style="background:var(--white);">
@@ -760,19 +847,39 @@ body {
 
 <!-- REGISTER -->
 <div id="screen-register" class="screen" style="background:var(--white);">
-  <div class="topbar"><button class="back-btn" onclick="goTo('screen-login')">←</button><h1>Créer un compte</h1></div>
-  <div class="screen-body" style="padding:20px 24px 32px;">
-    <div class="input-group"><label>Prénom et nom</label><input type="text" placeholder="Marie Dupont"></div>
-    <div class="input-group"><label>Email</label><input type="email" placeholder="marie@email.com"></div>
-    <div class="input-group"><label>Téléphone (optionnel — badge Vérifié)</label><input type="tel" placeholder="+33 6 00 00 00 00"></div>
-    <div class="input-group"><label>Ville</label><input type="text" placeholder="Paris"></div>
-    <div class="input-group"><label>Mot de passe</label><input type="password" placeholder="••••••••"></div>
-    <div class="input-group"><label>Confirmer le mot de passe</label><input type="password" placeholder="••••••••"></div>
-    <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:20px;">
-      <input type="checkbox" style="margin-top:3px;width:auto;">
-      <span style="font-size:14px;color:var(--text-muted);">J'accepte les <span style="color:var(--primary);">CGU</span> et la <span style="color:var(--primary);">politique de confidentialité</span></span>
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-ob')">←</button><h1></h1></div>
+  <div class="screen-body" style="padding:32px 24px 32px;">
+
+    <!-- Rôle sélectionné -->
+    <div id="register-role-badge" style="display:inline-flex;align-items:center;gap:8px;background:var(--primary-light);border-radius:999px;padding:6px 14px;margin-bottom:28px;">
+      <span id="register-role-icon">🙋</span>
+      <span id="register-role-label" style="font-size:13px;font-weight:700;color:var(--primary);">Aidant</span>
+      <span onclick="goTo('screen-ob')" style="font-size:12px;color:var(--primary);cursor:pointer;text-decoration:underline;margin-left:4px;">Changer</span>
     </div>
-    <button class="btn btn-primary" onclick="routeAfterAuth()">Créer mon compte</button>
+
+    <div style="font-size:26px;font-weight:800;color:var(--text);margin-bottom:6px;">Créer mon compte</div>
+    <div style="font-size:14px;color:var(--text-muted);margin-bottom:28px;">30 secondes — tu complètes ton profil après</div>
+
+    <div class="input-group"><label>Email</label><input type="email" id="reg-email" placeholder="ton@email.com" autocomplete="email"></div>
+    <div class="input-group"><label>Mot de passe</label><input type="password" id="reg-pwd" placeholder="8 caractères minimum" autocomplete="new-password"></div>
+
+    <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:24px;">
+      <input type="checkbox" id="reg-cgu" style="margin-top:3px;width:auto;flex-shrink:0;">
+      <span style="font-size:13px;color:var(--text-muted);line-height:1.5;">J'accepte les <span style="color:var(--primary);font-weight:600;">CGU</span> et la <span style="color:var(--primary);font-weight:600;">politique de confidentialité</span></span>
+    </div>
+
+    <button class="btn btn-primary" onclick="routeAfterAuth()" style="font-size:17px;">Créer mon compte →</button>
+
+    <div style="text-align:center;margin-top:16px;font-size:14px;color:var(--text-muted);">
+      Déjà un compte ? <span style="color:var(--primary);font-weight:600;cursor:pointer;" onclick="goTo('screen-login')">Se connecter</span>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;margin:20px 0;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="font-size:13px;color:var(--text-muted);">ou</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+    <button class="btn btn-secondary" onclick="showToast('🔗 Redirection vers Google…');setTimeout(routeAfterAuth,800);"><span style="font-size:18px;font-weight:800;">G</span> Continuer avec Google</button>
   </div>
 </div>
 
@@ -1218,6 +1325,7 @@ body {
   <div class="topbar">
     <button class="back-btn" onclick="goBack()">←</button>
     <h1>Signalement</h1>
+    <button class="icon-btn" title="Chat groupe" onclick="if(requireAccount('accéder au chat')) return; openGroupChatFromAlert()" style="font-size:20px;">💬</button>
     <button class="icon-btn" onclick="openSheet('sheet-report')">⋮</button>
   </div>
 
@@ -1247,17 +1355,6 @@ body {
         </div>
       </div>
 
-      <!-- Boutons de contact -->
-      <div style="display:flex;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border-light);">
-        <a href="tel:0612345678" onclick="if(requireAccount('appeler')) return false;"
-          style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:14px;background:var(--success-light);color:var(--success);font-size:14px;font-weight:700;text-decoration:none;border:1.5px solid var(--success);">
-          📞 Appeler
-        </a>
-        <button onclick="if(requireAccount('accéder au chat')) return; openSheet('sheet-help')"
-          style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:14px;background:var(--primary-light);color:var(--primary);font-size:14px;font-weight:700;border:1.5px solid var(--primary);cursor:pointer;">
-          💬 Chat
-        </button>
-      </div>
     </div>
 
 
@@ -1266,24 +1363,19 @@ body {
 
   </div>
 
-  <!-- Barre d'action fixe en bas -->
+  <!-- Barre d'action fixe en bas — 1 seul CTA -->
   <div id="help-bar" style="position:absolute;bottom:var(--nav-h);left:0;right:0;padding:12px 16px 12px;background:var(--white);border-top:1px solid var(--border);z-index:50;">
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-secondary" style="flex-shrink:0;padding:13px 16px;" onclick="if(requireAccount('accéder au chat')) return; openGroupChatFromAlert()">
-        💬 Groupe
-      </button>
-      <button class="btn btn-primary" id="help-bar-main-btn" style="flex:1;font-size:16px;border-radius:14px;" onclick="if(requireAccount('aider')) return; openSheet('sheet-help')">
-        🙋 Je peux aider
-      </button>
-    </div>
+    <button class="btn btn-primary" id="help-bar-main-btn" style="font-size:17px;border-radius:14px;" onclick="if(requireAccount('aider')) return; openSheet('sheet-help')">
+      🙋 Je peux aider
+    </button>
   </div>
 </div>
 
 <!-- CREATE STEP 1 -->
 <div id="screen-create-1" class="screen" style="background:var(--white);">
-  <div class="topbar"><button class="back-btn" onclick="goBack()">←</button><h1>Étape 1 · Besoin</h1></div>
+  <div class="topbar"><button class="back-btn" onclick="goBack()">←</button><h1>Nouveau signalement</h1></div>
   <div class="screen-body" style="padding:20px 16px;">
-    <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+    <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div></div>
 
     <div class="section-title" style="margin-bottom:6px;">Que faut-il apporter&nbsp;?</div>
     <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Choisis un ou plusieurs besoins.</div>
@@ -1300,27 +1392,11 @@ body {
     <!-- Détails dynamiques par catégorie -->
     <div id="cat-details-container"></div>
 
-    <div class="divider" style="margin:14px 0 14px;"></div>
-
-    <div style="display:flex;gap:10px;align-items:center;background:var(--warning-light);border-radius:10px;padding:12px;">
-      <input type="checkbox" id="mineur-check" style="width:auto;flex-shrink:0;"><span style="font-size:14px;">La personne est un mineur (moins de 18 ans)</span>
-    </div>
-  </div>
-  <div style="padding:16px 16px 32px;background:var(--white);">
-    <button class="btn btn-primary" onclick="goToStep2()">Suivant →</button>
-  </div>
-</div>
-
-<!-- CREATE STEP 2 — LIEU -->
-<div id="screen-create-2" class="screen" style="background:var(--white);">
-  <div class="topbar"><button class="back-btn" onclick="goTo('screen-create-1')">←</button><h1>Étape 2 · Lieu</h1></div>
-  <div class="screen-body" style="padding:20px 16px;">
-    <div class="steps"><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div></div>
+    <div class="divider" style="margin:18px 0 16px;"></div>
 
     <div class="section-title" style="margin-bottom:6px;">Où se trouve-t-il&nbsp;?</div>
     <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Géolocalise-toi ou saisis une adresse.</div>
 
-    <!-- Bouton géolocalisation principale -->
     <button id="loc-btn" class="btn btn-primary" style="margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px;" onclick="useMyLocationCreate()">
       <span style="font-size:20px;">📍</span> Utiliser ma position actuelle
     </button>
@@ -1333,29 +1409,27 @@ body {
       </div>
     </div>
 
-    <!-- Mini carte -->
     <div style="background:var(--bg);border-radius:var(--radius);height:150px;overflow:hidden;margin-bottom:20px;">
       <div id="map-mini"></div>
     </div>
 
-    <!-- La personne a-t-elle un téléphone ? -->
+    <!-- Avez-vous pu parler à cette personne ? -->
     <div class="input-group">
-      <label>📱 La personne a-t-elle un téléphone ?</label>
+      <label>💬 Avez-vous pu lui parler ?</label>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Cela nous aide à choisir le meilleur mode de contact avec l'aidant.</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
         <div id="phone-yes-card" class="phone-choice-card" onclick="selectPersonPhone('yes')">
-          <div style="font-size:26px;">📱</div>
+          <div style="font-size:26px;">✅</div>
           <div style="font-size:14px;font-weight:700;margin-top:6px;">Oui</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.4;">Elle peut être contactée directement</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.4;">Elle peut être contactée</div>
         </div>
         <div id="phone-no-card" class="phone-choice-card" onclick="selectPersonPhone('no')">
           <div style="font-size:26px;">🙋</div>
-          <div style="font-size:14px;font-weight:700;margin-top:6px;">Non</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.4;">Je serai son contact</div>
+          <div style="font-size:14px;font-weight:700;margin-top:6px;">Non / Pas de tél.</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.4;">Je serai son relais</div>
         </div>
       </div>
-      <!-- Oui : options de contact -->
       <div id="phone-yes-info" style="display:none;background:var(--primary-light);border-radius:12px;padding:14px;">
-        <!-- Chat toujours dispo -->
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
           <span style="font-size:22px;">💬</span>
           <div style="font-size:13px;color:var(--primary);line-height:1.5;">
@@ -1363,16 +1437,13 @@ body {
             <span style="color:var(--text-muted);">Aucun numéro requis pour y accéder.</span>
           </div>
         </div>
-        <!-- Divider -->
         <div style="border-top:1px solid var(--primary-mid);margin-bottom:12px;"></div>
-        <!-- Numéro optionnel -->
         <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">📞 Numéro de téléphone <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optionnel)</span></div>
         <input type="tel" id="person-phone" placeholder="ex : 06 12 34 56 78" style="background:var(--white);margin-bottom:6px;">
-        <div style="font-size:12px;color:var(--text-muted);">Si renseigné, la personne reçoit un SMS avec le lien du chat. Sinon, montre-lui l'écran pour qu'elle rejoigne.</div>
+        <div style="font-size:12px;color:var(--text-muted);">Si renseigné, la personne reçoit un SMS avec le lien du chat.</div>
       </div>
-      <!-- Non : signaleur = contact -->
       <div id="phone-no-info" style="display:none;background:var(--primary-light);border-radius:12px;padding:12px;font-size:13px;color:var(--primary);line-height:1.5;">
-        👤 <strong>Tu seras le contact de l'aidant.</strong><br>C'est toi qui organiseras le rendez-vous et confirmeras que l'aide a été remise.
+        👤 <strong>Tu seras le relais de l'aidant.</strong><br>C'est toi qui organiseras le rendez-vous et confirmeras que l'aide a été remise.
       </div>
     </div>
 
@@ -1386,17 +1457,21 @@ body {
         <div id="photo-slot-3" class="photo-slot photo-slot-disabled"><span style="font-size:24px;opacity:.3;">📷</span><span style="font-size:12px;color:var(--text-muted);margin-top:4px;opacity:.3;">Photo 3</span></div>
       </div>
     </div>
+
+    <div style="display:flex;gap:10px;align-items:center;background:var(--warning-light);border-radius:10px;padding:12px;">
+      <input type="checkbox" id="mineur-check" style="width:auto;flex-shrink:0;"><span style="font-size:14px;">La personne est un mineur (moins de 18 ans)</span>
+    </div>
   </div>
   <div style="padding:16px 16px 32px;background:var(--white);">
-    <button class="btn btn-primary" onclick="goToStep3()">Suivant →</button>
+    <button class="btn btn-primary" onclick="goToStep2()">Suivant →</button>
   </div>
 </div>
 
-<!-- CREATE STEP 3 — URGENCE & MOT -->
-<div id="screen-create-3" class="screen" style="background:var(--white);">
-  <div class="topbar"><button class="back-btn" onclick="goTo('screen-create-2')">←</button><h1>Étape 3 · Urgence</h1></div>
+<!-- CREATE STEP 2 — URGENCE & MOT -->
+<div id="screen-create-2" class="screen" style="background:var(--white);">
+  <div class="topbar"><button class="back-btn" onclick="goTo('screen-create-1')">←</button><h1>Étape 2 · Finaliser</h1></div>
   <div class="screen-body" style="padding:20px 16px;">
-    <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
+    <div class="steps"><div class="step-dot done"></div><div class="step-dot active"></div></div>
 
     <div class="section-title" style="margin-bottom:6px;">Niveau d'urgence</div>
     <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">À quel point la situation est-elle urgente&nbsp;?</div>
@@ -1918,44 +1993,9 @@ body {
 
   <div class="screen-body" style="padding:16px 16px 90px;">
 
-    <!-- Aides en cours -->
+    <!-- Aides en cours — dynamique -->
     <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">En cours</div>
-
-    <div class="card" style="cursor:pointer;margin-bottom:10px;" onclick="openAlert('alert-1')">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:26px;">👕</span>
-          <div>
-            <div style="font-weight:700;font-size:14px;">Manteau homme — Rue de la Paix</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Rendez-vous prévu aujourd'hui 18h</div>
-          </div>
-        </div>
-        <span class="badge badge-open">En cours</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border-light);">
-        <div class="avatar av-blue" style="width:24px;height:24px;font-size:11px;">S</div>
-        <span style="font-size:12px;color:var(--text-muted);flex:1;">Sophie L. · Il y a 12 min</span>
-        <button class="card-chat-btn" onclick="event.stopPropagation();openAlertChatFromCard('alert-1')">💬 Chat</button>
-      </div>
-    </div>
-
-    <div class="card" style="cursor:pointer;margin-bottom:10px;" onclick="openAlert('alert-3')">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:26px;">💊</span>
-          <div>
-            <div style="font-weight:700;font-size:14px;">Médicaments — Bd Voltaire</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">En attente de confirmation</div>
-          </div>
-        </div>
-        <span class="badge badge-open">En cours</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border-light);">
-        <div class="avatar av-purple" style="width:24px;height:24px;font-size:11px;">M</div>
-        <span style="font-size:12px;color:var(--text-muted);flex:1;">Marc D. · Il y a 2h</span>
-        <button class="card-chat-btn" onclick="event.stopPropagation();openAlertChatFromCard('alert-3')">💬 Chat</button>
-      </div>
-    </div>
+    <div id="mes-aides-en-cours"></div>
 
     <!-- Aides effectuées -->
     <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-top:24px;margin-bottom:10px;">Effectuées · 21</div>
@@ -2247,41 +2287,134 @@ body {
   </div>
 </div>
 
-<!-- SHEET — Confirmation remise (GPS) -->
+<!-- SHEET — Confirmation remise par l'aidant -->
 <div id="sheet-overlay-deliver" class="sheet-overlay" onclick="closeSheet('sheet-deliver')">
   <div id="sheet-deliver" class="bottom-sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
-    <div style="text-align:center;margin-bottom:20px;">
+    <div style="text-align:center;margin-bottom:18px;">
       <div style="font-size:40px;margin-bottom:8px;">📦</div>
       <div style="font-size:19px;font-weight:800;">J'ai remis l'aide</div>
-      <div style="font-size:14px;color:var(--text-muted);margin-top:4px;">Confirmez que vous avez bien apporté l'aide à la personne</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;line-height:1.5;">Vérifiez votre position puis confirmez la remise.<br>Le contact de la personne validera de son côté.</div>
     </div>
 
-    <!-- Confirmation simple -->
-    <div style="background:var(--success-light);border-radius:var(--radius);padding:14px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
-      <span style="font-size:20px;flex-shrink:0;">👤</span>
-      <div style="font-size:13px;color:var(--success);line-height:1.5;">
-        <strong>Le contact de la personne sera notifié.</strong><br>
-        Il confirmera de son côté que l'aide a bien été remise.
+    <!-- Étape 1 — GPS -->
+    <div id="deliver-gps-check" style="background:var(--primary-light);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;gap:12px;align-items:center;">
+      <span id="deliver-gps-icon" style="font-size:26px;flex-shrink:0;">📍</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Étape 1</div>
+        <div id="deliver-gps-title" style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:2px;">Position GPS</div>
+        <div id="deliver-gps-sub" style="font-size:12px;color:var(--text-muted);line-height:1.3;">Confirmez que vous êtes bien sur place</div>
+      </div>
+      <button id="deliver-gps-btn" onclick="simulateGpsCheck()" style="background:var(--primary);color:white;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;">Vérifier</button>
+    </div>
+
+    <!-- Étape 2 — Photo de preuve -->
+    <div id="deliver-photo-check" style="background:var(--bg);border:2px dashed var(--border);border-radius:14px;padding:14px;margin-bottom:12px;transition:all .2s;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Étape 2 · Photo de preuve</div>
+      <div id="deliver-photo-idle" style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="takeDeliverPhoto()">
+        <div style="width:56px;height:56px;border-radius:12px;background:var(--border-light);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">📷</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;">Prendre une photo</div>
+          <div style="font-size:12px;color:var(--text-muted);line-height:1.3;">Objet remis, sac, colis… <strong style="color:var(--danger);">Pas de photo de la personne</strong></div>
+        </div>
+      </div>
+      <div id="deliver-photo-preview" style="display:none;position:relative;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div id="deliver-photo-thumb" style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#4CAF50,#2E7D32);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">📦</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;color:var(--success);">Photo ajoutée ✅</div>
+            <div style="font-size:12px;color:var(--text-muted);" id="deliver-photo-label">photo_remise.jpg</div>
+          </div>
+          <button onclick="removeDeliverPhoto()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted);padding:4px;">🗑️</button>
+        </div>
       </div>
     </div>
 
     <!-- Note optionnelle -->
     <div class="input-group" style="margin-bottom:12px;">
-      <label>Note (optionnelle)</label>
-      <textarea placeholder="ex: J'ai remis le manteau et le pantalon. Il semblait soulagé." style="height:72px;"></textarea>
+      <label>Note <span style="font-weight:400;color:var(--text-muted);">(optionnelle)</span></label>
+      <textarea id="deliver-note" placeholder="ex: J'ai remis le manteau et le pantalon. Il semblait soulagé." style="height:58px;"></textarea>
     </div>
 
-    <!-- Photo optionnelle (pas de photo de la personne) -->
-    <div style="border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;margin-bottom:16px;">
-      <span style="font-size:24px;">📷</span>
-      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Photo de l'objet remis (optionnel)<br><strong style="color:var(--danger-light);color:var(--danger);">Pas de photo de la personne</strong></div>
+    <!-- Résumé des 2 étapes avant confirmation -->
+    <div id="deliver-checklist" style="background:var(--bg);border-radius:12px;padding:12px;margin-bottom:12px;display:flex;gap:16px;justify-content:center;">
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;">
+        <span id="check-gps-icon" style="font-size:18px;">⭕</span>
+        <span id="check-gps-label" style="color:var(--text-muted);">GPS</span>
+      </div>
+      <div style="color:var(--border);font-size:18px;">·</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;">
+        <span id="check-photo-icon" style="font-size:18px;">⭕</span>
+        <span id="check-photo-label" style="color:var(--text-muted);">Photo</span>
+      </div>
     </div>
 
-    <button class="btn btn-success" id="deliver-confirm-btn" onclick="confirmDelivery()" style="font-size:16px;">
+    <button class="btn btn-success" id="deliver-confirm-btn" onclick="confirmDelivery()" style="font-size:16px;opacity:.4;pointer-events:none;">
       ✅ Confirmer la remise
     </button>
     <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeSheet('sheet-deliver')">Annuler</button>
+  </div>
+</div>
+
+<!-- SHEET — Validation GPS par le signaleur / la personne aidée -->
+<div id="sheet-overlay-geo-validate" class="sheet-overlay">
+  <div id="sheet-geo-validate" class="bottom-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div style="text-align:center;margin-bottom:18px;">
+      <div style="font-size:44px;margin-bottom:8px;">📍</div>
+      <div style="font-size:18px;font-weight:800;">Valider la réception</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:6px;line-height:1.5;">L'aidant dit avoir remis l'aide.<br>Confirmez avec votre position GPS.</div>
+    </div>
+
+    <!-- Lieu de remise -->
+    <div style="background:var(--bg);border-radius:12px;padding:12px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+      <span style="font-size:20px;flex-shrink:0;">📌</span>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Lieu de remise</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);" id="geo-validate-address">Rue de la Paix, Paris</div>
+      </div>
+    </div>
+
+    <!-- État : attente -->
+    <div id="geo-state-idle">
+      <button class="btn btn-primary" onclick="startRecipientGeoValidation()" style="font-size:16px;display:flex;align-items:center;justify-content:center;gap:10px;">
+        <span style="font-size:20px;">📡</span> Partager ma position GPS
+      </button>
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px;line-height:1.5;">Votre position est comparée au lieu de remise.<br>Elle n'est <strong>pas stockée</strong>.</div>
+    </div>
+
+    <!-- État : chargement -->
+    <div id="geo-state-loading" style="display:none;text-align:center;padding:16px 0;">
+      <div style="font-size:36px;margin-bottom:10px;">📡</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Localisation en cours…</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Comparaison avec le lieu de remise</div>
+      <div style="height:4px;background:var(--border);border-radius:99px;overflow:hidden;">
+        <div style="height:100%;width:0;background:var(--primary);border-radius:99px;transition:width 1.8s ease;" id="geo-progress-bar"></div>
+      </div>
+    </div>
+
+    <!-- État : position OK (≤ 500m) -->
+    <div id="geo-state-ok" style="display:none;">
+      <div style="background:var(--success-light);border:1.5px solid var(--success);border-radius:14px;padding:16px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:6px;">✅</div>
+        <div style="font-size:16px;font-weight:800;color:var(--success);margin-bottom:4px;">Position confirmée !</div>
+        <div style="font-size:13px;color:var(--success);" id="geo-distance-ok">À environ 85 m du lieu de remise</div>
+      </div>
+      <button class="btn btn-success" onclick="validateDeliveryGeo()" style="font-size:16px;">✅ Confirmer la réception</button>
+    </div>
+
+    <!-- État : position éloignée (> 500m) -->
+    <div id="geo-state-far" style="display:none;">
+      <div style="background:var(--warning-light);border:1.5px solid #FDE68A;border-radius:14px;padding:16px;margin-bottom:16px;">
+        <div style="font-size:28px;text-align:center;margin-bottom:6px;">⚠️</div>
+        <div style="font-size:14px;font-weight:700;color:var(--warning);text-align:center;margin-bottom:6px;" id="geo-distance-far">Position à 1.2 km du lieu</div>
+        <div style="font-size:13px;color:var(--warning);line-height:1.5;">Votre position semble éloignée du lieu de remise. Confirmez quand même si vous avez bien reçu l'aide.</div>
+      </div>
+      <button class="btn btn-primary" onclick="validateDeliveryGeo()" style="font-size:16px;margin-bottom:10px;">✅ Oui, j'ai bien reçu l'aide</button>
+      <button class="btn btn-secondary" onclick="closeSheet('sheet-geo-validate')">✖️ Pas encore reçue</button>
+    </div>
+
+    <button class="btn btn-secondary" style="margin-top:10px;" id="geo-cancel-btn" onclick="closeSheet('sheet-geo-validate')">Annuler</button>
   </div>
 </div>
 
@@ -2297,22 +2430,16 @@ body {
         <div style="font-size:18px;font-weight:800;margin-bottom:4px;">Comment souhaitez-vous aider ?</div>
         <div style="font-size:13px;color:var(--text-muted);" id="sheet-help-subtitle">👕 Manteau + pantalon — Rue de la Paix</div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
-        <div class="meet-mode-card" id="mode-onsite" onclick="selectMeetMode('onsite')">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;">
+        <div class="meet-mode-card" id="mode-move" onclick="selectMeetMode('move')" style="padding:20px 12px;">
           <div class="mode-icon">🚶</div>
           <div class="mode-label">Je me déplace<br>sur place</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.4;">Je vais là où se trouve la personne</div>
         </div>
-        <div class="meet-mode-card" id="mode-public" onclick="selectMeetMode('public')">
-          <div class="mode-icon">☕</div>
-          <div class="mode-label">Rendez-vous<br>en lieu public</div>
-        </div>
-        <div class="meet-mode-card" id="mode-home" onclick="selectMeetMode('home')">
-          <div class="mode-icon">🏠</div>
-          <div class="mode-label">La personne<br>vient chez moi</div>
-        </div>
-        <div class="meet-mode-card" id="mode-biz" onclick="selectMeetMode('biz')">
-          <div class="mode-icon">🏪</div>
-          <div class="mode-label">Mon établissement<br>propose</div>
+        <div class="meet-mode-card" id="mode-place" onclick="selectMeetMode('place')" style="padding:20px 12px;">
+          <div class="mode-icon">📍</div>
+          <div class="mode-label">Je propose<br>un lieu</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.4;">Chez moi, café, association…</div>
         </div>
       </div>
       <button class="btn btn-primary" id="help-mode-next-btn" onclick="goToHelpStep2()" style="opacity:.4;pointer-events:none;">Continuer →</button>
@@ -2551,14 +2678,15 @@ function goTo(id) {
   const next = document.getElementById(id);
   if (next) next.classList.add('active');
   const noNavScreens = [
-    'screen-splash','screen-onboarding','screen-login','screen-register',
-    'screen-create-1','screen-create-2','screen-create-3','screen-create-success',
+    'screen-splash','screen-ob','screen-login','screen-register',
+    'screen-create-1','screen-create-2','screen-create-success',
     'screen-chat','screen-rating'
   ];
   document.getElementById('bottom-nav').classList.toggle('visible', !noNavScreens.includes(id));
   if (id === 'screen-map') initMap();
-  if (id === 'screen-create-2') initMapMini();
+  if (id === 'screen-create-1') initMapMini();
   if (id === 'screen-alert-detail') resetHelpBar();
+  if (id === 'screen-mes-aides') renderMesAides();
 }
 
 function goBack() {
@@ -2566,6 +2694,38 @@ function goBack() {
   const target = navHistory.pop();
   goTo(target);
   if (target === 'screen-home') switchFeedView(window._feedView || 'list');
+}
+
+function renderMesAides() {
+  const container = document.getElementById('mes-aides-en-cours');
+  if (!container) return;
+  const active = Object.entries(alertsData).filter(([, a]) => a.initialState === 'me');
+  if (!active.length) {
+    container.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--text-muted);font-size:14px;">Aucune aide en cours<br><span style="font-size:12px;">Explore le feed pour aider quelqu\'un 🙋</span></div>';
+    return;
+  }
+  container.innerHTML = active.map(([id, a]) => {
+    const signaler = a.signaler || 'Signaleur';
+    const sAvatar  = a.signalerAvatar || 'S';
+    const sColor   = a.signalerColor || 'av-orange';
+    return `<div class="card" style="cursor:pointer;margin-bottom:10px;" onclick="openAlert('${id}')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:26px;">${a.icon || '🆘'}</span>
+          <div>
+            <div style="font-weight:700;font-size:14px;">${a.title}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${a.location || ''}</div>
+          </div>
+        </div>
+        <span class="badge badge-open">En cours</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border-light);">
+        <div class="avatar ${sColor}" style="width:24px;height:24px;font-size:11px;">${sAvatar}</div>
+        <span style="font-size:12px;color:var(--text-muted);flex:1;">${signaler}</span>
+        <button class="card-chat-btn" onclick="event.stopPropagation();openAlertChatFromCard('${id}')">💬 Chat</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function goToApp() { navHistory = []; goTo('screen-home'); setNav('nav-home'); switchFeedView('list'); }
@@ -2591,7 +2751,7 @@ function showGuestBanner() {
   b.onclick = () => goTo('screen-register');
   document.getElementById('phone').appendChild(b);
 }
-const guestBlockedScreens = ['screen-create-1','screen-create-2','screen-create-3','screen-messages','screen-chat','screen-profile','screen-mes-aides','screen-donate-form'];
+const guestBlockedScreens = ['screen-create-1','screen-create-2','screen-messages','screen-chat','screen-profile','screen-mes-aides','screen-donate-form'];
 
 function requireAccount(action) {
   if (!isGuest) return false;
@@ -2603,6 +2763,36 @@ function setNav(activeId) {
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   const el = document.getElementById(activeId);
   if (el) el.classList.add('active');
+}
+
+/* ── ONBOARDING ── */
+let _obSlide = 1;
+let _obRoleSelected = null;
+
+function obNext() {
+  if (_obSlide === 3) {
+    if (!_obRoleSelected) { showToast('Choisis ton rôle pour continuer 👆'); return; }
+    userRole = _obRoleSelected;
+    goTo('screen-register');
+    return;
+  }
+  document.getElementById('ob-slide-' + _obSlide).classList.remove('active');
+  _obSlide++;
+  document.getElementById('ob-slide-' + _obSlide).classList.add('active');
+  document.querySelectorAll('.ob-dot').forEach((d, i) => d.classList.toggle('active', i === _obSlide - 1));
+  if (_obSlide === 3) document.getElementById('ob-next-btn').textContent = 'Commencer →';
+}
+
+function selectObRole(role, el) {
+  _obRoleSelected = role;
+  document.querySelectorAll('.ob-role-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const icons  = { helper:'🙋', need:'🆘', witness:'👁️' };
+  const labels = { helper:'Aidant', need:'Demande d\'aide', witness:'Signaleur' };
+  const iconEl  = document.getElementById('register-role-icon');
+  const labelEl = document.getElementById('register-role-label');
+  if (iconEl)  iconEl.textContent  = icons[role]  || '🙋';
+  if (labelEl) labelEl.textContent = labels[role] || 'Aidant';
 }
 
 /* Après login/register, router selon le rôle choisi */
@@ -2637,7 +2827,7 @@ function openSheet(id) {
     selectedMeetMode = null;
     document.getElementById('help-step-1').style.display = 'block';
     document.getElementById('help-step-2').style.display = 'none';
-    ['onsite','public','home','biz'].forEach(m => document.getElementById('mode-'+m).classList.remove('selected'));
+    ['move','place'].forEach(m => { const el = document.getElementById('mode-'+m); if (el) el.classList.remove('selected'); });
     const nb = document.getElementById('help-mode-next-btn');
     if (nb) { nb.style.opacity = '.4'; nb.style.pointerEvents = 'none'; }
   }
@@ -2868,13 +3058,9 @@ function toggleShelterTag(val, btn) {
 
 function goToStep2() {
   if (newAlertDraft.categories.length === 0) {
-    showToast('Sélectionnez au moins un besoin ☝️');
+    showToast('Sélectionne au moins un besoin ☝️');
     return;
   }
-  goTo('screen-create-2');
-}
-
-function goToStep3() {
   const addr = ((document.getElementById('create-address-input') || {}).value || '').trim();
   const locBtn = document.getElementById('loc-btn');
   const hasGeoloc = locBtn && /détectée/i.test(locBtn.textContent);
@@ -2882,7 +3068,7 @@ function goToStep3() {
     showToast('Indique une adresse ou utilise ta position ☝️');
     return;
   }
-  goTo('screen-create-3');
+  goTo('screen-create-2');
 }
 
 function selectUrgency(el, level) {
@@ -2996,7 +3182,7 @@ function initMapMini() {
   window._miniMarker = L.marker([48.8566,2.3522]).addTo(map);
 }
 
-setTimeout(() => goTo('screen-login'), 2200);
+setTimeout(() => goTo('screen-ob'), 2200);
 
 /* ── RADIUS SLIDER ── */
 const radiusLabels  = ['500 m', '1 km', '3 km', '5 km', '10 km'];
@@ -3549,7 +3735,7 @@ function scheduleDeliveryReminder() {
 let presenceConfirmTimer = null;
 
 function schedulePresenceConfirm() {
-  if (selectedMeetMode !== 'home') return;
+  if (selectedMeetMode !== 'place') return;
   if (presenceConfirmTimer) clearTimeout(presenceConfirmTimer);
   // Démo : 3 secondes. En prod : calculer RDV - 30 min
   presenceConfirmTimer = setTimeout(() => {
@@ -3642,7 +3828,7 @@ function setCreatorMode(mode) {
 
 function selectMeetMode(mode) {
   selectedMeetMode = mode;
-  ['onsite','public','home','biz'].forEach(m => document.getElementById('mode-'+m).classList.toggle('selected', m === mode));
+  ['move','place'].forEach(m => { const el = document.getElementById('mode-'+m); if (el) el.classList.toggle('selected', m === mode); });
   const btn = document.getElementById('help-mode-next-btn');
   if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
 }
@@ -3652,24 +3838,19 @@ function goToHelpStep2() {
   document.getElementById('help-step-1').style.display = 'none';
   document.getElementById('help-step-2').style.display = 'block';
   initDeadlineInput();
-  const titles = { onsite:'🚶 Je me déplace sur place', public:'☕ Rendez-vous en lieu public', home:'🏠 La personne vient chez moi', biz:'🏪 Mon établissement propose' };
-  document.getElementById('help-step2-title').textContent = titles[selectedMeetMode];
+  const titles = { move:'🚶 Je me déplace sur place', place:'📍 Je propose un lieu' };
+  document.getElementById('help-step2-title').textContent = titles[selectedMeetMode] || '';
   const addrSec = document.getElementById('help-address-section');
   const bizSec = document.getElementById('help-biz-section');
-  addrSec.style.display = 'none';
-  bizSec.style.display = 'none';
-  if (selectedMeetMode === 'public') {
-    addrSec.style.display = 'block';
-    document.getElementById('help-address-label').textContent = 'Lieu de rendez-vous';
-    document.getElementById('help-address-input').placeholder = 'ex : Café de la Mairie, 3 place du Marché…';
-    document.getElementById('help-address-note').textContent = 'Un lieu public neutre et accessible.';
-  } else if (selectedMeetMode === 'home') {
-    addrSec.style.display = 'block';
-    document.getElementById('help-address-label').textContent = 'Votre adresse';
-    document.getElementById('help-address-input').placeholder = 'ex : 12 rue des Lilas, Paris 11e…';
-    document.getElementById('help-address-note').textContent = 'Partagée uniquement avec la personne aidée.';
-  } else if (selectedMeetMode === 'biz') {
-    bizSec.style.display = 'block';
+  if (addrSec) addrSec.style.display = 'none';
+  if (bizSec) bizSec.style.display = 'none';
+  if (selectedMeetMode === 'place') {
+    if (addrSec) {
+      addrSec.style.display = 'block';
+      document.getElementById('help-address-label').textContent = 'Adresse du lieu proposé';
+      document.getElementById('help-address-input').placeholder = 'ex : 12 rue des Lilas, Paris… café, local associatif…';
+      document.getElementById('help-address-note').textContent = 'Partagée uniquement avec la personne aidée.';
+    }
   }
 }
 
@@ -3944,52 +4125,156 @@ function toggleVoice() {
 /* ── CONFIRMATION REMISE GPS ── */
 let gpsVerified = false;
 
+let deliverPhotoTaken = false;
+
 function simulateGpsCheck() {
   const icon  = document.getElementById('deliver-gps-icon');
   const title = document.getElementById('deliver-gps-title');
   const sub   = document.getElementById('deliver-gps-sub');
   const btn   = document.getElementById('deliver-gps-btn');
   const box   = document.getElementById('deliver-gps-check');
-  const confirmBtn = document.getElementById('deliver-confirm-btn');
-
+  if (!btn) return;
   btn.textContent = '⏳';
   btn.disabled = true;
-
   setTimeout(() => {
-    /* Simuler GPS ok — à 85 m du lieu signalé */
     gpsVerified = true;
-    icon.textContent = '✅';
-    title.textContent = 'Position vérifiée — vous êtes bien sur place';
-    sub.textContent = 'À environ 85 m du lieu signalé (Rue de la Paix, Paris 2e)';
-    box.style.background = 'var(--success-light)';
-    box.style.border = '1.5px solid var(--success)';
-    title.style.color = 'var(--success)';
-    btn.style.display = 'none';
-    if (confirmBtn) confirmBtn.disabled = false;
+    if (icon)  icon.textContent = '✅';
+    if (title) { title.textContent = 'Position vérifiée — sur place'; title.style.color = 'var(--success)'; }
+    if (sub)   sub.textContent = 'À environ 85 m du lieu signalé';
+    if (box)   { box.style.background = 'var(--success-light)'; box.style.border = '1.5px solid var(--success)'; box.style.borderStyle = 'solid'; }
+    if (btn)   btn.style.display = 'none';
+    /* Mettre à jour le check GPS dans la checklist */
+    const gi = document.getElementById('check-gps-icon');
+    const gl = document.getElementById('check-gps-label');
+    if (gi) gi.textContent = '✅';
+    if (gl) gl.style.color = 'var(--success)';
+    checkDeliverReady();
   }, 1400);
+}
+
+function takeDeliverPhoto() {
+  /* Simuler une prise de photo */
+  deliverPhotoTaken = true;
+  const names = ['photo_remise_001.jpg','img_colis.jpg','preuve_remise.jpg','aide_remise.jpg'];
+  const name = names[Math.floor(Math.random() * names.length)];
+  document.getElementById('deliver-photo-idle').style.display = 'none';
+  document.getElementById('deliver-photo-preview').style.display = 'block';
+  document.getElementById('deliver-photo-label').textContent = name;
+  /* Mise à jour de la boîte photo */
+  const box = document.getElementById('deliver-photo-check');
+  if (box) { box.style.background = 'var(--success-light)'; box.style.borderColor = 'var(--success)'; box.style.borderStyle = 'solid'; }
+  /* Checklist */
+  const pi = document.getElementById('check-photo-icon');
+  const pl = document.getElementById('check-photo-label');
+  if (pi) pi.textContent = '✅';
+  if (pl) pl.style.color = 'var(--success)';
+  checkDeliverReady();
+}
+
+function removeDeliverPhoto() {
+  deliverPhotoTaken = false;
+  document.getElementById('deliver-photo-idle').style.display = 'flex';
+  document.getElementById('deliver-photo-preview').style.display = 'none';
+  const box = document.getElementById('deliver-photo-check');
+  if (box) { box.style.background = 'var(--bg)'; box.style.borderColor = 'var(--border)'; box.style.borderStyle = 'dashed'; }
+  const pi = document.getElementById('check-photo-icon');
+  const pl = document.getElementById('check-photo-label');
+  if (pi) pi.textContent = '⭕';
+  if (pl) pl.style.color = 'var(--text-muted)';
+  checkDeliverReady();
+}
+
+function checkDeliverReady() {
+  const btn = document.getElementById('deliver-confirm-btn');
+  if (!btn) return;
+  if (gpsVerified && deliverPhotoTaken) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.style.opacity = '.4';
+    btn.style.pointerEvents = 'none';
+  }
 }
 
 function confirmDelivery() {
   closeSheet('sheet-deliver');
-  gpsVerified = false;
-  /* Réinitialiser le bouton GPS pour la prochaine ouverture */
+  /* Reset deliver sheet pour la prochaine ouverture */
+  gpsVerified = false; deliverPhotoTaken = false;
   setTimeout(() => {
-    const icon  = document.getElementById('deliver-gps-icon');
+    const icon = document.getElementById('deliver-gps-icon');
     const title = document.getElementById('deliver-gps-title');
-    const sub   = document.getElementById('deliver-gps-sub');
-    const btn   = document.getElementById('deliver-gps-btn');
-    const box   = document.getElementById('deliver-gps-check');
+    const sub = document.getElementById('deliver-gps-sub');
+    const btn = document.getElementById('deliver-gps-btn');
+    const box = document.getElementById('deliver-gps-check');
     const confirmBtn = document.getElementById('deliver-confirm-btn');
     if (icon)  icon.textContent = '📍';
-    if (title) { title.textContent = 'Vérification de votre position'; title.style.color = 'var(--primary)'; }
-    if (sub)   sub.textContent = 'Pour confirmer la remise, vous devez être à proximité du lieu signalé';
+    if (title) { title.textContent = 'Position GPS'; title.style.color = 'var(--primary)'; }
+    if (sub)   sub.textContent = 'Confirmez que vous êtes bien sur place';
     if (box)   { box.style.background = 'var(--primary-light)'; box.style.border = ''; }
     if (btn)   { btn.textContent = 'Vérifier'; btn.disabled = false; btn.style.display = ''; }
-    if (confirmBtn) confirmBtn.disabled = true;
+    if (confirmBtn) { confirmBtn.style.opacity = '.4'; confirmBtn.style.pointerEvents = 'none'; }
+    /* Reset photo */
+    const photoBox = document.getElementById('deliver-photo-check');
+    if (photoBox) { photoBox.style.background = 'var(--bg)'; photoBox.style.borderColor = 'var(--border)'; photoBox.style.borderStyle = 'dashed'; }
+    const idle = document.getElementById('deliver-photo-idle');
+    const prev = document.getElementById('deliver-photo-preview');
+    if (idle) idle.style.display = 'flex';
+    if (prev) prev.style.display = 'none';
+    ['check-gps-icon','check-photo-icon'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '⭕'; });
+    ['check-gps-label','check-photo-label'].forEach(id => { const el = document.getElementById(id); if (el) el.style.color = 'var(--text-muted)'; });
   }, 400);
+  /* Message dans le chat */
+  _addChatSystemMsg('📦 <strong>L\'aidant confirme avoir remis l\'aide.</strong><br><span style="color:var(--text-muted);font-size:13px;">En attente de validation GPS du contact…</span>');
+  /* Ouvrir la validation GPS côté signaleur/personne */
+  const a = currentAlertId ? alertsData[currentAlertId] : null;
+  document.getElementById('geo-validate-address').textContent = (a && a.address) ? a.address : 'Lieu de remise';
+  document.getElementById('geo-state-idle').style.display = 'block';
+  document.getElementById('geo-state-loading').style.display = 'none';
+  document.getElementById('geo-state-ok').style.display = 'none';
+  document.getElementById('geo-state-far').style.display = 'none';
+  document.getElementById('geo-cancel-btn').style.display = 'block';
+  openSheet('sheet-geo-validate');
+}
+
+function startRecipientGeoValidation() {
+  document.getElementById('geo-state-idle').style.display = 'none';
+  document.getElementById('geo-state-loading').style.display = 'block';
+  document.getElementById('geo-cancel-btn').style.display = 'none';
+  /* Lancer la barre de progression */
+  setTimeout(() => {
+    const bar = document.getElementById('geo-progress-bar');
+    if (bar) bar.style.width = '95%';
+  }, 50);
+  setTimeout(() => {
+    document.getElementById('geo-state-loading').style.display = 'none';
+    /* 80% chance position OK pour la démo */
+    const isClose = Math.random() > 0.2;
+    if (isClose) {
+      const m = Math.floor(Math.random() * 280) + 40;
+      document.getElementById('geo-distance-ok').textContent = `À environ ${m} m du lieu de remise — position validée`;
+      document.getElementById('geo-state-ok').style.display = 'block';
+    } else {
+      const km = (Math.random() * 1.5 + 0.6).toFixed(1);
+      document.getElementById('geo-distance-far').textContent = `Position à ${km} km du lieu de remise`;
+      document.getElementById('geo-state-far').style.display = 'block';
+    }
+    document.getElementById('geo-cancel-btn').style.display = 'block';
+  }, 2000);
+}
+
+function validateDeliveryGeo() {
+  closeSheet('sheet-geo-validate');
+  if (currentAlertId && alertsData[currentAlertId]) alertsData[currentAlertId].status = 'done';
+  _addChatSystemMsg(
+    '<div style="background:var(--success-light);border-radius:10px;padding:12px;">' +
+    '✅ <strong style="color:var(--success);">Remise validée par GPS</strong><br>' +
+    '<span style="font-size:13px;color:var(--success);">La position du contact correspond au lieu de remise.<br>L\'aide est marquée comme effectuée. Merci 🙏</span>' +
+    '</div>'
+  );
+  showToast('🎉 Remise validée ! Merci pour votre aide.', 3000);
   alertTakenBy = 'delivered';
   renderHelpBar();
-  /* Préremplir l'écran de notation avec le signalant */
+  /* Préremplir la notation */
   const aRate = currentAlertId ? alertsData[currentAlertId] : null;
   if (aRate) {
     const nameEl = document.getElementById('rating-name');
@@ -4078,7 +4363,7 @@ function openHelpChat(alertId, helperName, helperAvatar, helperColor, helperMess
   if (requireAccount('accéder au chat')) return;
   const a = alertsData[alertId];
   if (!a) return;
-  const modeLabels = { onsite:'🚶 Se déplace sur place', public:'☕ Rendez-vous en lieu public', home:'🏠 La personne vient chez moi', biz:'🏪 Via mon établissement' };
+  const modeLabels = { move:'🚶 Se déplace sur place', place:'📍 Propose un lieu', onsite:'🚶 Se déplace sur place', public:'☕ Rendez-vous en lieu public', home:'🏠 La personne vient chez moi', biz:'🏪 Via mon établissement' };
   const modeLabel = modeLabels[meetMode] || '';
   const now = new Date();
   const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
