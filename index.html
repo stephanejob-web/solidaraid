@@ -4830,6 +4830,7 @@ function addNewAlertToFeed() {
     ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${cats.map(c => `<span style="background:var(--primary-light);color:var(--primary);border-radius:20px;padding:2px 9px;font-size:12px;font-weight:600;">${catIcons[c]} ${catLabels[c]}</span>`).join('')}</div>`
     : '';
   alertsData[newId] = {
+    id: newId,
     icon: catIcons[primaryCat], title,
     desc: rawDesc || '',
     location: addr, distance: '< 100 m',
