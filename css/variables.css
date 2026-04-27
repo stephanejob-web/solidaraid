@@ -1,0 +1,71 @@
+/* ═══════════════════════════════════════════
+   HUMEO — Design System "Chaleureux & Humain"
+   Police : Plus Jakarta Sans
+   Palette : Orange chaud, fonds stone, rayons doux
+   ═══════════════════════════════════════════ */
+:root {
+  --primary:       #F05A1A;
+  --primary-light: #FFF4ED;
+  --primary-mid:   #FEDDCC;
+  --primary-dark:  #C74610;
+  --secondary:     #2563EB;
+  --success:       #15803D;
+  --success-light: #F0FDF4;
+  --warning:       #B45309;
+  --warning-light: #FFFBEB;
+  --danger:        #DC2626;
+  --danger-light:  #FEF2F2;
+  --destructive:        #991B1B;
+  --destructive-light:  #F9EAEA;
+  --bg:            #F7F4F1;
+  --surface:       #FDFCFB;
+  --white:         #FFFFFF;
+  --text:          #1C1714;
+  --text-muted:    #6B5F58;
+  --border:        #EAE5E0;
+  --border-light:  #F2EDE8;
+  --radius:        20px;
+  --radius-sm:     12px;
+  --radius-lg:     28px;
+  --radius-xl:     36px;
+  --nav-h:         72px;
+  --shadow-sm:  0 1px 3px rgba(28,23,20,.05), 0 4px 14px rgba(28,23,20,.05);
+  --shadow-md:  0 4px 8px rgba(28,23,20,.06), 0 14px 28px rgba(28,23,20,.08);
+  --shadow-lg:  0 8px 20px rgba(28,23,20,.08), 0 32px 56px rgba(28,23,20,.10);
+  --shadow-primary: 0 6px 24px rgba(240,90,26,.30);
+  --fs-xs:   13px;
+  --fs-sm:   14px;
+  --fs-base: 15px;
+  --fs-md:   16px;
+  --fs-lg:   18px;
+  --fs-xl:   22px;
+  --fs-2xl:  28px;
+}
+
+/* ── DARK MODE ── palette sombre chaleureuse (opt-in via [data-theme="dark"]) */
+html[data-theme="dark"] {
+  --primary:       #FF6B2C;
+  --primary-light: #3A1E12;
+  --primary-mid:   #5A2E1B;
+  --primary-dark:  #FF8247;
+  --secondary:     #60A5FA;
+  --success:       #22C55E;
+  --success-light: #0E2416;
+  --warning:       #F59E0B;
+  --warning-light: #2A1F0B;
+  --danger:        #F87171;
+  --danger-light:  #2C0F14;
+  --destructive:       #F87171;
+  --destructive-light: #2C0F0F;
+  --bg:            #15120F;
+  --surface:       #1E1A16;
+  --white:         #1E1A16;
+  --text:          #F7F4F1;
+  --text-muted:    #B5A89F;
+  --border:        #2E2824;
+  --border-light:  #25211D;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.4);
+  --shadow-md:  0 4px 8px rgba(0,0,0,.5), 0 14px 28px rgba(0,0,0,.5);
+  --shadow-lg:  0 8px 20px rgba(0,0,0,.55), 0 32px 56px rgba(0,0,0,.6);
+  --shadow-primary: 0 6px 24px rgba(255,107,44,.35);
+}
