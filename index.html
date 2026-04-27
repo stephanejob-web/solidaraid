@@ -1662,7 +1662,7 @@ body {
       <!-- Compte -->
       <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);border:1px solid var(--border-light);overflow:hidden;">
         <div class="settings-item" onclick="goTo('screen-settings')"><span class="settings-item-icon">⚙️</span><div class="settings-item-text"><strong>Paramètres</strong><span>Compte, notifications, accessibilité</span></div><span class="settings-arrow">›</span></div>
-        <div class="settings-item" style="border-bottom:none;" onclick="goTo('screen-login')"><span class="settings-item-icon">🚪</span><div class="settings-item-text"><strong style="color:var(--destructive);">Se déconnecter</strong></div><span class="settings-arrow">›</span></div>
+        <div class="settings-item" style="border-bottom:none;" onclick="localStorage.removeItem('humeo_onboarded');goTo('screen-login')"><span class="settings-item-icon">🚪</span><div class="settings-item-text"><strong style="color:var(--destructive);">Se déconnecter</strong></div><span class="settings-arrow">›</span></div>
       </div>
 
     </div>
@@ -1825,6 +1825,9 @@ body {
   </div>
   <div class="screen-body" style="padding:16px;">
     <div class="section-title">En cours</div>
+
+    <!-- Signalements créés dynamiquement -->
+    <div id="my-alerts-dynamic"></div>
 
     <div class="card" style="cursor:pointer;margin-bottom:12px;" onclick="openAlert('alert-2')">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
@@ -1993,8 +1996,15 @@ body {
 
   <div class="screen-body" style="padding:16px 16px 90px;">
 
+    <!-- Mes signalements — dynamique -->
+    <div id="mes-signalements-section" style="display:none;">
+      <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Mes signalements</div>
+      <div id="mes-signalements-en-cours"></div>
+      <div class="divider" style="margin:20px 0 16px;"></div>
+    </div>
+
     <!-- Aides en cours — dynamique -->
-    <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">En cours</div>
+    <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Aides en cours</div>
     <div id="mes-aides-en-cours"></div>
 
     <!-- Aides effectuées -->
@@ -2687,6 +2697,7 @@ function goTo(id) {
   if (id === 'screen-create-1') initMapMini();
   if (id === 'screen-alert-detail') resetHelpBar();
   if (id === 'screen-mes-aides') renderMesAides();
+  if (id === 'screen-my-alerts') renderMyAlerts();
 }
 
 function goBack() {
@@ -2697,6 +2708,40 @@ function goBack() {
 }
 
 function renderMesAides() {
+  const urgBadge = { high:'<span class="badge badge-high">🔴 Urgent</span>', medium:'<span class="badge badge-medium">🟡 Modéré</span>', low:'<span class="badge badge-low">🟢 Faible</span>' };
+
+  /* ── Section "Mes signalements" ── */
+  const sigSection   = document.getElementById('mes-signalements-section');
+  const sigContainer = document.getElementById('mes-signalements-en-cours');
+  if (sigSection && sigContainer) {
+    const mySignalements = Object.entries(alertsData).filter(([, a]) => a.createdByMe && a.initialState !== 'done');
+    if (mySignalements.length > 0) {
+      sigSection.style.display = '';
+      sigContainer.innerHTML = mySignalements.map(([id, a]) =>
+        `<div class="card" style="cursor:pointer;margin-bottom:10px;" onclick="openAlert('${id}')">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:26px;">${a.icon || '🆘'}</span>
+              <div>
+                <div style="font-weight:700;font-size:14px;">${a.title}</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${a.location || 'Position actuelle'}</div>
+              </div>
+            </div>
+            ${urgBadge[a.urgency] || ''}
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border-light);">
+            <span class="badge badge-open" style="font-size:11px;">Ouvert</span>
+            <span style="font-size:12px;color:var(--text-muted);margin-left:auto;">⏱ ${a.time || 'À l\'instant'}</span>
+            <button class="card-chat-btn" onclick="event.stopPropagation();openAlertChatFromCard('${id}')">💬 Chat</button>
+          </div>
+        </div>`
+      ).join('');
+    } else {
+      sigSection.style.display = 'none';
+    }
+  }
+
+  /* ── Section "Aides en cours" ── */
   const container = document.getElementById('mes-aides-en-cours');
   if (!container) return;
   const active = Object.entries(alertsData).filter(([, a]) => a.initialState === 'me');
@@ -2728,6 +2773,30 @@ function renderMesAides() {
   }).join('');
 }
 
+function renderMyAlerts() {
+  const container = document.getElementById('my-alerts-dynamic');
+  if (!container) return;
+  const urgBadge = { high:'<span class="badge badge-high">🔴</span>', medium:'<span class="badge badge-medium">🟡</span>', low:'<span class="badge badge-low">🟢</span>' };
+  const mine = Object.entries(alertsData).filter(([, a]) => a.createdByMe && a.initialState !== 'done');
+  if (!mine.length) { container.innerHTML = ''; return; }
+  container.innerHTML = mine.map(([id, a]) =>
+    `<div class="card" style="cursor:pointer;margin-bottom:12px;" onclick="openAlert('${id}')">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <span style="font-size:30px;">${a.icon || '🆘'}</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:15px;">${a.title}</div>
+          <div style="font-size:13px;color:var(--text-muted);">${a.location || 'Position actuelle'} — ${a.time || 'À l\'instant'}</div>
+        </div>
+        ${urgBadge[a.urgency] || ''}
+      </div>
+      <div style="background:var(--primary-light);border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:14px;font-weight:600;color:var(--primary);">✨ Publié à l'instant</div>
+        <button class="card-chat-btn" onclick="event.stopPropagation();openAlertChatFromCard('${id}')">💬 Chat</button>
+      </div>
+    </div>`
+  ).join('');
+}
+
 function goToApp() { navHistory = []; goTo('screen-home'); setNav('nav-home'); switchFeedView('list'); }
 function goToMap() { goTo('screen-map'); setNav('nav-map'); }
 
@@ -2737,6 +2806,7 @@ function goToMap() { goTo('screen-map'); setNav('nav-map'); }
 let isGuest = false;
 function enterAsGuest() {
   isGuest = true;
+  localStorage.setItem('humeo_onboarded', '1');
   goToApp();
   setTimeout(showGuestBanner, 200);
 }
@@ -2797,6 +2867,7 @@ function selectObRole(role, el) {
 
 /* Après login/register, router selon le rôle choisi */
 function routeAfterAuth() {
+  localStorage.setItem('humeo_onboarded', '1');
   if (userRole === 'need') {
     navHistory = []; goTo('screen-need-help'); return;
   }
@@ -3182,7 +3253,13 @@ function initMapMini() {
   window._miniMarker = L.marker([48.8566,2.3522]).addTo(map);
 }
 
-setTimeout(() => goTo('screen-ob'), 2200);
+setTimeout(() => {
+  if (localStorage.getItem('humeo_onboarded')) {
+    goToApp();
+  } else {
+    goTo('screen-ob');
+  }
+}, 2200);
 
 /* ── RADIUS SLIDER ── */
 const radiusLabels  = ['500 m', '1 km', '3 km', '5 km', '10 km'];
@@ -3448,6 +3525,14 @@ const alertsData = {
     urgency:'medium', initialState:'open',
   },
 };
+
+/* ── Restaurer les signalements créés dans les sessions précédentes ── */
+(function loadPersistedSignals() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('humeo_my_signals') || '[]');
+    saved.forEach(a => { if (a.id && !alertsData[a.id]) alertsData[a.id] = a; });
+  } catch(e) {}
+})();
 
 let currentAlertId = null;
 
@@ -4685,11 +4770,15 @@ function resetCreateForm() {
 
 function publishAndShowSuccess() {
   addNewAlertToFeed();
+  renderMesAides();
+  renderMyAlerts();
   goTo('screen-create-success');
 }
 
 function publishAndGoHome() {
   addNewAlertToFeed();
+  renderMesAides();
+  renderMyAlerts();
   goToApp();
   setTimeout(() => showToast('🎉 Signalement publié ! 12 personnes notifiées'), 400);
 }
@@ -4751,7 +4840,14 @@ function addNewAlertToFeed() {
     signaler: 'Stéphane B.', signalerRating: '4.8', signalerAvatar: 'S', signalerColor: 'av-orange',
     urgency: urg, initialState: 'open',
     personHasPhone: newAlertDraft.personHasPhone,
+    createdByMe: true,
   };
+  /* Persister dans localStorage pour survivre aux rechargements */
+  try {
+    const saved = JSON.parse(localStorage.getItem('humeo_my_signals') || '[]');
+    saved.push(alertsData[newId]);
+    localStorage.setItem('humeo_my_signals', JSON.stringify(saved));
+  } catch(e) {}
   const card = document.createElement('div');
   card.className = 'alert-card';
   card.dataset.alertId = newId;
