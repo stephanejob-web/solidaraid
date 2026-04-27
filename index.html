@@ -2175,7 +2175,7 @@ body {
 <!-- BOTTOM NAV -->
 <nav id="bottom-nav">
   <div class="nav-item active" id="nav-home" onclick="goToApp()" aria-label="Accueil"><div class="nav-icon-wrap"><span class="nav-icon" aria-hidden="true">🏠</span></div><span class="nav-label">Accueil</span></div>
-  <div class="nav-item" id="nav-mes-aides" onclick="goTo('screen-mes-aides');setNav('nav-mes-aides')" aria-label="Mes aides" style="position:relative;"><div class="nav-icon-wrap" style="position:relative;"><span class="nav-icon" aria-hidden="true">🤝</span><span id="nav-aides-badge" style="position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;background:var(--danger);border-radius:999px;color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--white);">2</span></div><span class="nav-label">Mes aides</span></div>
+  <div class="nav-item" id="nav-mes-aides" onclick="goTo('screen-mes-aides');setNav('nav-mes-aides')" aria-label="Mes aides" style="position:relative;"><div class="nav-icon-wrap" style="position:relative;"><span class="nav-icon" aria-hidden="true">🤝</span><span id="nav-aides-badge" style="position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;background:var(--danger);border-radius:999px;color:white;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid var(--white);"></span></div><span class="nav-label">Mes aides</span></div>
   <button class="nav-fab" onclick="if(requireAccount('créer un signalement')) return; navHistory=[];resetCreateForm();goTo('screen-create-1')" aria-label="Créer un signalement">＋</button>
   <div class="nav-item" id="nav-msg" onclick="goTo('screen-messages');setNav('nav-msg')" aria-label="Messages"><div class="nav-icon-wrap"><span class="nav-icon" aria-hidden="true">💬</span></div><span class="nav-label">Messages</span></div>
   <div class="nav-item" id="nav-profile" onclick="goTo('screen-profile');setNav('nav-profile')" aria-label="Mon profil"><div class="nav-icon-wrap"><span class="nav-icon" aria-hidden="true">👤</span></div><span class="nav-label">Profil</span></div>
@@ -2773,6 +2773,19 @@ function renderMesAides() {
   }).join('');
 }
 
+function updateAidesBadge() {
+  const badge = document.getElementById('nav-aides-badge');
+  if (!badge) return;
+  const count = Object.values(alertsData).filter(a => a.initialState === 'me').length
+              + Object.values(alertsData).filter(a => a.createdByMe && a.initialState === 'open').length;
+  if (count > 0) {
+    badge.textContent = count;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
 function renderMyAlerts() {
   const container = document.getElementById('my-alerts-dynamic');
   if (!container) return;
@@ -2797,7 +2810,14 @@ function renderMyAlerts() {
   ).join('');
 }
 
-function goToApp() { navHistory = []; goTo('screen-home'); setNav('nav-home'); switchFeedView('list'); }
+function goToApp() {
+  localStorage.setItem('humeo_onboarded', '1');
+  navHistory = [];
+  goTo('screen-home');
+  setNav('nav-home');
+  switchFeedView('list');
+  updateAidesBadge();
+}
 function goToMap() { goTo('screen-map'); setNav('nav-map'); }
 
 /* ── Mode invité ──
@@ -3532,6 +3552,7 @@ const alertsData = {
     const saved = JSON.parse(localStorage.getItem('humeo_my_signals') || '[]');
     saved.forEach(a => { if (a.id && !alertsData[a.id]) alertsData[a.id] = a; });
   } catch(e) {}
+  setTimeout(updateAidesBadge, 100);
 })();
 
 let currentAlertId = null;
@@ -3989,6 +4010,7 @@ function submitHelp() {
   renderHelpBar();
   if (msgEl) msgEl.value = '';
   updateFeedCard(currentAlertId, 'me');
+  updateAidesBadge();
   const _aid = currentAlertId, _msg = message, _mode = selectedMeetMode;
   setTimeout(() => openHelpChat(_aid, currentUser.name, currentUser.avatar, 'av-orange', _msg, _mode), 350);
   // Refrapper le badge statut dans la fiche
@@ -4772,6 +4794,7 @@ function publishAndShowSuccess() {
   addNewAlertToFeed();
   renderMesAides();
   renderMyAlerts();
+  updateAidesBadge();
   goTo('screen-create-success');
 }
 
@@ -4779,6 +4802,7 @@ function publishAndGoHome() {
   addNewAlertToFeed();
   renderMesAides();
   renderMyAlerts();
+  updateAidesBadge();
   goToApp();
   setTimeout(() => showToast('🎉 Signalement publié ! 12 personnes notifiées'), 400);
 }
